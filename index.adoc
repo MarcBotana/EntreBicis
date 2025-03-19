@@ -221,7 +221,7 @@ image::DiagramaEntitatRelacio.png[tabla]
 
 === Diagrama de casos d’ús:
 
-image::DiagramaEntitatRelacio.png[tabla]
+image::DiagramaCasosUs.png[tabla]
 
 === Disseny d’interfícies d’usuari (mockups) i navegació:
 
