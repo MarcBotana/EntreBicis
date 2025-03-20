@@ -4,8 +4,11 @@ import java.time.LocalTime;
 import java.util.List;
 
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.RouteState;
+import cat.copernic.mbotana.entrebicis_backend.entity.enums.RouteValidate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,7 +32,11 @@ public class Route {
     private Long id;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private RouteState routeState;
+
+    @Column
+    private RouteValidate isValidate;
 
     @Column
     private Double totalRutePoints;
