@@ -12,7 +12,7 @@
 	<artifactId>entrebicis_backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>entrebicis_backend</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Backend EntreBicis</description>
 	<url/>
 	<licenses>
 		<license/>
