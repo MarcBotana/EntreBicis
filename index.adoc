@@ -229,7 +229,7 @@ Enllaç a link:https://www.figma.com/design/S0L8IvS0DQNNzh9dHhJKuJ/Projecte_4_De
 
 === Planificació de les tasques i gestió del projecte: 
 
-Enllaç a link:https://www.ejemplo.com[Trello]
+Enllaç a link:https://trello.com/b/g5AihSWt/projetce-4-entrebicis[Trello]
 
 
 
