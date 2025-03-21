@@ -28,9 +28,9 @@ public class SystemParams {
     private Double pointsConversion;
 
     @Column(nullable = false)
-    private Double stopMaxTime;
+    private int stopMaxTime;
 
     @Column(nullable = false)
-    private Double collectionMaxTime;
+    private int collectionMaxTime; 
     
 }
