@@ -14,19 +14,19 @@ public class WebUserLogic {
     @Autowired
     private UserRepository userRepository;
 
-    public void saveUser(User user) {
+    public void saveUser(User user) throws Exception {
         userRepository.save(user);
     }
 
-    public User getUserByEmail(String email) {
+    public User getUserByEmail(String email) throws Exception {
         return userRepository.findById(email).get();
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws Exception {
         return userRepository.findAll();
     }
 
-    public void updateUser(User user) {
+    public void updateUser(User user) throws Exception {
         userRepository.save(user);
     }
 
