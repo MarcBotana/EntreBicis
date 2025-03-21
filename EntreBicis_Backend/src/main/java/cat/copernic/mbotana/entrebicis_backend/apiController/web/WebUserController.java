@@ -31,11 +31,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class WebUserController {
 
     @Autowired
-    private UserLogic webUserLogic;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UserLogic webUserLogic;
 
     @GetMapping("/create")
     public String createUserPage(Model model, @ModelAttribute("exceptionError") String exceptionError, @ModelAttribute("newUser") User newUser) {
