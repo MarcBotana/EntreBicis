@@ -24,8 +24,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
+@RequestMapping("/user")
 public class WebUserController {
 
     @Autowired
@@ -35,7 +40,7 @@ public class WebUserController {
     private PasswordEncoder passwordEncoder;
 
 
-    @GetMapping("/user/create")
+    @GetMapping("/create")
     public String createUserPage(Model model, @ModelAttribute("exceptionError") String exceptionError, @ModelAttribute("newUser") User newUser) {
 
         model.addAttribute("roleList", Role.values());
@@ -55,7 +60,7 @@ public class WebUserController {
         return "user_create";
     }
 
-    @PostMapping("/user/create/new")
+    @PostMapping("/create/new")
     public String createUser(@Valid @ModelAttribute("user") User newUser, BindingResult result, Model model,
             RedirectAttributes redirectAttributes) {
 
@@ -88,7 +93,7 @@ public class WebUserController {
         return "redirect:/users";
     }
 
-    @GetMapping("/users")
+    @GetMapping("/list")
     public String getAllUsers(Model model) {
 
         List<User> allUsers = new ArrayList<>();
@@ -108,7 +113,7 @@ public class WebUserController {
         return "users_list";
     }
 
-    @GetMapping("/user")
+    @GetMapping("/detail")
     public String getUserByEmail(@RequestBody String email, Model model) {
 
         User user = new User();
