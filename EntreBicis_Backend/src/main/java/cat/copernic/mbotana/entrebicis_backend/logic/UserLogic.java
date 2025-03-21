@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_backend.logic.web;
+package cat.copernic.mbotana.entrebicis_backend.logic;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import cat.copernic.mbotana.entrebicis_backend.entity.User;
 import cat.copernic.mbotana.entrebicis_backend.repository.UserRepository;
 
 @Service
-public class WebUserLogic {
+public class UserLogic {
 
     @Autowired
     private UserRepository userRepository;

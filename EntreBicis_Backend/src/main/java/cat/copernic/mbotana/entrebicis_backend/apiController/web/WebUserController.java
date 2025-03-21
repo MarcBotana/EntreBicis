@@ -16,7 +16,7 @@ import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
 import cat.copernic.mbotana.entrebicis_backend.entity.User;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.Role;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.UserState;
-import cat.copernic.mbotana.entrebicis_backend.logic.web.WebUserLogic;
+import cat.copernic.mbotana.entrebicis_backend.logic.UserLogic;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class WebUserController {
 
     @Autowired
-    private WebUserLogic webUserLogic;
+    private UserLogic webUserLogic;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
