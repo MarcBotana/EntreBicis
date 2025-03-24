@@ -14,7 +14,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,7 +38,7 @@ public class User {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    @NotBlank(message = ErrorMessage.NOT_BLANK)
+    @NotNull(message = ErrorMessage.NOT_BLANK)
     private Role role;
 
     @Column(nullable = false)
@@ -57,8 +60,9 @@ public class User {
     private String town;
 
     @Column(nullable = false)
-    @NotBlank(message = ErrorMessage.NOT_BLANK)
-    @Size(min = DataFormat.USR_MOBILE_LENGTH, max = DataFormat.USR_MOBILE_LENGTH, message = ErrorMessage.USR_MOBILE_LENGTH)
+    @NotNull(message = ErrorMessage.NOT_BLANK)
+    @Min(value = 100000000, message = ErrorMessage.USR_MOBILE_LENGTH) 
+    @Max(value = 999999999, message = ErrorMessage.USR_MOBILE_LENGTH) 
     private int mobile;
 
     @Lob

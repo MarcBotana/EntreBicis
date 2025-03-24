@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,22 +30,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/user")
 public class WebUserController {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    //@Autowired
+    //private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserLogic webUserLogic;
 
     @GetMapping("/create")
-    public String createUserPage(Model model, @ModelAttribute("exceptionError") String exceptionError, @ModelAttribute("newUser") User newUser) {
+    public String createUserPage(Model model, @ModelAttribute("exceptionError") String exceptionError) {
 
         model.addAttribute("roleList", Role.values());
         model.addAttribute("userState", UserState.values());
-        model.addAttribute("user", new User());
 
-        if (model.containsAttribute("newUser")) {
-            model.addAttribute("user", newUser);
-        } else {
+        if (!model.containsAttribute("user")) {
             model.addAttribute("user", new User());
         }
 
@@ -62,28 +59,31 @@ public class WebUserController {
 
         try {
 
-            if (!newUser.getPassword().matches(DataFormat.USR_PASS_REGEX)) {
-                result.rejectValue("password", "password.format.error", ErrorMessage.PASSWORD_FORMAT + ErrorMessage.PASSWORD_FORMAT_INFO);
+            if (newUser.getPassword() != null && !newUser.getPassword().isBlank()) {
+                if (!newUser.getPassword().matches(DataFormat.USR_PASS_REGEX)) {
+                    result.rejectValue("password", "password.format.error", ErrorMessage.PASSWORD_FORMAT + ErrorMessage.PASSWORD_FORMAT_INFO);
+                }
             }
+            
 
             if (result.hasErrors()) {
-                redirectAttributes.addFlashAttribute("BindingResult.newUser", result);
-                redirectAttributes.addFlashAttribute("newUser", newUser);
-                return "redirect:/user_create";
+                redirectAttributes.addFlashAttribute("user", newUser);
+                redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
+                return "redirect:/user/create";
             } else {
-                newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+                //newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
                 webUserLogic.saveUser(newUser);
             }        
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/user_create";
+            return "redirect:/user/create";
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user_create";
+            return "redirect:/user/create";
         }  catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user_create";
+            return "redirect:/user/create";
         }
 
         return "redirect:/users";

@@ -27,12 +27,12 @@ public class DataFormat {
     private static final String regexSpecial = "(?=.*[" + SPECIAL_CHAR + "])";
     private static final String regexNoWhitespace = "(?=\\S+$)";
     
-    private static final String regexMinMaxMsg = " - Entre " + MIN_USR_PASS_LENGTH + " i " + MAX_USR_PASS_LENGTH + " caràcters! \n";
-    private static final String regexNumMsg = " - Almenys un número! \n";
-    private static final String regexLowercaseMsg = " - Almenys una lletra minúscula! \n";
-    private static final String regexUppercaseMsg = " - Almenys una lletra majúscula! \n";
-    private static final String regexSpecialMsg = " - Almenys un caràcter especial! (" + SPECIAL_CHAR + ") \n";
-    private static final String regexNoWhitespaceMsg = " - Sense espais en blanc! \n";
+    private static final String regexMinMaxMsg = " - Entre " + MIN_USR_PASS_LENGTH + " i " + MAX_USR_PASS_LENGTH + " caràcters! <br> ";
+    private static final String regexNumMsg = " - Almenys un número! <br> ";
+    private static final String regexLowercaseMsg = " - Almenys una lletra minúscula! <br> ";
+    private static final String regexUppercaseMsg = " - Almenys una lletra majúscula! <br> ";
+    private static final String regexSpecialMsg = " - Almenys un caràcter especial! (" + SPECIAL_CHAR + ") <br> ";
+    private static final String regexNoWhitespaceMsg = " - Sense espais en blanc! <br> ";
 
     public static final String USR_PASS_REGEX = "^" +
         regexMinMax +
