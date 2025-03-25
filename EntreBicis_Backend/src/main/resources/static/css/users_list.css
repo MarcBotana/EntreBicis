@@ -42,6 +42,28 @@ body {
     background: #ccc;
 }
 
+.user-item-texts {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background: #cbcbcb;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    flex-grow: 4;
+}
+
+.user-item-texts-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background: #cbcbcb;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    flex-grow: 1;
+}
+
 /* User List */
 .user-list {
     flex: 1;
@@ -100,15 +122,53 @@ body {
     background: #3587ea;
 }
 
+.user-list-content {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.user-list-userBar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 100;
+}
+
+.user-list-actionBar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+
 /* User Item */
 .user-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 25px;
     padding: 15px;
     background: #f0f0f0;
     border-radius: 12px;
     margin-bottom: 10px;
+    flex-grow: 1;
+}
+
+.user-info {
+    flex: -1 1 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-item-bar {
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
 }
 
 .user-avatar {
