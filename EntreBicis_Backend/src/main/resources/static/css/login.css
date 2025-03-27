@@ -1,0 +1,352 @@
+/* Reseteo básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+
+/*-----------------------------------------------------------------------------------------------*/
+
+/* Estilos del Navbar */
+.nav-container {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    transition: background-color 0.3s ease;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: transparent;
+}
+
+.navbar.scrolled {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin-left: 40px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+
+.icono_user {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem; /* Ajusta el tamaño del icono */
+    color: white; /* Cambia el color del icono */
+    margin-left: auto;
+    outline: none;
+    transition: transform 0.3s ease;
+}
+
+.icono_user:hover {
+    color: #00b4d8; /* Cambia el color al pasar el cursor */
+    transform: scale(1.1); /* Efecto de agrandamiento */
+}
+
+/* Menú desplegable (oculto por defecto) */
+.user-menu-container {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 40px; /* Ajusta según sea necesario */
+    right: 0;
+    background-color: #00b4d8;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    width: 165px; /* Ajusta el ancho del menú */
+}
+
+.dropdown-item {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+    text-align: left;
+    font-weight: bold;
+}
+.dropdown-item svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px; /* Añadir un espacio entre el ícono y el texto */
+    vertical-align: middle; /* Alinear el ícono verticalmente con el texto */
+}
+
+
+.dropdown-item:hover {
+    background-color: white;
+}
+
+/* Para mostrar el menú cuando está activo */
+.user-menu-container.active .dropdown-menu {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Ocultar menú en móviles si es necesario */
+    }
+}
+
+.nav-links a:hover {
+    color: #00b4d8;
+}
+
+
+/*-----------------------------------------------------------------------------------------------*/
+
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.hero-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* La imagen ocupará todo el ancho */
+    height: 100%; /* La imagen ocupará toda la altura */
+    object-fit: cover; /* Ajusta la imagen para que cubra el contenedor manteniendo su proporción */
+    z-index: -1; /* Coloca la imagen detrás del resto del contenido */
+}
+
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15); /* Iluminació de l'imatge de fons */
+    z-index: 1;
+}
+
+
+.text_presentacio {
+    margin-top: 15px;
+}
+
+.glass-box {
+    position: absolute;
+    top: 25%;
+    right: 7.5%;
+    z-index: 2;
+    background: transparent;
+    border-style: solid;
+    border-width: 1.5px;
+    border-color: white;
+    backdrop-filter: blur(5px);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    width: 400px; /* Ancho fijo para el glass-box */
+    height: auto; /* La altura se adapta al contenido */
+    overflow: hidden; /* Evita que el contenido desborde el contenedor */
+}
+
+.glass-box h1 {
+    font-size: 2.5rem;
+    word-wrap: break-word; /* Asegura que las palabras largas no desborden el contenedor */
+    margin-bottom: 1rem;
+}
+
+.glass-box p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+/* Ajuste para tablets */
+@media (max-width: 768px) {
+    .glass-box {
+        top: 25%;   /* Baja más en pantallas pequeñas */
+        right: 10%; /* Aumenta el espacio desde la derecha */
+        max-width: 80%; /* Reduce el ancho */
+    }
+}
+
+/* Ajuste para móviles */
+@media (max-width: 480px) {
+    .glass-box {
+        top: 30%;     /* Aún más abajo */
+        right: auto;  /* Elimina posición fija derecha */
+        left: 5%;     /* Se posiciona desde la izquierda */
+        max-width: 90%; /* Más ancho en pantallas pequeñas */
+    }
+}
+
+
+.btn_explora {
+    background: #00b4d8;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.btn_explora:hover {
+    background: #0096c7;
+}
+
+/* Contenido adicional */
+.content {
+    padding: 3rem 2rem;
+    text-align: center;
+    background: #f8f9fa;
+}
+
+.content h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+/* Animación */
+.content {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.content.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/*---------------------------------------------------------------------*/
+
+/* Sección de coches */
+.cars-section {
+    padding: 3rem 2rem;
+    background: #f8f9fa;
+}
+
+.titulo {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #333;
+    text-align: center;
+}
+
+/* Grid de tarjetas con máximo 3 columnas */
+.cars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 0 1rem;
+}
+
+@media (max-width: 992px) {
+    .cars-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .cars-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tarjetas */
+.card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%; /* Limita la expansión de las tarjetas */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Imágenes dinámicas */
+.card-img-top {
+    width: 100%; /* Se adapta al ancho de la tarjeta */
+    height: 200px; /* Altura fija para mantener consistencia */
+    object-fit: cover; /* Recorta para mantener proporción */
+    display: block;
+}
+
+/* Contenido de la tarjeta */
+.card-body {
+    padding: 1rem;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.btn {
+    background: #00b4d8;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #0096c7;
+}
+
+
+
+/*---------------------------------------------------------------------*/
+
+footer {
+    background-color: #343a40;
+    color: #ffffff;
+    text-align: center;
+    padding: 1rem 0;
+}
+

@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import cat.copernic.mbotana.entrebicis_backend.entity.User;
 import cat.copernic.mbotana.entrebicis_backend.logic.UserLogic;
 
+@Service
 public class UserValidator implements UserDetailsService {
 
     @Autowired
@@ -18,19 +20,13 @@ public class UserValidator implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
         User user = new User();
-        
         try {
             user = userLogic.getUserByEmail(email);
-            if (user == null) {
-                throw new UsernameNotFoundException("L'usuari no s'ha trobat!");
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        return user;
+        return new CustomUserDetails(user);
     }
 
 }

@@ -1,21 +1,18 @@
 package cat.copernic.mbotana.entrebicis_backend.entity;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import cat.copernic.mbotana.entrebicis_backend.config.DataFormat;
 import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.Role;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.UserState;
-import cat.copernic.mbotana.entrebicis_backend.security.Permission;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
@@ -35,7 +32,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class User implements UserDetails{
+public class User{
 
     @Id
     @NotBlank(message = ErrorMessage.NOT_BLANK)
@@ -46,9 +43,6 @@ public class User implements UserDetails{
     @Enumerated(EnumType.STRING)
     @NotNull(message = ErrorMessage.NOT_BLANK)
     private Role role;
-
-    @Column(nullable = false)
-    private String permission;
 
     @Column(nullable = false)
     @NotBlank(message = ErrorMessage.NOT_BLANK)
@@ -83,29 +77,10 @@ public class User implements UserDetails{
     @Column
     private Double totalPoints;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Route> routes;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Reservation> reservations;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        String[] userPermission = permission.split(",");
-
-        for (String perm : userPermission) {
-            authorities.add(new Permission(Role.valueOf(perm)));
-        }
-        
-        return authorities;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-
 
 }
