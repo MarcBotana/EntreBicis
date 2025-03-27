@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/users_list.css">
+    <title>EntreBicis - Usuaris</title>
+</head>
+<body>
+    <!-- NavBar -->
+    <div th:replace="fragments/navbar :: navbar"></div>
+
+    <!-- Content -->
+     <div class="content">
+        <aside class="sidebar">
+            <h3 class="sidebar-title">Ordenar</h3>
+            <button th:onclick="|location.href='/user/list?sort=email'|">Email</button>
+            <button th:onclick="|location.href='/user/list?sort=name'|">Nom</button>
+            <button th:onclick="|location.href='/user/list?sort=BIKER'|">Ciclistes</button>
+            <button th:onclick="|location.href='/user/list?sort=ADMIN'|">Administradors</button>
+        </aside>
+
+        <section class="user-list">
+            <div class="user-list-header">
+                <h2>Usuaris</h2>
+                <button th:onclick="|location.href='/user/create'|">Crear Usuari</button>
+            </div>
+
+            <!-- Search Bar -->
+            <form action="/user/list" method="get" class="search-bar">
+                <input type="text" name="search" placeholder="Cercar...">
+                <button type="submit">🔍</button>
+            </form>
+
+                <div class="user-list-content">
+                    <div class="user-list-userBar">
+                        <div class="user-item-bar">
+                            <div class="user-item-texts">
+                                <span>Imatge</span>
+                                <span>Email</span>
+                                <span>Nom</span>
+                                <span>Cognom</span>
+                                <span>Localització</span>
+                                <span>Rol</span>
+                                <span>Punts</span>
+                            </div>
+                        </div>
+                        <div class="user-item-bar" th:each="user : ${allUsers}">
+                            <div class="user-item">
+                                <img th:src="@{/images/EntreBicis_Logo.png}" alt="User Image" class="user-avatar">
+                                <span class="user-info" th:text="${user.email}"></span>
+                                <span class="user-info" th:text="${user.name}"></span>
+                                <span class="user-info" th:text="${user.surname}"></span>
+                                <span class="user-info" th:text="${user.town}"></span>
+                                <span class="user-info" th:text="${user.role.display}"></span>
+                                <span class="user-info" th:text="${user.totalPoints}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-list-actionBar">
+                        <div class="user-item-bar">
+                            <div class="user-item-texts">
+                                <span>Accions</span>
+                            </div>
+                        </div>
+                        <div class="user-item-bar" th:each="user : ${allUsers}">
+                            <div class="user-item">
+                                <button th:onclick="|location.href='/user/list'|">Editar</button>
+                                <button th:onclick="|location.href='/user/list'|">Contactar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                    
+                
+                
+
+                
+            
+            
+
+            
+        </section>
+     </div>
+    
+</body>
+</html>

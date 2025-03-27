@@ -1,12 +1,14 @@
 package cat.copernic.mbotana.entrebicis_backend.apiController.web;
 
+import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,28 +27,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/user")
 public class WebUserController {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    //@Autowired
+    //private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserLogic webUserLogic;
 
     @GetMapping("/create")
-    public String createUserPage(Model model, @ModelAttribute("exceptionError") String exceptionError, @ModelAttribute("newUser") User newUser) {
+    public String createUserPage(Model model, @ModelAttribute("exceptionError") String exceptionError) {
 
         model.addAttribute("roleList", Role.values());
         model.addAttribute("userState", UserState.values());
-        model.addAttribute("user", new User());
 
-        if (model.containsAttribute("newUser")) {
-            model.addAttribute("user", newUser);
-        } else {
-            model.addAttribute("user", new User());
+        if (!model.containsAttribute("user")) {
+            User user = new User();
+            user.setPassword(generatePassword());
+            model.addAttribute("user", user);
         }
 
         if (exceptionError != null && !exceptionError.isEmpty()) {
@@ -57,45 +59,71 @@ public class WebUserController {
     }
 
     @PostMapping("/create/new")
-    public String createUser(@Valid @ModelAttribute("user") User newUser, BindingResult result, Model model,
+    public String createUser(@Valid @ModelAttribute("user") User newUser, BindingResult result,
             RedirectAttributes redirectAttributes) {
 
-        try {
-
-            if (!newUser.getPassword().matches(DataFormat.USR_PASS_REGEX)) {
-                result.rejectValue("password", "password.format.error", ErrorMessage.PASSWORD_FORMAT + ErrorMessage.PASSWORD_FORMAT_INFO);
+        try {    
+            
+            if (webUserLogic.existUserByEmail(newUser.getEmail())) {
+                result.rejectValue("email", "error.user", ErrorMessage.EMAIL_EXIST);                    
             }
-
+            
+            
             if (result.hasErrors()) {
-                redirectAttributes.addFlashAttribute("BindingResult.newUser", result);
-                redirectAttributes.addFlashAttribute("newUser", newUser);
-                return "redirect:/user_create";
+                redirectAttributes.addFlashAttribute("user", newUser);
+                redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
+                return "redirect:/user/create";
+
             } else {
-                newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+                newUser.setTotalPoints(0.0);
+                //newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
                 webUserLogic.saveUser(newUser);
             }        
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/user_create";
+            return "redirect:/user/create";
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user_create";
+            return "redirect:/user/create";
         }  catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user_create";
+            return "redirect:/user/create";
         }
 
-        return "redirect:/users";
+        return "redirect:/user/list";
     }
 
     @GetMapping("/list")
-    public String getAllUsers(Model model) {
+    public String getAllUsers(@RequestParam(required = false) String sort, @RequestParam(required = false) String search, Model model) {
 
         List<User> allUsers = new ArrayList<>();
 
         try {
             allUsers = webUserLogic.getAllUsers();
+
+            switch (sort) {
+                case "email":
+                    allUsers.sort(Comparator.comparing(User::getEmail));
+                    break;
+                case "name":
+                    allUsers.sort(Comparator.comparing(User::getName));
+                    break;
+                case "BIKER":
+                    allUsers = allUsers.stream().filter(user -> user.getRole().equals(Role.BIKER)).toList();
+                    break;
+                case "ADMIN":
+                allUsers = allUsers.stream().filter(user -> user.getRole().equals(Role.ADMIN)).toList();
+                    break;
+                default:
+                    break;
+            }
+
+            if (search != null && !search.isEmpty()) {
+                allUsers = allUsers.stream().filter(user -> user.getEmail().toLowerCase().contains(search.toLowerCase()) || user.getName().contains(search)).toList();
+            }
+
+
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
@@ -104,7 +132,7 @@ public class WebUserController {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
-        model.addAttribute("userList", allUsers);
+        model.addAttribute("allUsers", allUsers);
 
         return "users_list";
     }
@@ -127,6 +155,23 @@ public class WebUserController {
         model.addAttribute("user", user);
 
         return "user_detail";
+    }
+
+    private static String generatePassword() {
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+        
+        password.append(DataFormat.LOWERCASE.charAt(random.nextInt((DataFormat.LOWERCASE.length()))));
+        password.append(DataFormat.UPPERCASE.charAt(random.nextInt(DataFormat.UPPERCASE.length())));
+        password.append(DataFormat.DIGITS.charAt(random.nextInt(DataFormat.DIGITS.length())));
+        password.append(DataFormat.SPECIAL_CHAR.charAt(random.nextInt(DataFormat.SPECIAL_CHAR.length())));
+
+        String allCharacters = DataFormat.LOWERCASE + DataFormat.UPPERCASE + DataFormat.DIGITS + DataFormat.SPECIAL_CHAR;
+        while (password.length() < DataFormat.MIN_LENGTH) {
+            password.append(allCharacters.charAt(random.nextInt(allCharacters.length())));
+        }
+
+        return password.toString();
     }
     
 }
