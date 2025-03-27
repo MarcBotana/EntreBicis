@@ -2,14 +2,17 @@ package cat.copernic.mbotana.entrebicis_backend.entity;
 
 import java.util.List;
 
+
 import cat.copernic.mbotana.entrebicis_backend.config.DataFormat;
 import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.Role;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.UserState;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
@@ -29,7 +32,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class User {
+public class User{
 
     @Id
     @NotBlank(message = ErrorMessage.NOT_BLANK)
@@ -74,10 +77,10 @@ public class User {
     @Column
     private Double totalPoints;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Route> routes;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Reservation> reservations;
 
 }
