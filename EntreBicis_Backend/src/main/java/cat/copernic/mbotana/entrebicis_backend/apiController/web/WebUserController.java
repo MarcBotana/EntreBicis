@@ -95,31 +95,24 @@ public class WebUserController {
     }
 
     @GetMapping("/list")
-    public String getAllUsers(@RequestParam(required = false) String sort, @RequestParam(required = false) String search, Model model) {
+    public String listUsersPage(@RequestParam(required = false) String sort, @RequestParam(required = false) String search, Model model) {
 
         List<User> allUsers = new ArrayList<>();
 
         try {
             allUsers = webUserLogic.getAllUsers();
 
-            switch (sort) {
-                case "email":
-                    allUsers.sort(Comparator.comparing(User::getEmail));
-                    break;
-                case "name":
-                    allUsers.sort(Comparator.comparing(User::getName));
-                    break;
-                case "BIKER":
-                    allUsers = allUsers.stream().filter(user -> user.getRole().equals(Role.BIKER)).toList();
-                    break;
-                case "ADMIN":
-                allUsers = allUsers.stream().filter(user -> user.getRole().equals(Role.ADMIN)).toList();
-                    break;
-                default:
-                    break;
+            if (sort != null && !sort.isEmpty()) {
+                switch (sort) {
+                    case "email" -> allUsers.sort(Comparator.comparing(User::getEmail));
+                    case "name" -> allUsers.sort(Comparator.comparing(User::getName));
+                    case "BIKER" -> allUsers = allUsers.stream().filter(user -> user.getRole().equals(Role.BIKER)).toList();
+                    case "ADMIN" -> allUsers = allUsers.stream().filter(user -> user.getRole().equals(Role.ADMIN)).toList();
+                }
             }
+           
 
-            if (search != null && !search.isEmpty()) {
+            if (search != null && !search.isBlank()) {
                 allUsers = allUsers.stream().filter(user -> user.getEmail().toLowerCase().contains(search.toLowerCase()) || user.getName().contains(search)).toList();
             }
 
@@ -138,7 +131,7 @@ public class WebUserController {
     }
 
     @GetMapping("/detail")
-    public String getUserByEmail(@RequestBody String email, Model model) {
+    public String userDetailPage(@RequestBody String email, Model model) {
 
         User user = new User();
 

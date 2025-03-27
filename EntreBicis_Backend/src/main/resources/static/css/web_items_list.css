@@ -42,7 +42,7 @@ body {
     background: #ccc;
 }
 
-.user-item-texts {
+.web-item-texts {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -53,7 +53,7 @@ body {
     flex-grow: 4;
 }
 
-.user-item-texts-actions {
+.web-item-texts-actions {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -64,15 +64,15 @@ body {
     flex-grow: 1;
 }
 
-/* User List */
-.user-list {
+/* web List */
+.web-list {
     flex: 1;
     background: #e6e6e6;
     padding: 20px;
     border-radius: 12px;
 }
 
-.user-list button {
+.web-list button {
     font-weight: bold;
     background: #3587ea;
     border: none;
@@ -82,11 +82,11 @@ body {
     transition: background 0.3s;
 }
 
-.user-list button:hover {
+.web-list button:hover {
     background: #105ebd;
 }
 
-.user-list-header {
+.web-list-header {
     margin-top: 0;
 
     display: flex;
@@ -122,69 +122,94 @@ body {
     background: #3587ea;
 }
 
-.user-list-content {
+/* Table web Content */
+.web-list-content {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 20px;
 }
 
-.user-list-userBar {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.web-list-webBar {
+    border-collapse: collapse;
+    width: 80%;
+    table-layout: fixed;
+    text-align: left;
     flex-grow: 100;
 }
 
-.user-list-actionBar {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex-grow: 1;
+.web-list-webBar thead {
+    background-color: #ddd; 
 }
 
+.web-list-webBar th, .web-list-webBar td {
+    padding: 12px;
+    border-bottom: 1px solid #ccc;
+}
 
-/* User Item */
-.user-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 25px;
-    padding: 15px;
+.web-list-webBar tbody tr {
     background: #f0f0f0;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    flex-grow: 1;
+    transition: background 0.3s ease;
 }
 
-.user-info {
-    flex: -1 1 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.web-list-webBar tbody tr:hover {
+    background: #e0e0e0;
 }
 
-.user-item-bar {
-    display: flex;
-    gap: 5px;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: row;
+.web-item {
+    height: auto;
 }
 
-.user-avatar {
+.web-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
 }
 
-.user-email, .user-name, .user-role {
-    flex: 1;
-    padding-left: 15px;
+.web-info {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
+.web-info-img {
+    width: 55px;
+    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Action Bar */
 .actions {
     display: flex;
     gap: 10px;
+}
+
+.web-list-actionBar {
+    border-collapse: collapse; 
+    width: 20%;
+    table-layout: fixed;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.web-list-actionBar thead {
+    background-color: #ddd; 
+}
+
+.web-list-actionBar th, .web-list-actionBar td {
+    padding: 12px;
+    border-bottom: 1px solid #ccc; 
+}
+
+.web-list-actionBar tbody tr {
+    background: #f0f0f0;
+    transition: background 0.3s ease;
+}
+
+.web-list-actionBar tbody tr:hover {
+    background: #e0e0e0;
 }
 
 .edit-btn, .contact-btn {
