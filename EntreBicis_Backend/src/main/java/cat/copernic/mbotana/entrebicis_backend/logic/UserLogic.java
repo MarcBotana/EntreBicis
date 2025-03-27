@@ -30,4 +30,7 @@ public class UserLogic {
         userRepository.save(user);
     }
 
+    public Boolean existUserByEmail(String email) throws Exception {
+        return userRepository.existsById(email); 
+    }
 }
