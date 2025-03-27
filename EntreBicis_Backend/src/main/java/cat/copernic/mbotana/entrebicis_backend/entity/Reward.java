@@ -13,6 +13,7 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,11 +43,10 @@ public class Reward {
     private String observation;
 
     @Lob
-    @NotBlank(message = ErrorMessage.NOT_BLANK)
     private byte[] image;
 
     @Column(nullable = false)
-    @NotBlank(message = ErrorMessage.NOT_BLANK)
+    @NotNull(message = ErrorMessage.NOT_BLANK)
     private Double valuePoints;
 
     @Column(nullable = false)
@@ -54,7 +54,7 @@ public class Reward {
     private RewardState rewardState;
 
     @ManyToOne
-    @NotBlank(message = ErrorMessage.NOT_BLANK)
+    @NotNull(message = ErrorMessage.NOT_BLANK)
     private ExchangePoint exchangePoint;
 
     @OneToOne(mappedBy = "reward")

@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/user_create.css">
-    <title>EntreBicis - Usuaris</title>
+    <title>EntreBicis - Crear Usuari</title>
 </head>
 <body>
     <!-- NavBar -->
-    <div th:replace="fragments/navbar :: navbar"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="content">
         <section class="user-create">
@@ -38,7 +38,6 @@
                 <div class="error" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
 
                 <!-- Password -->
-                 
                 <label for="password">Contrasenya: (Temporal)</label>
                 <input type="text" id="password" name="password" th:field="${user.password}">
 
@@ -55,16 +54,16 @@
                 <!-- State -->
                 <label for="userState">Estat:</label>
                 <select id="userState" name="userState" th:field="*{userState}">
-                    <option th:each="userState : ${userState}" th:value="${userState}" th:text="${userState}"></option>
+                    <option th:each="userState : ${userState}" th:value="${userState}" th:text="${userState.display}"></option>
                 </select>
                 
                 <!-- Rol -->
                 <label for="role">Rol:</label>
                 <select id="role" name="role" th:field="*{role}">
-                    <option th:each="role : ${roleList}" th:value="${role}" th:text="${role}"></option>
+                    <option th:each="role : ${roleList}" th:value="${role}" th:text="${role.display}"></option>
                 </select>
 
-                <button type="submit">Crear Usuario</button>
+                <button type="submit">Crear Usuari</button>
             </form>
         </section>
     </div>

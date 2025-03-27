@@ -15,20 +15,23 @@
      <div class="content">
         <aside class="sidebar">
             <h3 class="sidebar-title">Ordenar</h3>
-            <button th:onclick="|location.href='/user/list?sort=email'|">Email</button>
-            <button th:onclick="|location.href='/user/list?sort=name'|">Nom</button>
-            <button th:onclick="|location.href='/user/list?sort=BIKER'|">Ciclistes</button>
-            <button th:onclick="|location.href='/user/list?sort=ADMIN'|">Administradors</button>
+            <button th:onclick="|location.href='/reward/list?sort=name'|">Nom</button>
+            <button th:onclick="|location.href='/reward/list?sort=exchangePoint'|">Punt Bescanvi</button>
+            <button th:onclick="|location.href='/reward/list?sort=AVAILABLE'|">Disponible</button>
+            <button th:onclick="|location.href='/reward/list?sort=RESERVED'|">Reservat</button>
+            <button th:onclick="|location.href='/reward/list?sort=ASSIGNED'|">Assignat</button>
+            <button th:onclick="|location.href='/reward/list?sort=RETURNED'|">Retornat</button>
+
         </aside>
 
         <section class="web-list">
             <div class="web-list-header">
-                <h2>Usuaris</h2>
-                <button th:onclick="|location.href='/user/create'|">Crear Usuari</button>
+                <h2>Recompenses</h2>
+                <button th:onclick="|location.href='/reward/create'|">Crear Recompensa</button>
             </div>
 
             <!-- Search Bar -->
-            <form action="/user/list" method="get" class="search-bar">
+            <form action="/reward/list" method="get" class="search-bar">
                 <input type="text" name="search" placeholder="Cercar..." th:value="${param.search}">
                 <button type="submit">🔍</button>
             </form>
@@ -38,39 +41,35 @@
                         <thead>
                             <tr>
                                 <th class="web-info-img">Imatge</th>
-                                <th class="web-info">Email</th>
                                 <th class="web-info">Nom</th>
-                                <th class="web-info">Cognom</th>
-                                <th class="web-info">Localització</th>
-                                <th class="web-info">Rol</th>
-                                <th class="web-info">Punts</th>
+                                <th class="web-info">Estat</th>
+                                <th class="web-info">Punts Valor</th>
+                                <th class="web-info">Bescanvi</th>
                             </tr>
                         </thead>
-                        <tbody class="web-item" th:each="user : ${allUsers}">
+                        <tbody class="web-item" th:each="reward : ${allRewards}">
                             <tr >
                                 <td>
-                                    <img th:src="@{/images/EntreBicis_Logo.png}" alt="User Image" class="web-avatar">
+                                    <img th:src="@{/images/EntreBicis_Logo.png}" alt="web Image" class="web-avatar">
                                 </td>
-                                <td class="web-info" th:text="${user.email}"></td>
-                                <td class="web-info" th:text="${user.name}"></td>
-                                <td class="web-info" th:text="${user.surname}"></td>
-                                <td class="web-info" th:text="${user.town}"></td>
-                                <td class="web-info" th:text="${user.role.display}"></td>
-                                <td class="web-info" th:text="${user.totalPoints}"></td>
+                                <td class="web-info" th:text="${reward.name}"></td>
+                                <td class="web-info" th:text="${reward.rewardState.display}"></td>
+                                <td class="web-info" th:text="${reward.valuePoints}"></td>
+                                <td class="web-info" th:text="${reward.exchangePoint.name}"></td>
                             </tr>
                         </tbody>
                     </table>
                     <table class="web-list-actionBar" >
                         <thead>
                             <tr>
-                                <th class="web-info">Accions</th>
+                                <th>Accions</th>
                             </tr>
                         </thead>
-                        <tbody class="web-item" th:each="user : ${allUsers}">
+                        <tbody class="web-item" th:each="reward : ${allRewards}">
                             <tr>
                                 <td>
-                                    <button th:onclick="|location.href='/user/list'|">Editar</button>
-                                    <button th:onclick="|location.href='/user/list'|">Contactar</button>
+                                    <button th:onclick="|location.href='/reward/list'|">Editar</button>
+                                    <button th:onclick="|location.href='/reward/list'|">Assignar</button>
                                 </td>
                             </tr>
                         </tbody>
