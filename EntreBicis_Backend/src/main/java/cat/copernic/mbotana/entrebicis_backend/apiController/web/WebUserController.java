@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,8 +34,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/user")
 public class WebUserController {
 
-    //@Autowired
-    //private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserLogic webUserLogic;
@@ -76,7 +77,7 @@ public class WebUserController {
 
             } else {
                 newUser.setTotalPoints(0.0);
-                //newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+                newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
                 webUserLogic.saveUser(newUser);
             }        
 
