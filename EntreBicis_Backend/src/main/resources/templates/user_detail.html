@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/web_items_detail.css">
+    <title>EntreBicis - Usuari</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content -->
+    <div class="content">
+        <section class="web-detail">
+            <div class="web-detail-header">
+                <h2 th:text="'Usuari - ' + ${user.name} + ' ' + ${user.surname} + ' ('+ ${user.email} + ')'"></h2>
+            </div>
+            <div class="web-detail-content">
+
+                <div class="detail-image">
+                    <img th:src="@{/images/EntreBicis_Logo.png}" alt="User Image" class="web-avatar">
+                    <div class="detail-role" th:text="${user.role.display}"></div>
+                    <div class="detail-state" th:text="${user.userState.display}"></div>
+                </div>
+
+                <div class="detail-data">
+                    <div class="data-title">
+                        <div>Nom: </div>
+                        <div>Correu: </div>
+                        <div>Telèfon: </div>
+                        <div>Població: </div>
+                    </div>
+                    <div class="data-text">
+                        <div th:text="${user.name} + ' ' + ${user.surname}"></div>
+                        <div th:text="${user.email}"></div>
+                        <div th:text="${user.mobile}"></div>
+                        <div th:text="${user.town}"></div>
+                    
+                    </div>
+                </div>
+
+                <div class="detail-options">
+                    <div class="data-value" th:text="${user.totalPoints}"></div>
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/user/list'|">Rutes</button>
+                    </div>
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/user/list'|">Recompenses</button>
+                    </div>
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/user/list'|">Canvi Contrasenya</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+    </div>
+
+</body>
+
+</html>
