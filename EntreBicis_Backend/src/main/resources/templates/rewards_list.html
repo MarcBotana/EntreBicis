@@ -70,7 +70,7 @@
                     <tbody class="web-item" th:each="reward : ${allRewards}">
                         <tr>
                             <td>
-                                <button th:onclick="|location.href='/reward/list'|">Editar</button>
+                                <button th:onclick="|location.href='/reward/update?id=' + '@{${reward.id}}'|">Editar</button>
                                 <button th:onclick="|location.href='/reward/list'|">Assignar</button>
                             </td>
                         </tr>

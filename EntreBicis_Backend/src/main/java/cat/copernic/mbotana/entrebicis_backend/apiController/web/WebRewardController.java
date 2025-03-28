@@ -172,6 +172,7 @@ public class WebRewardController {
 
         try {
             reward = webRewardLogic.getRewardById(id);
+            model.addAttribute("exchangePoints", webExchangePointLogic.getAllExchangePoints());
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {

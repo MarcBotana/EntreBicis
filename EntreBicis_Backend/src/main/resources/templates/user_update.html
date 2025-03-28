@@ -56,14 +56,17 @@
                 <!-- State -->
                 <label for="userState">Estat:</label>
                 <select id="userState" name="userState" th:field="*{userState}">
-                    <option th:each="userState : ${userState}" th:value="${userState}" th:text="${userState.display}">
-                    </option>
+                    <option th:each="userState : ${userState}" 
+                        th:value="${userState}" 
+                        th:text="${userState.display}"></option>
                 </select>
 
                 <!-- Rol -->
                 <label for="role">Rol:</label>
                 <select id="role" name="role" th:field="*{role}">
-                    <option th:each="role : ${roleList}" th:value="${role}" th:text="${role.display}"></option>
+                    <option th:each="role : ${roleList}" 
+                        th:value="${role}" 
+                        th:text="${role.display}"></option>
                 </select>
 
                 <button type="submit">Modificar Usuari</button>

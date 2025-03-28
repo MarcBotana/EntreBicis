@@ -50,7 +50,8 @@
                 <!-- State -->
                 <label for="rewardState">Estat:</label>
                 <select id="rewardState" name="rewardState" th:field="*{rewardState}">
-                    <option th:each="rewardState : ${rewardState}" th:value="${rewardState}"
+                    <option th:each="rewardState : ${rewardState}" 
+                        th:value="${rewardState}"
                         th:text="${rewardState.display}"></option>
                 </select>
 
@@ -58,8 +59,10 @@
                 <label for="exchangePoint">Punt de Bescanvi:</label>
                 <select id="exchangePoint" name="exchangePoint" th:field="*{exchangePoint}">
                     <option value="">Selecciona un Punt...</option>
-                    <option th:each="exchangePoint : ${exchangePoints}" th:value="${exchangePoint.id}"
-                        th:text="${exchangePoint.name}"></option>
+                    <option th:each="exchangePoint : ${exchangePoints}" 
+                        th:value="${exchangePoint.id}"
+                        th:text="${exchangePoint.name}" 
+                        th:selected="${reward.exchangePoint != null and exchangePoint.id == reward.exchangePoint.id}"></option>
                 </select>
                 <div class="error" th:if="${#fields.hasErrors('exchangePoint')}" th:errors="*{exchangePoint}"></div>
 
