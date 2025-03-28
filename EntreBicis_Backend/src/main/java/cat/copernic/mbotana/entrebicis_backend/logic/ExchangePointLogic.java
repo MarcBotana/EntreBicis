@@ -30,7 +30,7 @@ public class ExchangePointLogic {
         exchangePointRepository.save(exchangePoint);
     }
 
-    public Boolean existRewardById(Long id) throws Exception {
+    public Boolean existExchangePointById(Long id) throws Exception {
         return exchangePointRepository.existsById(id); 
     }
 

@@ -1,5 +1,7 @@
 package cat.copernic.mbotana.entrebicis_backend.apiController.web;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -189,7 +191,7 @@ public class WebUserController {
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("user", newUser);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
-                return "redirect:/user/update";
+                return "redirect:/user/update?email=" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
 
             } else {
                 webUserLogic.updateUser(newUser);
