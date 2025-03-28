@@ -71,7 +71,7 @@
                     <tbody class="web-item" th:each="user : ${allUsers}">
                         <tr>
                             <td>
-                                <button th:onclick="|location.href='/user/list'|">Editar</button>
+                                <button th:onclick="|location.href='/user/update?email=' + '@{${user.email}}'|">Editar</button>
                                 <button th:onclick="|location.href='/user/list'|">Contactar</button>
                             </td>
                         </tr>
