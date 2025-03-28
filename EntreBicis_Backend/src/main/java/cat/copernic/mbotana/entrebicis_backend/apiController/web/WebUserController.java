@@ -114,7 +114,7 @@ public class WebUserController {
            
 
             if (search != null && !search.isBlank()) {
-                allUsers = allUsers.stream().filter(user -> user.getEmail().toLowerCase().contains(search.toLowerCase()) || user.getName().contains(search)).toList();
+                allUsers = allUsers.stream().filter(user -> user.getEmail().toLowerCase().contains(search.toLowerCase()) || user.getName().toLowerCase().contains(search.toLowerCase())).toList();
             }
 
 
