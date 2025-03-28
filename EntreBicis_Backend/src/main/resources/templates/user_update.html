@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/user_create.css">
+    <title>EntreBicis - Modificar Usuari</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="content">
+        <section class="user-create">
+            <h2 th:text="'Modificar Usuari - (' + ${user.email} + ')'"></h2>
+
+            <!-- Exception Message -->
+            <div th:if="${exceptionError != null and not #strings.isEmpty(exceptionError)}" class="error-message">
+                <p th:text="${exceptionError}"></p>
+            </div>
+
+            <form th:action="@{/user/update/new}" method="post" th:object="${user}">
+
+                <!-- Hidden Email -->
+                <input type="hidden" name="email" th:field="*{email}">
+
+                <!-- Hidden Password -->
+                <input type="hidden" name="password" th:field="*{password}">
+
+                <!-- Hidden TotalPoints -->
+                <input type="hidden" name="totalPoints" th:field="*{totalPoints}">
+
+                <!-- Name -->
+                <label for="name">Nom:</label>
+                <input type="text" id="name" name="name" th:field="*{name}">
+                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+
+                <!-- Surname -->
+                <label for="surname">Cognom:</label>
+                <input type="text" id="surname" name="surname" th:field="*{surname}">
+                <div class="error" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
+
+                <!-- Town -->
+                <label for="town">Localització:</label>
+                <input type="text" id="town" name="town" th:field="*{town}">
+                <div class="error" th:if="${#fields.hasErrors('town')}" th:errors="*{town}"></div>
+
+                <!-- Mobile -->
+                <label for="mobile">Mòbil:</label>
+                <input type="number" id="mobile" name="mobile" th:field="*{mobile}">
+                <div class="error" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></div>
+
+                <!-- State -->
+                <label for="userState">Estat:</label>
+                <select id="userState" name="userState" th:field="*{userState}">
+                    <option th:each="userState : ${userState}" th:value="${userState}" th:text="${userState.display}">
+                    </option>
+                </select>
+
+                <!-- Rol -->
+                <label for="role">Rol:</label>
+                <select id="role" name="role" th:field="*{role}">
+                    <option th:each="role : ${roleList}" th:value="${role}" th:text="${role.display}"></option>
+                </select>
+
+                <button type="submit">Modificar Usuari</button>
+            </form>
+        </section>
+    </div>
+
+</body>
+
+</html>

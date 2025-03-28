@@ -81,13 +81,13 @@ public class WebUserController {
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/user/create";
+            return "redirect:/user/update";
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user/create";
+            return "redirect:/user/update";
         }  catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user/create";
+            return "redirect:/user/update";
         }
 
         return "redirect:/user/list";
@@ -147,6 +147,66 @@ public class WebUserController {
         model.addAttribute("user", user);
 
         return "user_detail";
+    }
+
+    @GetMapping("/update")
+    public String updateUserPage(@RequestParam(required = true) String email ,Model model, @ModelAttribute("exceptionError") String exceptionError) {
+
+        model.addAttribute("roleList", Role.values());
+        model.addAttribute("userState", UserState.values());
+
+        User user = new User();
+
+        try {
+            user = webUserLogic.getUserByEmail(email);
+        } catch (DataAccessException e) {
+            model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
+        } catch (SQLException e) {
+            model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
+        }  catch (Exception e) {
+            model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
+        }
+
+        if (user != null) {
+            model.addAttribute("user", user);
+        } else {
+            return "redirect:/user/list";
+        }
+
+        if (exceptionError != null && !exceptionError.isEmpty()) {
+            model.addAttribute("exceptionError", exceptionError);
+        }
+
+        return "user_update";
+    }
+
+    @PostMapping("/update/new")
+    public String updateUser(@Valid @ModelAttribute("user") User newUser, BindingResult result,
+            RedirectAttributes redirectAttributes) {
+
+        try {    
+                    
+            if (result.hasErrors()) {
+                redirectAttributes.addFlashAttribute("user", newUser);
+                redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
+                return "redirect:/user/update";
+
+            } else {
+                webUserLogic.updateUser(newUser);
+            }        
+
+        } catch (DataAccessException e) {
+            redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
+            return "redirect:/user/create";
+        } catch (SQLException e) {
+            redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
+            return "redirect:/user/create";
+        }  catch (Exception e) {
+            redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
+            return "redirect:/user/create";
+        }
+
+        return "redirect:/user/list";
     }
 
     private static String generatePassword() {
