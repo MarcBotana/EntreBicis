@@ -40,6 +40,7 @@ public class WebRewardController {
     public String createRewardPage(Model model, @ModelAttribute("exceptionError") String exceptionError) {
        
         model.addAttribute("rewardState", RewardState.values());
+
         try {
             model.addAttribute("exchangePoints", webExchangePointLogic.getAllExchangePoints());
         } catch (DataAccessException e) {
@@ -160,6 +161,65 @@ public class WebRewardController {
         model.addAttribute("reward", reward);
 
         return "reward_detail";
+    }
+
+    @GetMapping("/update")
+    public String updateRewardPage(@RequestParam(required = true) Long id ,Model model, @ModelAttribute("exceptionError") String exceptionError) {
+
+        model.addAttribute("rewardState", RewardState.values());
+
+        Reward reward = new Reward();
+
+        try {
+            reward = webRewardLogic.getRewardById(id);
+        } catch (DataAccessException e) {
+            model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
+        } catch (SQLException e) {
+            model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
+        }  catch (Exception e) {
+            model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
+        }
+
+        if (reward != null) {
+            model.addAttribute("reward", reward);
+        } else {
+            return "redirect:/reward/list";
+        }
+
+        if (exceptionError != null && !exceptionError.isEmpty()) {
+            model.addAttribute("exceptionError", exceptionError);
+        }
+
+        return "reward_update";
+    }
+
+    @PostMapping("/update/new")
+    public String updateUser(@Valid @ModelAttribute("reward") Reward newReward, BindingResult result,
+            RedirectAttributes redirectAttributes) {
+
+        try {    
+                    
+            if (result.hasErrors()) {
+                redirectAttributes.addFlashAttribute("reward", newReward);
+                redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.reward", result);
+                return "redirect:/reward/update";
+
+            } else {
+                webRewardLogic.updateReward(newReward);
+            }        
+
+        } catch (DataAccessException e) {
+            redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
+            return "redirect:/reward/update";
+        } catch (SQLException e) {
+            redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
+            return "redirect:/reward/update";
+        }  catch (Exception e) {
+            redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
+            return "redirect:/reward/update";
+        }
+
+        return "redirect:/reward/list";
     }
 
 }

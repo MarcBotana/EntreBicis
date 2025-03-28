@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/reward_create.css">
+    <title>EntreBicis - Modificar Recompensa</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="content">
+        <section class="reward-create">
+            <h2 th:text="'Modificar Recompensa - (' + ${reward.name} + ')'"></h2>
+
+            <!-- Exception Message -->
+            <div th:if="${exceptionError != null and not #strings.isEmpty(exceptionError)}" class="error-message">
+                <p th:text="${exceptionError}"></p>
+            </div>
+
+            <form th:action="@{/reward/update/new}" method="post" th:object="${reward}">
+
+                <!-- Hidden Id -->
+                <input type="hidden" name="id" th:field="*{id}">
+
+                <!-- Name -->
+                <label for="name">Nom:</label>
+                <input type="text" id="name" name="name" th:field="*{name}">
+                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+
+                <!-- Description -->
+                <label for="description">Descripció:</label>
+                <input type="text" id="description" name="description" th:field="*{description}">
+                <div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+
+                <!-- Observation -->
+                <label for="observation">Observacions:</label>
+                <input type="text" id="observation" name="observation" th:field="*{observation}">
+                <div class="error" th:if="${#fields.hasErrors('observation')}" th:errors="*{observation}"></div>
+
+                <!-- Value -->
+                <label for="valuePoints">Punts Valor:</label>
+                <input type="number" id="valuePoints" name="valuePoints" th:field="*{valuePoints}">
+                <div class="error" th:if="${#fields.hasErrors('valuePoints')}" th:errors="*{valuePoints}"></div>
+
+                <!-- State -->
+                <label for="rewardState">Estat:</label>
+                <select id="rewardState" name="rewardState" th:field="*{rewardState}">
+                    <option th:each="rewardState : ${rewardState}" th:value="${rewardState}"
+                        th:text="${rewardState.display}"></option>
+                </select>
+
+                <!-- Exchange Point -->
+                <label for="exchangePoint">Punt de Bescanvi:</label>
+                <select id="exchangePoint" name="exchangePoint" th:field="*{exchangePoint}">
+                    <option value="">Selecciona un Punt...</option>
+                    <option th:each="exchangePoint : ${exchangePoints}" th:value="${exchangePoint.id}"
+                        th:text="${exchangePoint.name}"></option>
+                </select>
+                <div class="error" th:if="${#fields.hasErrors('exchangePoint')}" th:errors="*{exchangePoint}"></div>
+
+                <div class="create-exchange-point">
+                    <a href="/exchangePoint/create" class="create-link">Crear un Punt de Bescanvi</a>
+                </div>
+
+
+                <button type="submit">Modificar Recompensa</button>
+            </form>
+        </section>
+    </div>
+
+</body>
+
+</html>
