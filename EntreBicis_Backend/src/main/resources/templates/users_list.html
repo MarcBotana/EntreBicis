@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,13 @@
     <link rel="stylesheet" href="/css/web_items_list.css">
     <title>EntreBicis - Usuaris</title>
 </head>
+
 <body>
     <!-- NavBar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <!-- Content -->
-     <div class="content">
+    <div class="content">
         <aside class="sidebar">
             <h3 class="sidebar-title">Ordenar</h3>
             <button th:onclick="|location.href='/user/list?sort=email'|">Email</button>
@@ -33,61 +35,52 @@
                 <button type="submit">🔍</button>
             </form>
 
-                <div class="web-list-content">
-                    <table class="web-list-webBar" >
-                        <thead>
-                            <tr>
-                                <th class="web-info-img">Imatge</th>
-                                <th class="web-info">Email</th>
-                                <th class="web-info">Nom</th>
-                                <th class="web-info">Cognom</th>
-                                <th class="web-info">Localització</th>
-                                <th class="web-info">Rol</th>
-                                <th class="web-info">Punts</th>
-                            </tr>
-                        </thead>
-                        <tbody class="web-item" th:each="user : ${allUsers}">
-                            <tr >
-                                <td>
-                                    <img th:src="@{/images/EntreBicis_Logo.png}" alt="User Image" class="web-avatar">
-                                </td>
-                                <td class="web-info" th:text="${user.email}"></td>
-                                <td class="web-info" th:text="${user.name}"></td>
-                                <td class="web-info" th:text="${user.surname}"></td>
-                                <td class="web-info" th:text="${user.town}"></td>
-                                <td class="web-info" th:text="${user.role.display}"></td>
-                                <td class="web-info" th:text="${user.totalPoints}"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="web-list-actionBar" >
-                        <thead>
-                            <tr>
-                                <th class="web-info">Accions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="web-item" th:each="user : ${allUsers}">
-                            <tr>
-                                <td>
-                                    <button th:onclick="|location.href='/user/list'|">Editar</button>
-                                    <button th:onclick="|location.href='/user/list'|">Contactar</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div> 
-                
-                    
-                
-                
-
-                
-            
-            
-
-            
+            <div class="web-list-content">
+                <table class="web-list-webBar">
+                    <thead>
+                        <tr>
+                            <th class="web-info-img">Imatge</th>
+                            <th class="web-info">Email</th>
+                            <th class="web-info">Nom</th>
+                            <th class="web-info">Cognom</th>
+                            <th class="web-info">Localització</th>
+                            <th class="web-info">Rol</th>
+                            <th class="web-info">Punts</th>
+                        </tr>
+                    </thead>
+                    <tbody class="web-item" th:each="user : ${allUsers}">
+                        <tr th:onclick="|location.href='/user/detail?email=' + '@{${user.email}}'|">
+                            <td>
+                                <img th:src="@{/images/EntreBicis_Logo.png}" alt="User Image" class="web-avatar">
+                            </td>
+                            <td class="web-info" th:text="${user.email}"></td>
+                            <td class="web-info" th:text="${user.name}"></td>
+                            <td class="web-info" th:text="${user.surname}"></td>
+                            <td class="web-info" th:text="${user.town}"></td>
+                            <td class="web-info" th:text="${user.role.display}"></td>
+                            <td class="web-info" th:text="${user.totalPoints}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="web-list-actionBar">
+                    <thead>
+                        <tr>
+                            <th class="web-info">Accions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="web-item" th:each="user : ${allUsers}">
+                        <tr>
+                            <td>
+                                <button th:onclick="|location.href='/user/list'|">Editar</button>
+                                <button th:onclick="|location.href='/user/list'|">Contactar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
-     </div>
-    
+    </div>
+
 </body>
+
 </html>

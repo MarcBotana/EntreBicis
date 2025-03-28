@@ -22,7 +22,6 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -144,7 +143,7 @@ public class WebRewardController {
     }
 
     @GetMapping("/detail")
-    public String rewardDetailPage(@RequestBody Long id, Model model) {
+    public String rewardDetailPage(@RequestParam Long id, Model model) {
 
         Reward reward = new Reward();
 

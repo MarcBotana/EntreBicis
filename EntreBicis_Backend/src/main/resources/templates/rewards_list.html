@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,13 @@
     <link rel="stylesheet" href="/css/web_items_list.css">
     <title>EntreBicis - Usuaris</title>
 </head>
+
 <body>
     <!-- NavBar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <!-- Content -->
-     <div class="content">
+    <div class="content">
         <aside class="sidebar">
             <h3 class="sidebar-title">Ordenar</h3>
             <button th:onclick="|location.href='/reward/list?sort=name'|">Nom</button>
@@ -36,57 +38,58 @@
                 <button type="submit">🔍</button>
             </form>
 
-                <div class="web-list-content">
-                    <table class="web-list-webBar" >
-                        <thead>
-                            <tr>
-                                <th class="web-info-img">Imatge</th>
-                                <th class="web-info">Nom</th>
-                                <th class="web-info">Estat</th>
-                                <th class="web-info">Punts Valor</th>
-                                <th class="web-info">Bescanvi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="web-item" th:each="reward : ${allRewards}">
-                            <tr >
-                                <td>
-                                    <img th:src="@{/images/EntreBicis_Logo.png}" alt="web Image" class="web-avatar">
-                                </td>
-                                <td class="web-info" th:text="${reward.name}"></td>
-                                <td class="web-info" th:text="${reward.rewardState.display}"></td>
-                                <td class="web-info" th:text="${reward.valuePoints}"></td>
-                                <td class="web-info" th:text="${reward.exchangePoint.name}"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="web-list-actionBar" >
-                        <thead>
-                            <tr>
-                                <th>Accions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="web-item" th:each="reward : ${allRewards}">
-                            <tr>
-                                <td>
-                                    <button th:onclick="|location.href='/reward/list'|">Editar</button>
-                                    <button th:onclick="|location.href='/reward/list'|">Assignar</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div> 
-                
-                    
-                
-                
+            <div class="web-list-content">
+                <table class="web-list-webBar">
+                    <thead>
+                        <tr>
+                            <th class="web-info-img">Imatge</th>
+                            <th class="web-info">Nom</th>
+                            <th class="web-info">Estat</th>
+                            <th class="web-info">Punts Valor</th>
+                            <th class="web-info">Bescanvi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="web-item" th:each="reward : ${allRewards}">
+                        <tr th:onclick="|location.href='/reward/detail?id=' + '@{${reward.id}}'|">
+                            <td>
+                                <img th:src="@{/images/EntreBicis_Logo.png}" alt="web Image" class="web-avatar">
+                            </td>
+                            <td class="web-info" th:text="${reward.name}"></td>
+                            <td class="web-info" th:text="${reward.rewardState.display}"></td>
+                            <td class="web-info" th:text="${reward.valuePoints}"></td>
+                            <td class="web-info" th:text="${reward.exchangePoint.name}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="web-list-actionBar">
+                    <thead>
+                        <tr>
+                            <th>Accions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="web-item" th:each="reward : ${allRewards}">
+                        <tr>
+                            <td>
+                                <button th:onclick="|location.href='/reward/list'|">Editar</button>
+                                <button th:onclick="|location.href='/reward/list'|">Assignar</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                
-            
-            
 
-            
+
+
+
+
+
+
+
+
         </section>
-     </div>
-    
+    </div>
+
 </body>
+
 </html>

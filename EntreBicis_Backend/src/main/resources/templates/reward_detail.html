@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/web_items_detail.css">
+    <title>EntreBicis - Usuari</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content -->
+    <div class="content">
+        <section class="web-detail">
+            <div class="web-detail-header">
+                <h2 th:text="'Recompensa - ' + ${reward.name} + ' ('+ ${reward.exchangePoint.name} + ')'"></h2>
+            </div>
+            <div class="web-detail-content">
+
+                <div class="detail-image">
+                    <img th:src="@{/images/EntreBicis_Logo.png}" alt="User Image" class="web-avatar">
+                    <div class="detail-state" th:text="${reward.rewardState.display}"></div>
+                </div>
+
+                <div class="detail-data">
+                    <div class="data-title">
+                        <div>Nom: </div>
+                        <div>Descripció: </div>
+                        <div>Observacions: </div>
+                        <div>Punt Bescanvi: </div>
+                    </div>
+                    <div class="data-text">
+                        <div th:text="${reward.name}"></div>
+                        <div th:text="${reward.description}"></div>
+                        <div th:text="${reward.observation}"></div>
+                        <div th:text="${reward.exchangePoint.name} + ' - ' + ${reward.exchangePoint.address}"></div>
+                    </div>
+                </div>
+
+                <div class="detail-options">
+                    <div class="data-value" th:text="${reward.valuePoints}"></div>
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/reward/list'|">Punt Bescanvi</button>
+                    </div>
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/reward/list'|">Reserva</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+    </div>
+
+</body>
+
+</html>

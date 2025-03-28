@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="/css/user_create.css">
     <title>EntreBicis - Crear Usuari</title>
 </head>
+
 <body>
     <!-- NavBar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -43,20 +45,21 @@
 
                 <!-- Town -->
                 <label for="town">Localització:</label>
-                <input type="text" id="town" name="town" th:field="*{town}" >
+                <input type="text" id="town" name="town" th:field="*{town}">
                 <div class="error" th:if="${#fields.hasErrors('town')}" th:errors="*{town}"></div>
 
                 <!-- Mobile -->
                 <label for="mobile">Mòbil:</label>
-                <input type="number" id="mobile" name="mobile" th:field="*{mobile}" >
+                <input type="number" id="mobile" name="mobile" th:field="*{mobile}">
                 <div class="error" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></div>
 
                 <!-- State -->
                 <label for="userState">Estat:</label>
                 <select id="userState" name="userState" th:field="*{userState}">
-                    <option th:each="userState : ${userState}" th:value="${userState}" th:text="${userState.display}"></option>
+                    <option th:each="userState : ${userState}" th:value="${userState}" th:text="${userState.display}">
+                    </option>
                 </select>
-                
+
                 <!-- Rol -->
                 <label for="role">Rol:</label>
                 <select id="role" name="role" th:field="*{role}">
@@ -67,6 +70,7 @@
             </form>
         </section>
     </div>
-    
+
 </body>
+
 </html>
