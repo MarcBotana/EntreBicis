@@ -68,9 +68,7 @@ public class SendEmailLogic {
                 "<p style='color: #333; font-size: 16px;'>Gràcies per registrarte en el programa EntreBicis!</p>" +
                 "<p style='color: #333; font-size: 16px;'>Per raons de seguretat, hauràs de canviar la teva contrasenya en el primer inici de sessió.</p>"
                 +
-                "<p style='color: #555; margin-top: 15px; font-size: 14px;'>Si tens qualsevol dubte o problema, no dubtis en contactar-nos.</p>"
-                +
-                "<p style='color: #555; margin-top: 15px; font-size: 14px;'>Gràcies per confiar en nosaltres!</p>" +
+                "<p style='color: #555; margin-top: 15px; font-size: 14px;'>Gràcies per registrar-te en el programa EntreBicis!</p>" +
                 "</div>" +
                 "</body></html>";
 
