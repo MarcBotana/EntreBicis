@@ -70,6 +70,12 @@ public class User{
     @Lob
     private byte[] image;
 
+    @Column(nullable = false)
+    private Boolean isRouteStarted;
+
+    @Column(nullable = false)
+    private Boolean isPasswordChanged;
+
     @Column
     @Enumerated(EnumType.STRING)
     private UserState userState;

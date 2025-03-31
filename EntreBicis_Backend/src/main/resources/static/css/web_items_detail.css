@@ -86,7 +86,7 @@ body {
 
 .detail-data {
     display: flex;
-    gap: 10px;
+    gap: 20px;
     flex: 2;                       
     text-align: left;           
 }

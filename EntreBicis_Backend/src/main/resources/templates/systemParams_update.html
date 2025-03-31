@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/user_create.css">
+    <title>EntreBicis - Modificar Paràmetres</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="content">
+        <section class="user-create">
+            <h2 th:text="'Modificar - (' + ${systemParams.paramsTitle} + ')'"></h2>
+
+            <!-- Exception Message -->
+            <div th:if="${exceptionError != null and not #strings.isEmpty(exceptionError)}" class="error-message">
+                <p th:text="${exceptionError}"></p>
+            </div>
+
+            <form th:action="@{/system/update/new}" method="post" th:object="${systemParams}">
+
+                <!-- Hidden Id -->
+                <input type="hidden" name="id" th:field="*{id}">
+
+                <!-- Hidden Params Title -->
+                <input type="hidden" name="paramsTitle" th:field="*{paramsTitle}">
+
+                <!-- Hidden Params Desc -->
+                <input type="hidden" name="paramsDesc" th:field="*{paramsDesc}">
+
+                <!-- Max Velocity -->
+                <label for="name">Velocitat Màxima: </label>
+                <input type="number" id="maxVelocity" name="maxVelocity" th:field="*{maxVelocity}">
+                <div class="error" th:if="${#fields.hasErrors('maxVelocity')}" th:errors="*{maxVelocity}"></div>
+
+                <!-- Max Velocity -->
+                <label for="name">Conversió (Km -> Punts): </label>
+                <input type="number" id="pointsConversion" name="pointsConversion" th:field="*{pointsConversion}">
+                <div class="error" th:if="${#fields.hasErrors('pointsConversion')}" th:errors="*{pointsConversion}"></div>
+
+                <!-- Stop Time -->
+                <label for="name">Temps Màxim Aturada: </label>
+                <select id="stopMaxTime" name="stopMaxTime" th:field="*{stopMaxTime}">
+                    <option th:each="stopTimeList : ${stopTimeList}" 
+                        th:value="${stopTimeList}"
+                        th:text="${stopTimeList} + ' min'"></option>
+                </select>
+
+                <!-- Collect Time -->
+                <label for="name">Temps Màxim Recollida (Recompensa): </label>
+                <select id="collectionMaxTime" name="collectionMaxTime" th:field="*{collectionMaxTime}">
+                    <option th:each="collTimeList : ${collTimeList}" 
+                        th:value="${collTimeList}"
+                        th:text="${collTimeList} + ' hores'"></option>
+                </select>
+
+                <button type="submit">Modificar Paràmetres</button>
+            </form>
+        </section>
+    </div>
+
+</body>
+
+</html>

@@ -1,5 +1,7 @@
 package cat.copernic.mbotana.entrebicis_backend.apiController.web;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -203,7 +205,7 @@ public class WebRewardController {
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("reward", newReward);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.reward", result);
-                return "redirect:/reward/update";
+                return "redirect:/reward/update?id=" + URLEncoder.encode(newReward.getId().toString(), StandardCharsets.UTF_8);
 
             } else {
                 webRewardLogic.updateReward(newReward);

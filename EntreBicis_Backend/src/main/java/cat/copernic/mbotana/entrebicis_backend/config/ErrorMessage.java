@@ -22,6 +22,12 @@ public class ErrorMessage {
     public static final String REW_DESC_LENGTH = "Màxim " + DataFormat.MAX_REW_DESC_LENGTH + " caràcters!";
     public static final String REW_OBS_LENGTH = "Màxim " + DataFormat.MAX_REW_OBS_LENGTH + " caràcters!";
 
+    //Error Messages Validation - System Params
+    public static final String SYS_VEL_LENGTH = "El valor no es vàlid! (" + DataFormat.MIN_SYS_VEL + " - " + DataFormat.MAX_SYS_VEL + ")";
+    public static final String SYS_POINT_LENGTH = "El valor no es vàlid! (" + DataFormat.MIN_SYS_POINT + " - " + DataFormat.MAX_SYS_POINT + ")";
+
+
+
 
 
 

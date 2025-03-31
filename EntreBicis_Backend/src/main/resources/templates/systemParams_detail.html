@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/web_items_detail.css">
+    <title>EntreBicis - Paràmetres del Sistema</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content -->
+    <div class="content">
+        <section class="web-detail">
+            <div class="web-detail-header">
+                <h2 th:text="${systemParams.paramsTitle}"></h2>
+            </div>
+            <div class="web-detail-content">
+
+                <div class="detail-image">
+                    <img th:src="@{/images/Gear_Web.png}" alt="Gear Image" class="web-avatar">
+                </div>
+
+                <div class="detail-data">
+                    <div class="data-title">
+                        <div>Velocitat Màxima: </div>
+                        <div>Conversió (Km -> Punts): </div>
+                        <div>Temps Màxim Aturada: </div>
+                        <div>Temps Màxim Recollida (Recompensa): </div>
+                    </div>
+                    <div class="data-text">
+                        <div th:text="${systemParams.maxVelocity} + ' Km/h'"></div>
+                        <div th:text="'1Km = ' + ${systemParams.pointsConversion} + ' pts'"></div>
+                        <div th:text="${systemParams.stopMaxTime} + ' minuts'"></div>
+                        <div th:text="${systemParams.collectionMaxTime} + ' hores'"></div>
+                    </div>
+                </div>
+
+                <div class="detail-options">
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/system/update?id=${systemParams.id}'|">Modificar</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+    </div>
+
+</body>
+
+</html>

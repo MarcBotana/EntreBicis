@@ -33,6 +33,12 @@
                 <!-- Hidden TotalPoints -->
                 <input type="hidden" name="totalPoints" th:field="*{totalPoints}">
 
+                <!-- Hidden IsRouteStarted -->
+                <input type="hidden" name="isRouteStarted" th:field="*{isRouteStarted}">
+
+                <!-- Hidden IsPasswordChanged -->
+                <input type="hidden" name="isPasswordChanged" th:field="*{isPasswordChanged}">
+
                 <!-- Name -->
                 <label for="name">Nom:</label>
                 <input type="text" id="name" name="name" th:field="*{name}">
@@ -54,8 +60,7 @@
                 <div class="error" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></div>
 
                 <!-- State -->
-                <label for="userState">Estat:</label>
-                <select id="userState" name="userState" th:field="*{userState}">
+                <select id="userState" name="userState" th:field="*{userState}" hidden>
                     <option th:each="userState : ${userState}" 
                         th:value="${userState}" 
                         th:text="${userState.display}"></option>
