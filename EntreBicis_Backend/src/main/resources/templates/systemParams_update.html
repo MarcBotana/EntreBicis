@@ -22,54 +22,44 @@
                 <p th:text="${exceptionError}"></p>
             </div>
 
-            <form th:action="@{/system/update/new}" method="post" th:object="${user}">
+            <form th:action="@{/system/update/new}" method="post" th:object="${systemParams}">
 
-                <!-- Hidden Email -->
-                <input type="hidden" name="email" th:field="*{email}">
+                <!-- Hidden Id -->
+                <input type="hidden" name="id" th:field="*{id}">
 
-                <!-- Hidden Password -->
-                <input type="hidden" name="password" th:field="*{password}">
+                <!-- Hidden Params Title -->
+                <input type="hidden" name="paramsTitle" th:field="*{paramsTitle}">
 
-                <!-- Hidden TotalPoints -->
-                <input type="hidden" name="totalPoints" th:field="*{totalPoints}">
+                <!-- Hidden Params Desc -->
+                <input type="hidden" name="paramsDesc" th:field="*{paramsDesc}">
 
-                <!-- Name -->
-                <label for="name">Nom:</label>
-                <input type="text" id="name" name="name" th:field="*{name}">
-                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                <!-- Max Velocity -->
+                <label for="name">Velocitat Màxima: </label>
+                <input type="number" id="maxVelocity" name="maxVelocity" th:field="*{maxVelocity}">
+                <div class="error" th:if="${#fields.hasErrors('maxVelocity')}" th:errors="*{maxVelocity}"></div>
 
-                <!-- Surname -->
-                <label for="surname">Cognom:</label>
-                <input type="text" id="surname" name="surname" th:field="*{surname}">
-                <div class="error" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
+                <!-- Max Velocity -->
+                <label for="name">Conversió (Km -> Punts): </label>
+                <input type="number" id="pointsConversion" name="pointsConversion" th:field="*{pointsConversion}">
+                <div class="error" th:if="${#fields.hasErrors('pointsConversion')}" th:errors="*{pointsConversion}"></div>
 
-                <!-- Town -->
-                <label for="town">Localització:</label>
-                <input type="text" id="town" name="town" th:field="*{town}">
-                <div class="error" th:if="${#fields.hasErrors('town')}" th:errors="*{town}"></div>
-
-                <!-- Mobile -->
-                <label for="mobile">Mòbil:</label>
-                <input type="number" id="mobile" name="mobile" th:field="*{mobile}">
-                <div class="error" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></div>
-
-                <!-- State -->
-                <label for="userState">Estat:</label>
-                <select id="userState" name="userState" th:field="*{userState}">
-                    <option th:each="userState : ${userState}" 
-                        th:value="${userState}" 
-                        th:text="${userState.display}"></option>
+                <!-- Stop Time -->
+                <label for="name">Temps Màxim Aturada: </label>
+                <select id="stopMaxTime" name="stopMaxTime" th:field="*{stopMaxTime}">
+                    <option th:each="stopTimeList : ${stopTimeList}" 
+                        th:value="${stopTimeList}"
+                        th:text="${stopTimeList} + ' min'"></option>
                 </select>
 
-                <!-- Rol -->
-                <label for="role">Rol:</label>
-                <select id="role" name="role" th:field="*{role}">
-                    <option th:each="role : ${roleList}" 
-                        th:value="${role}" 
-                        th:text="${role.display}"></option>
+                <!-- Collect Time -->
+                <label for="name">Temps Màxim Recollida (Recompensa): </label>
+                <select id="collectionMaxTime" name="collectionMaxTime" th:field="*{collectionMaxTime}">
+                    <option th:each="collTimeList : ${collTimeList}" 
+                        th:value="${collTimeList}"
+                        th:text="${collTimeList} + ' hores'"></option>
                 </select>
 
-                <button type="submit">Modificar Usuari</button>
+                <button type="submit">Modificar Paràmetres</button>
             </form>
         </section>
     </div>

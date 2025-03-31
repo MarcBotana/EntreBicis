@@ -78,18 +78,21 @@ public class WebUserController {
             } else {
                 newUser.setTotalPoints(0.0);
                 newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+                newUser.setIsRouteStarted(false);
+                newUser.setIsPasswordChanged(false);
+                newUser.setUserState(UserState.ACTIVE);
                 webUserLogic.saveUser(newUser);
             }        
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/user/update";
+            return "redirect:/user/create";
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update";
+            return "redirect:/user/create";
         }  catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update";
+            return "redirect:/user/create";
         }
 
         return "redirect:/user/list";

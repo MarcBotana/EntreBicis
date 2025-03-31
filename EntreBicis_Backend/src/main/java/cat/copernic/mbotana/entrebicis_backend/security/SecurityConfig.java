@@ -96,7 +96,7 @@ public class SecurityConfig {
     private void generateAdminUser() {
         try {
             if (!userLogic.existUserByEmail("marc.botana@gmail.com")) {
-                User newADmin = new User("marc.botana@gmail.com", Role.ADMIN,"Marc", "Botana", passwordEncoder().encode("1234"), "Terrassa", 620016600, null, UserState.ACTIVE, 0.0, null, null);
+                User newADmin = new User("marc.botana@gmail.com", Role.ADMIN,"Marc", "Botana", passwordEncoder().encode("1234"), "Terrassa", 620016600, null, false, true ,UserState.ACTIVE, 0.0, null, null);
                 userLogic.saveUser(newADmin);
                 System.out.println("Usuari Admin generat!");
             } else {

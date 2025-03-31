@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -76,6 +77,15 @@ public class WebSystemParamsController {
     public String updateSystemParamsPage(@RequestParam(required = true) Long id ,Model model, @ModelAttribute("exceptionError") String exceptionError) {
 
         SystemParams systemParams = new SystemParams();
+
+        //Stop Time from 1 Min to 15 Min
+        List<Integer> stopTimeList = IntStream.rangeClosed(1, 15).boxed().toList();
+
+        //Collect Time from 12h to 72h
+        List<Integer> collTimeList = IntStream.iterate(12, n -> n +12).limit(6).boxed().toList();
+
+        model.addAttribute("stopTimeList", stopTimeList);
+        model.addAttribute("collTimeList", collTimeList);
 
         try {
             systemParams = webSystemParamsLogic.getSystemParamsById(id);
