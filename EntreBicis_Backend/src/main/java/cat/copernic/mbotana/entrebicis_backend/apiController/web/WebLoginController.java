@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
-
 @Controller
 public class WebLoginController {
 
@@ -48,8 +46,8 @@ public class WebLoginController {
 
         return "redirect:/user/list";
     }
-
-     @GetMapping("/logout")
+    
+    @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -59,8 +57,5 @@ public class WebLoginController {
 
         return "redirect:/login";
     }
-
-    
-    
 
 }
