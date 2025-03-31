@@ -2,6 +2,8 @@ package cat.copernic.mbotana.entrebicis_backend.config;
 
 public class DataFormat {
 
+    
+
     //Data Format - User
     public static final int MAX_USR_NAME_LENGTH = 10;
     public static final int MAX_USR_SURNAME_LENGTH = 25;
@@ -22,6 +24,14 @@ public class DataFormat {
     public static final int MAX_REW_NAME_LENGTH = 50;
     public static final int MAX_REW_DESC_LENGTH = 300;
     public static final int MAX_REW_OBS_LENGTH = 150;
+
+    //Data Format - System Params
+
+    public static final int MIN_SYS_VEL = 1;
+    public static final int MAX_SYS_VEL = 120;
+    public static final int MIN_SYS_POINT = 1;
+    public static final int MAX_SYS_POINT = 99;
+
 
 
 
