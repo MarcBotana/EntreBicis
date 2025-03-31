@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -17,9 +19,12 @@ import org.springframework.validation.BindingResult;
 
 import cat.copernic.mbotana.entrebicis_backend.config.DataFormat;
 import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
+import cat.copernic.mbotana.entrebicis_backend.entity.Token;
 import cat.copernic.mbotana.entrebicis_backend.entity.User;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.Role;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.UserState;
+import cat.copernic.mbotana.entrebicis_backend.logic.SendEmailLogic;
+import cat.copernic.mbotana.entrebicis_backend.logic.TokenLogic;
 import cat.copernic.mbotana.entrebicis_backend.logic.UserLogic;
 import jakarta.validation.Valid;
 
@@ -39,6 +44,12 @@ public class WebUserController {
 
     @Autowired
     private UserLogic webUserLogic;
+
+    @Autowired
+    private TokenLogic tokenLogic;
+
+    @Autowired
+    private SendEmailLogic sendEmailLogic;
 
     @GetMapping("/create")
     public String createUserPage(Model model, @ModelAttribute("exceptionError") String exceptionError) {
@@ -214,6 +225,94 @@ public class WebUserController {
         return "redirect:/user/list";
     }
 
+    @GetMapping("/update/password")
+    public String userPasswordPage(@RequestParam(required = true) String email, Model model, @ModelAttribute("exceptionError") String exceptionError, @ModelAttribute("showPasswordForm") Boolean showPasswordForm) {
+
+        User user = new User();
+
+        try {
+            user = webUserLogic.getUserByEmail(email);
+        } catch (DataAccessException e) {
+            model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
+        } catch (SQLException e) {
+            model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
+        }  catch (Exception e) {
+            model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
+        }
+
+        model.addAttribute("user", user);
+        model.addAttribute("showPasswordForm", false);
+
+        if (exceptionError != null && !exceptionError.isEmpty()) {
+            model.addAttribute("exceptionError", exceptionError);
+        }
+
+        return "user_password";
+    }
+    
+    @PostMapping("/update/password/new")
+    public String updateUserPasswordPage(@RequestParam(required = true) String email ,Model model, RedirectAttributes redirectAttribute) {
+
+        User user = new User();
+
+        try {
+            user = webUserLogic.getUserByEmail(email);
+        } catch (DataAccessException e) {
+            model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
+        } catch (SQLException e) {
+            model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
+        }  catch (Exception e) {
+            model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
+        }
+
+        if (user != null) {
+            model.addAttribute("user", user);
+            model.addAttribute("showPasswordForm", true);
+        } else {
+            return "redirect:/user/detail?email=" + email;
+        }
+
+        return "user_password";
+    }
+
+    @PostMapping("/send/email")
+    public String sendEmailPassword(@RequestParam(required = true) String email ,Model model) {
+
+        User user = new User();
+
+        try {
+            user = webUserLogic.getUserByEmail(email);
+            deleteToken(user);
+
+            String token = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+
+            Token resetToken = new Token(token, user);
+
+            tokenLogic.saveToken(resetToken);
+
+            sendEmailLogic.sendEmailPassword(email, token);
+
+        } catch (DataAccessException e) {
+            model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
+        } catch (SQLException e) {
+            model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
+        }  catch (Exception e) {
+            model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
+        }
+
+        if (user != null) {
+            
+            model.addAttribute("user", user);
+            model.addAttribute("showPasswordForm", true);
+        } else {
+            return "redirect:/user/detail?email=" + email;
+        }
+
+        return "redirect:/user/update/password";
+    }
+
+
+
     private static String generatePassword() {
         SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder();
@@ -230,5 +329,11 @@ public class WebUserController {
 
         return password.toString();
     }
+
+    public void deleteToken(User user) {
+        Optional<Token> token = tokenLogic.getByUser(user);
+        token.ifPresent(tokenLogic::deleteToken);
+    }
+
     
 }
