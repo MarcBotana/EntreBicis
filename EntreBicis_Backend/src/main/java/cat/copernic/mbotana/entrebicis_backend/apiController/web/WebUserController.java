@@ -294,12 +294,15 @@ public class WebUserController {
 
             if (result.hasErrors()) {
                 if (result.hasFieldErrors("token")) {
-                    redirectAttributes.addFlashAttribute("errorToken",
-                            result.getFieldError("token").getDefaultMessage());
+                    Optional.ofNullable(result.getFieldError("token"))
+                            .ifPresent(error -> redirectAttributes.addFlashAttribute("errorToken",
+                                    error.getDefaultMessage()));
+
                 }
                 if (result.hasFieldErrors("repPassword")) {
-                    redirectAttributes.addFlashAttribute("errorRepPassword",
-                            result.getFieldError("repPassword").getDefaultMessage());
+                    Optional.ofNullable(result.getFieldError("repPassword"))
+                            .ifPresent(error -> redirectAttributes.addFlashAttribute("errorRepPassword",
+                                    error.getDefaultMessage()));
                 }
                 redirectAttributes.addFlashAttribute("user", newUser);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
