@@ -176,19 +176,20 @@ public class WebUserController {
         User user = new User();
 
         try {
-            user = webUserLogic.getUserByEmail(email);
+            if (!model.containsAttribute("user")) {
+                user = webUserLogic.getUserByEmail(email);
+                if (user != null) {
+                    model.addAttribute("user", user);
+                } else {
+                    return "redirect:/user/list";
+                }
+            }
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
             model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
         } catch (Exception e) {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-        }
-
-        if (user != null) {
-            model.addAttribute("user", user);
-        } else {
-            return "redirect:/user/list";
         }
 
         if (exceptionError != null && !exceptionError.isEmpty()) {
@@ -242,6 +243,14 @@ public class WebUserController {
         model.addAttribute("tokenLength", DataFormat.MAX_TOKEN_LENGTH);
 
         try {
+            if (!model.containsAttribute("user")) {
+                user = webUserLogic.getUserByEmail(email);
+                if (user != null) {
+                    model.addAttribute("user", user);
+                } else {
+                    return "redirect:/user/detail?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+                }
+            }
             user = webUserLogic.getUserByEmail(email);
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
@@ -251,8 +260,6 @@ public class WebUserController {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
-        model.addAttribute("user", user);
-
         if (exceptionError != null && !exceptionError.isEmpty()) {
             model.addAttribute("exceptionError", exceptionError);
         }
@@ -261,9 +268,8 @@ public class WebUserController {
     }
 
     @PostMapping("/update/password/new")
-    public String updateUserPasswordPage(@Valid @ModelAttribute("user") User newUser,
-            @RequestParam("token") String tokenCode, @RequestParam("repPassword") String repPassword,
-            BindingResult result,
+    public String updateUserPasswordPage(@Valid @ModelAttribute("user") User newUser, BindingResult result,
+            @RequestParam("tokenCode") String tokenCode, @RequestParam("repPassword") String repPassword,
             RedirectAttributes redirectAttributes) {
 
         try {
@@ -271,45 +277,50 @@ public class WebUserController {
             Boolean isValid = false;
 
             Optional<Token> tokenDB = tokenLogic.getByToken(tokenCode);
-
-            if (tokenDB.isPresent()) {
-                if (tokenDB.get().getUser().getEmail().equals(newUser.getEmail())) {
-                    if (!tokenDB.get().isExpired()) {
-                        isValid = true;
+            if (tokenCode != null && !tokenCode.isEmpty()) {
+                if (tokenDB.isPresent()) {
+                    if (tokenDB.get().getUser().getEmail().equals(newUser.getEmail())) {
+                        if (!tokenDB.get().isExpired()) {
+                            isValid = true;
+                        } else {
+                            redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.TOKEN_EXPIRED);
+                            return "redirect:/user/update/password?email="
+                                    + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
+                        }
                     } else {
-                        result.rejectValue("token", "errorToken", ErrorMessage.TOKEN_EXPIRED);
+                        redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.TOKEN_NOT_FOUND);
+                        return "redirect:/user/update/password?email="
+                                + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
                     }
                 } else {
-                    result.rejectValue("token", "errorToken", ErrorMessage.TOKEN_NOT_FOUND);
+                    redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.TOKEN_NOT_FOUND);
+                    return "redirect:/user/update/password?email="
+                            + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
                 }
             } else {
-                result.rejectValue("token", "errorToken", ErrorMessage.TOKEN_NOT_FOUND);
+                redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.NOT_BLANK);
+                    return "redirect:/user/update/password?email="
+                            + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
             }
-
-            if (repPassword.equals(newUser.getPassword())) {
-                isValid = true;
-            } else {
-                result.rejectValue("repPassword", "errorRepPassword", ErrorMessage.PASS_NOT_MATCH);
-            }
+            
 
             if (result.hasErrors()) {
-                if (result.hasFieldErrors("token")) {
-                    Optional.ofNullable(result.getFieldError("token"))
-                            .ifPresent(error -> redirectAttributes.addFlashAttribute("errorToken",
-                                    error.getDefaultMessage()));
-                }
-                if (result.hasFieldErrors("repPassword")) {
-                    Optional.ofNullable(result.getFieldError("repPassword"))
-                            .ifPresent(error -> redirectAttributes.addFlashAttribute("errorRepPassword",
-                                    error.getDefaultMessage()));
-                }
                 redirectAttributes.addFlashAttribute("user", newUser);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
-                redirectAttributes.addFlashAttribute("showPasswordForm", true);
+                redirectAttributes.addFlashAttribute("showPasswordForm", false);
                 return "redirect:/user/update/password?email="
                         + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
 
-            } else if (isValid) {
+            } else if (repPassword.equals(newUser.getPassword())) {
+                isValid = true;
+            } else {
+                redirectAttributes.addFlashAttribute("errorRepPassword", ErrorMessage.PASS_NOT_MATCH);
+                return "redirect:/user/update/password?email="
+                        + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
+            }
+
+            if (isValid) {
+                newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
                 newUser.setIsPasswordChanged(true);
                 webUserLogic.updateUser(newUser);
             }
