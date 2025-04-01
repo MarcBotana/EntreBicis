@@ -297,7 +297,6 @@ public class WebUserController {
                     Optional.ofNullable(result.getFieldError("token"))
                             .ifPresent(error -> redirectAttributes.addFlashAttribute("errorToken",
                                     error.getDefaultMessage()));
-
                 }
                 if (result.hasFieldErrors("repPassword")) {
                     Optional.ofNullable(result.getFieldError("repPassword"))
