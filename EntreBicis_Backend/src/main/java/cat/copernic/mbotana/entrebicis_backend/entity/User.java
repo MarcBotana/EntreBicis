@@ -55,6 +55,7 @@ public class User{
     private String surname;
 
     @Column(nullable = false)
+    @NotBlank(message = ErrorMessage.NOT_BLANK)
     private String password;
 
     @Column(nullable = false)

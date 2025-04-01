@@ -25,6 +25,9 @@ public class DataFormat {
     public static final int MAX_REW_DESC_LENGTH = 300;
     public static final int MAX_REW_OBS_LENGTH = 150;
 
+    //Data Format - Token
+    public static final int MAX_TOKEN_LENGTH = 8;
+
     //Data Format - System Params
 
     public static final int MIN_SYS_VEL = 1;

@@ -52,7 +52,7 @@
                         <button th:onclick="|location.href='/user/list'|">Recompenses</button>
                     </div>
                     <div class="options-button">
-                        <button th:onclick="|location.href='/user/list'|">Canvi Contrasenya</button>
+                        <button th:onclick="|location.href='/user/update/password?email=' + '@{${user.email}}'|">Canvi Contrasenya</button>
                     </div>
                 </div>
 

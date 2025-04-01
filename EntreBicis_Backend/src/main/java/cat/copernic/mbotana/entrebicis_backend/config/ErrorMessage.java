@@ -26,6 +26,14 @@ public class ErrorMessage {
     public static final String SYS_VEL_LENGTH = "El valor no es vàlid! (" + DataFormat.MIN_SYS_VEL + " - " + DataFormat.MAX_SYS_VEL + ")";
     public static final String SYS_POINT_LENGTH = "El valor no es vàlid! (" + DataFormat.MIN_SYS_POINT + " - " + DataFormat.MAX_SYS_POINT + ")";
 
+    //Error Messages Validation - Update Password
+    public static final String TOKEN_NOT_FOUND = "No s'ha trobat el Codi, torna a enviar el correu!";
+    public static final String TOKEN_EXPIRED = "El Codi s'ha expirat, torna a enviar el correu!";
+    public static final String PASS_NOT_MATCH = "Les contrasenyes han de coincidir!";
+    public static final String EMAIL_NOT_EXIST = "El correu introduït no existeix!";
+
+    
+
 
 
 
