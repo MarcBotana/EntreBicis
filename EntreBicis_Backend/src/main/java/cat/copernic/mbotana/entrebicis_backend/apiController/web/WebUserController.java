@@ -322,6 +322,7 @@ public class WebUserController {
             if (isValid) {
                 newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
                 newUser.setIsPasswordChanged(true);
+                deleteToken(newUser);
                 webUserLogic.updateUser(newUser);
             }
 
