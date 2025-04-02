@@ -19,7 +19,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class PositionGPS {
+public class GpsPosition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
