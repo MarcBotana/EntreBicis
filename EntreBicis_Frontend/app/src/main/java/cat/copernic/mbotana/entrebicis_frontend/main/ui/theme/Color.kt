@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_frontend.ui.theme
+package cat.copernic.mbotana.entrebicis_frontend.main.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
