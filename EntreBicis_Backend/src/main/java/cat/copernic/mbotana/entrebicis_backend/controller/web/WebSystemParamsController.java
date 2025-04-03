@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_backend.apiController.web;
+package cat.copernic.mbotana.entrebicis_backend.controller.web;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +21,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -110,7 +110,7 @@ public class WebSystemParamsController {
         return "systemParams_update";
     }
 
-    @PostMapping("/update/new")
+    @PutMapping("/update/new")
     public String updateSystemParams(@Valid @ModelAttribute("systemParams") SystemParams newSystemParams, BindingResult result,
             RedirectAttributes redirectAttributes) {
 

@@ -24,13 +24,12 @@
 
             <form th:action="@{/system/update/new}" method="post" th:object="${systemParams}">
 
-                <!-- Hidden Id -->
+                <!-- Use Method PUT -->
+                <input type="hidden" name="_method" value="put">
+
+                <!-- Hidden Attributes -->
                 <input type="hidden" name="id" th:field="*{id}">
-
-                <!-- Hidden Params Title -->
                 <input type="hidden" name="paramsTitle" th:field="*{paramsTitle}">
-
-                <!-- Hidden Params Desc -->
                 <input type="hidden" name="paramsDesc" th:field="*{paramsDesc}">
 
                 <!-- Max Velocity -->

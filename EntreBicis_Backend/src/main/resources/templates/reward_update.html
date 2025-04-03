@@ -24,7 +24,10 @@
 
             <form th:action="@{/reward/update/new}" method="post" th:object="${reward}">
 
-                <!-- Hidden Id -->
+                <!-- Use Method PUT -->
+                <input type="hidden" name="_method" value="put">
+
+                <!-- Hidden Attributes -->
                 <input type="hidden" name="id" th:field="*{id}">
 
                 <!-- Name -->

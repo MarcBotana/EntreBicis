@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_backend.apiController.web;
+package cat.copernic.mbotana.entrebicis_backend.controller.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

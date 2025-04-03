@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_backend.apiController.web;
+package cat.copernic.mbotana.entrebicis_backend.controller.web;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -145,7 +146,7 @@ public class WebUserController {
 
         model.addAttribute("allUsers", allUsers);
 
-        return "users_list";
+        return "user_list";
     }
 
     @GetMapping("/detail")
@@ -201,7 +202,7 @@ public class WebUserController {
         return "user_update";
     }
 
-    @PostMapping("/update/new")
+    @PutMapping("/update/new")
     public String updateUser(@Valid @ModelAttribute("user") User newUser, BindingResult result,
             RedirectAttributes redirectAttributes) {
 
@@ -269,7 +270,7 @@ public class WebUserController {
         return "user_password";
     }
 
-    @PostMapping("/update/password/new")
+    @PutMapping("/update/password/new")
     public String updateUserPasswordPage(@Valid @ModelAttribute("user") User newUser, BindingResult result,
             @RequestParam("tokenCode") String tokenCode, @RequestParam("repPassword") String repPassword,
             RedirectAttributes redirectAttributes) {
