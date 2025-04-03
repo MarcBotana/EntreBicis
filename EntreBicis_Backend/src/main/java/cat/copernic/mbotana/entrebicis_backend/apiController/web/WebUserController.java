@@ -92,6 +92,8 @@ public class WebUserController {
                 newUser.setIsPasswordChanged(false);
                 newUser.setUserState(UserState.ACTIVE);
                 webUserLogic.saveUser(newUser);
+
+                sendEmailLogic.sendEmailGreetings(newUser.getEmail(), newUser.getName(), newUser.getSurname());
             }
 
         } catch (DataAccessException e) {

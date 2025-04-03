@@ -24,6 +24,9 @@
 
             <form th:action="@{/user/create/new}" method="post" th:object="${user}">
 
+                <!-- Hidden Inputs -->
+                <input type="hidden" id="password" name="password" th:field="*{password}">
+
                 <!-- Email -->
                 <label for="email">Email:</label>
                 <input type="text" id="email" name="email" th:field="*{email}">
@@ -38,10 +41,6 @@
                 <label for="surname">Cognom:</label>
                 <input type="text" id="surname" name="surname" th:field="*{surname}">
                 <div class="error" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
-
-                <!-- Password -->
-                <label for="password">Contrasenya: (Temporal)</label>
-                <input type="text" id="password" name="password" th:field="*{password}">
 
                 <!-- Town -->
                 <label for="town">Localització:</label>
