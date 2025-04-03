@@ -50,7 +50,7 @@
                         </tr>
                     </thead>
                     <tbody class="web-item" th:each="reward : ${allRewards}">
-                        <tr th:onclick="|location.href='/reward/detail?id=' + '@{${reward.id}}'|">
+                        <tr th:onclick="|location.href='/reward/detail/${reward.id}'|">
                             <td>
                                 <img th:src="@{/images/EntreBicis_Logo.png}" alt="web Image" class="web-avatar">
                             </td>
@@ -70,7 +70,7 @@
                     <tbody class="web-item" th:each="reward : ${allRewards}">
                         <tr>
                             <td>
-                                <button th:onclick="|location.href='/reward/update?id=' + '@{${reward.id}}'|">Editar</button>
+                                <button th:onclick="|location.href='/reward/update/${reward.id}'|">Editar</button>
                                 <button th:onclick="|location.href='/reward/list'|">Assignar</button>
                             </td>
                         </tr>

@@ -51,11 +51,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/logout", "/css/**", "/images/**", "/scripts/**").permitAll()
                         .requestMatchers("/**").hasAuthority(Role.ADMIN.toString())
-                        .requestMatchers("/user/**").hasAuthority(Role.ADMIN.toString())
-                        .requestMatchers("/reward/**").hasAuthority(Role.ADMIN.toString())
-                        .requestMatchers("/exchangePoint/**").hasAuthority(Role.ADMIN.toString())
-                        .requestMatchers("/route/**").hasAuthority(Role.ADMIN.toString())
-                        .requestMatchers("/system/**").hasAuthority(Role.ADMIN.toString())
                         .anyRequest().authenticated()
                 )                
                 .formLogin(form -> form

@@ -30,6 +30,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -149,8 +150,8 @@ public class WebUserController {
         return "user_list";
     }
 
-    @GetMapping("/detail")
-    public String userDetailPage(@RequestParam(required = true) String email, Model model) {
+    @GetMapping("/detail/{email}")
+    public String userDetailPage(@PathVariable String email, Model model) {
 
         User user = new User();
 
@@ -169,8 +170,8 @@ public class WebUserController {
         return "user_detail";
     }
 
-    @GetMapping("/update")
-    public String updateUserPage(@RequestParam(required = true) String email, Model model,
+    @GetMapping("/update/{email}")
+    public String updateUserPage(@PathVariable String email, Model model,
             @ModelAttribute("exceptionError") String exceptionError) {
 
         model.addAttribute("roleList", Role.values());
