@@ -10,6 +10,10 @@ public class ErrorMessage {
     //Error Messages Validation
     public static final String NOT_BLANK = "El camp no pot estar buit!";
 
+    //Error Messages Validation - Login
+    public static final String AUTH_ERROR = "Credencials incorrectes!";
+    public static final String DENIED_ERROR = "Accés denegat!";
+    
     //Error Messages Validation - User
     public static final String USR_NAME_LENGTH = "Màxim " + DataFormat.MAX_USR_NAME_LENGTH + " caràcters!";
     public static final String USR_SURNAME_LENGTH = "Màxim " + DataFormat.MAX_USR_SURNAME_LENGTH + "caràcters!";

@@ -1,8 +1,5 @@
 package cat.copernic.mbotana.entrebicis_backend.controller.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,32 +49,24 @@ public class ApiUserController {
         return response;
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<User>> userList(Model model) {
+    @PutMapping("/update/{email}")
+    public ResponseEntity<Void> putMethodName(@PathVariable String email, @RequestBody User user) {
         
-        ResponseEntity<List<User>> response = null;
-
-        List<User> allUsers = new ArrayList<>();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-store");
+        ResponseEntity<Void> response = null;
 
         try {
-            allUsers = apiUserLogic.getAllUsers();
-
-            response = new ResponseEntity<>(allUsers, headers, HttpStatus.OK);
+            if (email.isEmpty() || user == null) {
+                response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }else if (!apiUserLogic.existUserByEmail(email)) {
+                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                apiUserLogic.updateUser(user);
+            }
         } catch (Exception e) {
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return response;
-    }
-
-    @PutMapping("/update")
-    public String putMethodName(@PathVariable String id, @RequestBody String entity) {
-        //TODO: process PUT request
         
-        return entity;
+        return response;
     }
 
 
