@@ -105,7 +105,7 @@ public class SecurityConfig {
     private void generateSystemParams() {
         try {
             if (!systemParamsLogic.existSystemParamsById(1L)) {
-                SystemParams newSystemParams = new SystemParams(1L, "Paràmetres Bicicleta",
+                SystemParams newSystemParams = new SystemParams(1L, "Paràmetres Rutes",
                         "Paràmetres del comportament de l'aplicació amb els recorreguts amb bicicleta.", 120, 1.0, 5,
                         72);
                 systemParamsLogic.saveSystemParams(newSystemParams);
