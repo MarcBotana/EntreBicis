@@ -1,10 +1,11 @@
-package cat.copernic.mbotana.entrebicis_backend.apiController.web;
+package cat.copernic.mbotana.entrebicis_backend.controller.web;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -30,10 +31,13 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/user")
@@ -72,6 +76,7 @@ public class WebUserController {
 
     @PostMapping("/create/new")
     public String createUser(@Valid @ModelAttribute("user") User newUser, BindingResult result,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
 
         try {
@@ -80,15 +85,24 @@ public class WebUserController {
                 result.rejectValue("email", "error.user", ErrorMessage.EMAIL_EXIST);
             }
 
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageType = imageFile.getContentType();
+
+                if (imageType != null && !imageType.equals("image/jpeg")) {
+                    result.rejectValue("image", "error.user", ErrorMessage.IMAGE_TYPE);
+                }
+                newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
+            }
+
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("user", newUser);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
                 return "redirect:/user/create";
 
             } else {
+                
                 newUser.setTotalPoints(0.0);
                 newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-                newUser.setIsRouteStarted(false);
                 newUser.setIsPasswordChanged(false);
                 newUser.setUserState(UserState.ACTIVE);
                 webUserLogic.saveUser(newUser);
@@ -145,11 +159,11 @@ public class WebUserController {
 
         model.addAttribute("allUsers", allUsers);
 
-        return "users_list";
+        return "user_list";
     }
 
-    @GetMapping("/detail")
-    public String userDetailPage(@RequestParam(required = true) String email, Model model) {
+    @GetMapping("/detail/{email}")
+    public String userDetailPage(@PathVariable String email, Model model) {
 
         User user = new User();
 
@@ -168,8 +182,8 @@ public class WebUserController {
         return "user_detail";
     }
 
-    @GetMapping("/update")
-    public String updateUserPage(@RequestParam(required = true) String email, Model model,
+    @GetMapping("/update/{email}")
+    public String updateUserPage(@PathVariable String email, Model model,
             @ModelAttribute("exceptionError") String exceptionError) {
 
         model.addAttribute("roleList", Role.values());
@@ -201,11 +215,21 @@ public class WebUserController {
         return "user_update";
     }
 
-    @PostMapping("/update/new")
+    @PutMapping("/update/new")
     public String updateUser(@Valid @ModelAttribute("user") User newUser, BindingResult result,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
 
         try {
+
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageType = imageFile.getContentType();
+
+                if (imageType != null && !imageType.equals("image/jpeg")) {
+                    result.rejectValue("image", "error.user", ErrorMessage.IMAGE_TYPE);
+                }
+                newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
+            } 
 
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("user", newUser);
@@ -236,8 +260,8 @@ public class WebUserController {
         return showPasswordForm != null ? showPasswordForm : false;
     }
 
-    @GetMapping("/update/password")
-    public String userPasswordPage(@RequestParam(required = true) String email, Model model,
+    @GetMapping("/update/password/{email}")
+    public String userPasswordPage(@PathVariable String email, Model model,
             @ModelAttribute("exceptionError") String exceptionError) {
 
         User user = new User();
@@ -250,7 +274,7 @@ public class WebUserController {
                 if (user != null) {
                     model.addAttribute("user", user);
                 } else {
-                    return "redirect:/user/detail?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+                    return "redirect:/user/detail/" + URLEncoder.encode(email, StandardCharsets.UTF_8);
                 }
             }
             user = webUserLogic.getUserByEmail(email);
@@ -269,7 +293,7 @@ public class WebUserController {
         return "user_password";
     }
 
-    @PostMapping("/update/password/new")
+    @PutMapping("/update/password/new")
     public String updateUserPasswordPage(@Valid @ModelAttribute("user") User newUser, BindingResult result,
             @RequestParam("tokenCode") String tokenCode, @RequestParam("repPassword") String repPassword,
             RedirectAttributes redirectAttributes) {
@@ -286,38 +310,37 @@ public class WebUserController {
                             isValid = true;
                         } else {
                             redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.TOKEN_EXPIRED);
-                            return "redirect:/user/update/password?email="
+                            return "redirect:/user/update/password/"
                                     + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
                         }
                     } else {
                         redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.TOKEN_NOT_FOUND);
-                        return "redirect:/user/update/password?email="
+                        return "redirect:/user/update/password/"
                                 + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
                     }
                 } else {
                     redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.TOKEN_NOT_FOUND);
-                    return "redirect:/user/update/password?email="
+                    return "redirect:/user/update/password/"
                             + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
                 }
             } else {
                 redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.NOT_BLANK);
-                    return "redirect:/user/update/password?email="
-                            + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
+                return "redirect:/user/update/password/"
+                        + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
             }
-            
 
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("user", newUser);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
                 redirectAttributes.addFlashAttribute("showPasswordForm", false);
-                return "redirect:/user/update/password?email="
+                return "redirect:/user/update/password/"
                         + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
 
             } else if (repPassword.equals(newUser.getPassword())) {
                 isValid = true;
             } else {
                 redirectAttributes.addFlashAttribute("errorRepPassword", ErrorMessage.PASS_NOT_MATCH);
-                return "redirect:/user/update/password?email="
+                return "redirect:/user/update/password/"
                         + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
             }
 
@@ -330,19 +353,19 @@ public class WebUserController {
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
         }
 
-        return "redirect:/user/detail?email=" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
+        return "redirect:/user/detail/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
     }
 
     @PostMapping("/send/email")
@@ -367,21 +390,21 @@ public class WebUserController {
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
         }
 
         redirectAttributes.addFlashAttribute("showPasswordForm", true);
         redirectAttributes.addFlashAttribute("user", user);
-        return "redirect:/user/update/password?email=" + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
+        return "redirect:/user/update/password/" + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
     }
 
     private static String generatePassword() {

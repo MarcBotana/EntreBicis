@@ -15,6 +15,12 @@ body {
     gap: 20px;
 }
 
+.web-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
 /* Reward Create */
 .reward-create {
     flex: 1;

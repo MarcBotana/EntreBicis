@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_backend.apiController.web;
+package cat.copernic.mbotana.entrebicis_backend.controller.web;
 
 import java.sql.SQLException;
 

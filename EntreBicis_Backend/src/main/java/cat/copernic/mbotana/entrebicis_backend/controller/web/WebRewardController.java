@@ -1,9 +1,10 @@
-package cat.copernic.mbotana.entrebicis_backend.apiController.web;
+package cat.copernic.mbotana.entrebicis_backend.controller.web;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,8 +24,11 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -67,9 +71,21 @@ public class WebRewardController {
 
     @PostMapping("/create/new")
     public String createReward(@Valid @ModelAttribute("reward") Reward newReward, BindingResult result,
+            @RequestParam(value = "imageFile", required = true) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
 
-        try {             
+        try {    
+            
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageType = imageFile.getContentType();
+
+                if (imageType != null && !imageType.equals("image/jpeg")) {
+                    result.rejectValue("image", "error.reward", ErrorMessage.IMAGE_TYPE);
+                }
+                newReward.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
+            } else {
+                result.rejectValue("image", "error.reward", ErrorMessage.NOT_BLANK);
+            }
                         
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("reward", newReward);
@@ -77,8 +93,6 @@ public class WebRewardController {
                 return "redirect:/reward/create";
 
             } else {
-                //ExchangePoint exchangePoint = webExchangePointLogic.getExchangePointById(exchangePointId);
-                //newReward.setExchangePoint(exchangePoint);
                 webRewardLogic.saveReward(newReward);
             }        
 
@@ -142,11 +156,11 @@ public class WebRewardController {
 
         model.addAttribute("allRewards", allRewards);
 
-        return "rewards_list";
+        return "reward_list";
     }
 
-    @GetMapping("/detail")
-    public String rewardDetailPage(@RequestParam Long id, Model model) {
+    @GetMapping("/detail/{id}")
+    public String rewardDetailPage(@PathVariable Long id, Model model) {
 
         Reward reward = new Reward();
 
@@ -165,8 +179,8 @@ public class WebRewardController {
         return "reward_detail";
     }
 
-    @GetMapping("/update")
-    public String updateRewardPage(@RequestParam(required = true) Long id ,Model model, @ModelAttribute("exceptionError") String exceptionError) {
+    @GetMapping("/update/{id}")
+    public String updateRewardPage(@PathVariable Long id ,Model model, @ModelAttribute("exceptionError") String exceptionError) {
 
         model.addAttribute("rewardState", RewardState.values());
 
@@ -196,11 +210,21 @@ public class WebRewardController {
         return "reward_update";
     }
 
-    @PostMapping("/update/new")
+    @PutMapping("/update/new")
     public String updateUser(@Valid @ModelAttribute("reward") Reward newReward, BindingResult result,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
 
         try {    
+
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageType = imageFile.getContentType();
+
+                if (imageType != null && !imageType.equals("image/jpeg")) {
+                    result.rejectValue("image", "error.reward", ErrorMessage.IMAGE_TYPE);
+                }
+                newReward.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
+            } 
                     
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("reward", newReward);

@@ -10,12 +10,18 @@ public class ErrorMessage {
     //Error Messages Validation
     public static final String NOT_BLANK = "El camp no pot estar buit!";
 
+    //Error Messages Validation - Login
+    public static final String AUTH_ERROR = "Credencials incorrectes!";
+    public static final String DENIED_ERROR = "Accés denegat!";
+    
     //Error Messages Validation - User
     public static final String USR_NAME_LENGTH = "Màxim " + DataFormat.MAX_USR_NAME_LENGTH + " caràcters!";
     public static final String USR_SURNAME_LENGTH = "Màxim " + DataFormat.MAX_USR_SURNAME_LENGTH + "caràcters!";
     public static final String USR_MOBILE_LENGTH = "El mòbil no es vàlid! (" + DataFormat.USR_MOBILE_LENGTH + " digits)";
     public static final String EMAIL_FORMAT = "El format de no és correcte! (exemple@exemple.com)";
     public static final String EMAIL_EXIST = "El correu introduït ja existeix!";
+    public static final String IMAGE_TYPE = "El format de l'imatge no es vàlid! (Només: .jpeg)";
+
                                               
     //Error Messages Validation - Reward
     public static final String REW_NAME_LENGTH = "Màxim " + DataFormat.MAX_REW_NAME_LENGTH + " caràcters!";
