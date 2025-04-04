@@ -105,13 +105,13 @@ public class SecurityConfig {
     private void generateSystemParams() {
         try {
             if (!systemParamsLogic.existSystemParamsById(1L)) {
-                SystemParams newSystemParams = new SystemParams(1L, "Paràmetres Rutes",
+                SystemParams newSystemParams = new SystemParams(1L, "Paràmetres per les Rutes",
                         "Paràmetres del comportament de l'aplicació amb els recorreguts amb bicicleta.", 120, 1.0, 5,
                         72);
                 systemParamsLogic.saveSystemParams(newSystemParams);
-                System.out.println("Paràmetres Bicicleta generats!");
+                System.out.println("Paràmetres Rutes generats!");
             } else {
-                System.out.println("Paràmetres Bicicleta ja generats!");
+                System.out.println("Paràmetres Rutes ja generats!");
             }
         } catch (Exception e) {
             System.out.println(e);
