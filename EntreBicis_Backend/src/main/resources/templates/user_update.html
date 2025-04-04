@@ -32,10 +32,8 @@
                 <input type="hidden" name="password" th:field="*{password}">
                 <input type="hidden" name="totalPoints" th:field="*{totalPoints}">
                 <input type="hidden" name="isPasswordChanged" th:field="*{isPasswordChanged}">
-                <div th:if="${user.image != null}">
-                    <input type="hidden" name="image" th:field="*{image}" >
-                </div>
-
+                <input type="hidden" name="image" th:field="*{image}" >
+                
                 <!-- Image -->
                 <div th:if="${user.image != null}">
                     <img th:src="'data:image/jpeg;base64,' + ${user.image}" alt="User Image" class="web-avatar">
@@ -47,6 +45,7 @@
                 <label for="imagenFile">Selecciona una imatge (.JPEG):</label>
                 <input type="file" id="imageFile" name="imageFile" accept="image/jpeg"/>
                 <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
+                <div class="error" th:if="${imageFormatError != null and not #strings.isEmpty(imageFormatError)}" th:text="${imageFormatError}"></div>
 
                 <!-- Name -->
                 <label for="name">Nom:</label>

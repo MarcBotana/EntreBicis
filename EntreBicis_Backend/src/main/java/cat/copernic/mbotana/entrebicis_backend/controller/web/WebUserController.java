@@ -91,7 +91,7 @@ public class WebUserController {
                 if (imageType != null && !imageType.equals("image/jpeg")) {
                     result.rejectValue("image", "error.user", ErrorMessage.IMAGE_TYPE);
                 }
-                newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
+                newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));
             }
 
             if (result.hasErrors()) {
@@ -100,7 +100,7 @@ public class WebUserController {
                 return "redirect:/user/create";
 
             } else {
-                
+
                 newUser.setTotalPoints(0.0);
                 newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
                 newUser.setIsPasswordChanged(false);
@@ -184,7 +184,8 @@ public class WebUserController {
 
     @GetMapping("/update/{email}")
     public String updateUserPage(@PathVariable String email, Model model,
-            @ModelAttribute("exceptionError") String exceptionError) {
+            @ModelAttribute("exceptionError") String exceptionError,
+            @ModelAttribute("imageFormatError") String imageFormatError) {
 
         model.addAttribute("roleList", Role.values());
         model.addAttribute("userState", UserState.values());
@@ -192,14 +193,7 @@ public class WebUserController {
         User user = new User();
 
         try {
-            if (!model.containsAttribute("user")) {
-                user = webUserLogic.getUserByEmail(email);
-                if (user != null) {
-                    model.addAttribute("user", user);
-                } else {
-                    return "redirect:/user/list";
-                }
-            }
+            user = webUserLogic.getUserByEmail(email);
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
@@ -208,8 +202,18 @@ public class WebUserController {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
+        if (user != null) {
+            model.addAttribute("user", user);
+        } else {
+            return "redirect:/user/list";
+        }
+
         if (exceptionError != null && !exceptionError.isEmpty()) {
             model.addAttribute("exceptionError", exceptionError);
+        }
+
+        if (imageFormatError != null && !imageFormatError.isEmpty()) {
+            model.addAttribute("imageFormatError", imageFormatError);
         }
 
         return "user_update";
@@ -227,14 +231,15 @@ public class WebUserController {
 
                 if (imageType != null && !imageType.equals("image/jpeg")) {
                     result.rejectValue("image", "error.user", ErrorMessage.IMAGE_TYPE);
+                    redirectAttributes.addFlashAttribute("imageFormatError", ErrorMessage.IMAGE_TYPE);
                 }
-                newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
-            } 
+                newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));
+            }
 
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("user", newUser);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
-                return "redirect:/user/update?email=" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
+                return "redirect:/user/update/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
 
             } else {
                 webUserLogic.updateUser(newUser);

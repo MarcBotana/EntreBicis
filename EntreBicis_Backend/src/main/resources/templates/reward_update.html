@@ -37,6 +37,7 @@
                 <label for="imagenFile">Selecciona una imatge (.JPEG):</label>
                 <input type="file" id="imageFile" name="imageFile" accept="image/jpeg"/>
                 <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
+                <div class="error" th:if="${imageFormatError != null and not #strings.isEmpty(imageFormatError)}" th:text="${imageFormatError}"></div>
 
                 <!-- Name -->
                 <label for="name">Nom:</label>

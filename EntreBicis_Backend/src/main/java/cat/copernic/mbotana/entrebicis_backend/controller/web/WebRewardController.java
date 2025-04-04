@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @Controller
 @RequestMapping("/reward")
 public class WebRewardController {
@@ -44,7 +43,7 @@ public class WebRewardController {
 
     @GetMapping("/create")
     public String createRewardPage(Model model, @ModelAttribute("exceptionError") String exceptionError) {
-       
+
         model.addAttribute("rewardState", RewardState.values());
 
         try {
@@ -53,7 +52,7 @@ public class WebRewardController {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
             model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-        }  catch (Exception e) {
+        } catch (Exception e) {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
@@ -74,19 +73,19 @@ public class WebRewardController {
             @RequestParam(value = "imageFile", required = true) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
 
-        try {    
-            
+        try {
+
             if (imageFile != null && !imageFile.isEmpty()) {
                 String imageType = imageFile.getContentType();
 
                 if (imageType != null && !imageType.equals("image/jpeg")) {
                     result.rejectValue("image", "error.reward", ErrorMessage.IMAGE_TYPE);
                 }
-                newReward.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
+                newReward.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));
             } else {
                 result.rejectValue("image", "error.reward", ErrorMessage.NOT_BLANK);
             }
-                        
+
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("reward", newReward);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.reward", result);
@@ -94,7 +93,7 @@ public class WebRewardController {
 
             } else {
                 webRewardLogic.saveReward(newReward);
-            }        
+            }
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
@@ -102,7 +101,7 @@ public class WebRewardController {
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
             return "redirect:/reward/create";
-        }  catch (Exception e) {
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
             return "redirect:/reward/create";
         }
@@ -111,7 +110,8 @@ public class WebRewardController {
     }
 
     @GetMapping("/list")
-    public String listRewardsPage(@RequestParam(required = false) String sort, @RequestParam(required = false) String search, Model model) {
+    public String listRewardsPage(@RequestParam(required = false) String sort,
+            @RequestParam(required = false) String search, Model model) {
 
         List<Reward> allRewards = new ArrayList<>();
 
@@ -126,31 +126,35 @@ public class WebRewardController {
                     allRewards.sort(Comparator.comparing(reward -> reward.getExchangePoint().getName()));
                     break;
                 case "AVAILABLE":
-                    allRewards = allRewards.stream().filter(reward -> reward.getRewardState().equals(RewardState.AVAILABLE)).toList();
+                    allRewards = allRewards.stream()
+                            .filter(reward -> reward.getRewardState().equals(RewardState.AVAILABLE)).toList();
                     break;
                 case "RESERVED":
-                    allRewards = allRewards.stream().filter(reward -> reward.getRewardState().equals(RewardState.RESERVED)).toList();
+                    allRewards = allRewards.stream()
+                            .filter(reward -> reward.getRewardState().equals(RewardState.RESERVED)).toList();
                     break;
                 case "ASSIGNED":
-                    allRewards = allRewards.stream().filter(reward -> reward.getRewardState().equals(RewardState.ASSIGNED)).toList();
+                    allRewards = allRewards.stream()
+                            .filter(reward -> reward.getRewardState().equals(RewardState.ASSIGNED)).toList();
                     break;
                 case "RETURNED":
-                    allRewards = allRewards.stream().filter(reward -> reward.getRewardState().equals(RewardState.RETURNED)).toList();
+                    allRewards = allRewards.stream()
+                            .filter(reward -> reward.getRewardState().equals(RewardState.RETURNED)).toList();
                     break;
                 default:
                     break;
             }
 
             if (search != null && !search.isEmpty()) {
-                allRewards = allRewards.stream().filter(reward -> reward.getName().toLowerCase().contains(search.toLowerCase())).toList();
+                allRewards = allRewards.stream()
+                        .filter(reward -> reward.getName().toLowerCase().contains(search.toLowerCase())).toList();
             }
-
 
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
             model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-        }  catch (Exception e) {
+        } catch (Exception e) {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
@@ -170,7 +174,7 @@ public class WebRewardController {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
             model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-        }  catch (Exception e) {
+        } catch (Exception e) {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
@@ -180,7 +184,9 @@ public class WebRewardController {
     }
 
     @GetMapping("/update/{id}")
-    public String updateRewardPage(@PathVariable Long id ,Model model, @ModelAttribute("exceptionError") String exceptionError) {
+    public String updateRewardPage(@PathVariable Long id, Model model,
+            @ModelAttribute("exceptionError") String exceptionError,
+            @ModelAttribute("imageFormatError") String imageFormatError) {
 
         model.addAttribute("rewardState", RewardState.values());
 
@@ -193,7 +199,7 @@ public class WebRewardController {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
             model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-        }  catch (Exception e) {
+        } catch (Exception e) {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
@@ -207,6 +213,10 @@ public class WebRewardController {
             model.addAttribute("exceptionError", exceptionError);
         }
 
+        if (imageFormatError != null && !imageFormatError.isEmpty()) {
+            model.addAttribute("imageFormatError", imageFormatError);
+        }
+
         return "reward_update";
     }
 
@@ -215,25 +225,27 @@ public class WebRewardController {
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
 
-        try {    
+        try {
 
             if (imageFile != null && !imageFile.isEmpty()) {
                 String imageType = imageFile.getContentType();
 
                 if (imageType != null && !imageType.equals("image/jpeg")) {
                     result.rejectValue("image", "error.reward", ErrorMessage.IMAGE_TYPE);
+                    redirectAttributes.addFlashAttribute("imageFormatError", ErrorMessage.IMAGE_TYPE);
                 }
-                newReward.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
-            } 
-                    
+                newReward.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));
+            }
+
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("reward", newReward);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.reward", result);
-                return "redirect:/reward/update?id=" + URLEncoder.encode(newReward.getId().toString(), StandardCharsets.UTF_8);
+                return "redirect:/reward/update/"
+                        + URLEncoder.encode(newReward.getId().toString(), StandardCharsets.UTF_8);
 
             } else {
                 webRewardLogic.updateReward(newReward);
-            }        
+            }
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
@@ -241,7 +253,7 @@ public class WebRewardController {
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
             return "redirect:/reward/update";
-        }  catch (Exception e) {
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
             return "redirect:/reward/update";
         }
