@@ -260,8 +260,8 @@ public class WebUserController {
         return showPasswordForm != null ? showPasswordForm : false;
     }
 
-    @GetMapping("/update/password")
-    public String userPasswordPage(@RequestParam(required = true) String email, Model model,
+    @GetMapping("/update/password/{email}")
+    public String userPasswordPage(@PathVariable String email, Model model,
             @ModelAttribute("exceptionError") String exceptionError) {
 
         User user = new User();
@@ -274,7 +274,7 @@ public class WebUserController {
                 if (user != null) {
                     model.addAttribute("user", user);
                 } else {
-                    return "redirect:/user/detail?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8);
+                    return "redirect:/user/detail/" + URLEncoder.encode(email, StandardCharsets.UTF_8);
                 }
             }
             user = webUserLogic.getUserByEmail(email);
@@ -310,22 +310,22 @@ public class WebUserController {
                             isValid = true;
                         } else {
                             redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.TOKEN_EXPIRED);
-                            return "redirect:/user/update/password?email="
+                            return "redirect:/user/update/password/"
                                     + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
                         }
                     } else {
                         redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.TOKEN_NOT_FOUND);
-                        return "redirect:/user/update/password?email="
+                        return "redirect:/user/update/password/"
                                 + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
                     }
                 } else {
                     redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.TOKEN_NOT_FOUND);
-                    return "redirect:/user/update/password?email="
+                    return "redirect:/user/update/password/"
                             + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
                 }
             } else {
                 redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.NOT_BLANK);
-                return "redirect:/user/update/password?email="
+                return "redirect:/user/update/password/"
                         + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
             }
 
@@ -333,14 +333,14 @@ public class WebUserController {
                 redirectAttributes.addFlashAttribute("user", newUser);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
                 redirectAttributes.addFlashAttribute("showPasswordForm", false);
-                return "redirect:/user/update/password?email="
+                return "redirect:/user/update/password/"
                         + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
 
             } else if (repPassword.equals(newUser.getPassword())) {
                 isValid = true;
             } else {
                 redirectAttributes.addFlashAttribute("errorRepPassword", ErrorMessage.PASS_NOT_MATCH);
-                return "redirect:/user/update/password?email="
+                return "redirect:/user/update/password/"
                         + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
             }
 
@@ -353,19 +353,19 @@ public class WebUserController {
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
         }
 
-        return "redirect:/user/detail?email=" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
+        return "redirect:/user/detail/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
     }
 
     @PostMapping("/send/email")
@@ -390,21 +390,21 @@ public class WebUserController {
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/password?email="
+            return "redirect:/user/update/password/"
                     + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
         }
 
         redirectAttributes.addFlashAttribute("showPasswordForm", true);
         redirectAttributes.addFlashAttribute("user", user);
-        return "redirect:/user/update/password?email=" + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
+        return "redirect:/user/update/password/" + URLEncoder.encode(user.getEmail(), StandardCharsets.UTF_8);
     }
 
     private static String generatePassword() {
