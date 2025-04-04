@@ -2,10 +2,12 @@ package cat.copernic.mbotana.entrebicis_backend.entity;
 
 import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.RewardState;
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,7 +45,9 @@ public class Reward {
     private String observation;
 
     @Lob
-    private byte[] image;
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
+    @Basic(fetch = FetchType.LAZY)
+    private String image;
 
     @Column(nullable = false)
     @NotNull(message = ErrorMessage.NOT_BLANK)
