@@ -51,7 +51,12 @@
                     <tbody class="web-item" th:each="user : ${allUsers}">
                         <tr th:onclick="|location.href='/user/detail/' + '@{${user.email}}'|">
                             <td>
-                                <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
+                                <div th:if="${user.image != null}">
+                                    <img th:src="'data:image/jpeg;base64,' + ${user.image}" alt="User Image" class="web-avatar">
+                                </div>
+                                <div th:if="${user.image == null}">
+                                    <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
+                                </div>
                             </td>
                             <td class="web-info" th:text="${user.email}"></td>
                             <td class="web-info" th:text="${user.name}"></td>

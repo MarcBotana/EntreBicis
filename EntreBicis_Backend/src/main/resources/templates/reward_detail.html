@@ -22,7 +22,7 @@
             <div class="web-detail-content">
 
                 <div class="detail-image">
-                    <img th:src="@{/images/EntreBicis_Logo.png}" alt="User Image" class="web-avatar">
+                    <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">
                     <div class="detail-state" th:text="${reward.rewardState.display}"></div>
                 </div>
 

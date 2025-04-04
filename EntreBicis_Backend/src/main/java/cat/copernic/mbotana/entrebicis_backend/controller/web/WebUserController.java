@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/user")
@@ -74,6 +76,7 @@ public class WebUserController {
 
     @PostMapping("/create/new")
     public String createUser(@Valid @ModelAttribute("user") User newUser, BindingResult result,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
 
         try {
@@ -82,15 +85,24 @@ public class WebUserController {
                 result.rejectValue("email", "error.user", ErrorMessage.EMAIL_EXIST);
             }
 
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageType = imageFile.getContentType();
+
+                if (imageType != null && !imageType.equals("image/jpeg")) {
+                    result.rejectValue("image", "error.user", ErrorMessage.IMAGE_TYPE);
+                }
+                newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
+            }
+
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("user", newUser);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
                 return "redirect:/user/create";
 
             } else {
+                
                 newUser.setTotalPoints(0.0);
                 newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-                newUser.setIsRouteStarted(false);
                 newUser.setIsPasswordChanged(false);
                 newUser.setUserState(UserState.ACTIVE);
                 webUserLogic.saveUser(newUser);
@@ -205,9 +217,19 @@ public class WebUserController {
 
     @PutMapping("/update/new")
     public String updateUser(@Valid @ModelAttribute("user") User newUser, BindingResult result,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
 
         try {
+
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageType = imageFile.getContentType();
+
+                if (imageType != null && !imageType.equals("image/jpeg")) {
+                    result.rejectValue("image", "error.user", ErrorMessage.IMAGE_TYPE);
+                }
+                newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
+            } 
 
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("user", newUser);
@@ -303,10 +325,9 @@ public class WebUserController {
                 }
             } else {
                 redirectAttributes.addFlashAttribute("errorToken", ErrorMessage.NOT_BLANK);
-                    return "redirect:/user/update/password?email="
-                            + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
+                return "redirect:/user/update/password?email="
+                        + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
             }
-            
 
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("user", newUser);

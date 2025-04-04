@@ -22,13 +22,21 @@
                 <p th:text="${exceptionError}"></p>
             </div>
 
-            <form th:action="@{/reward/update/new}" method="post" th:object="${reward}">
+            <form th:action="@{/reward/update/new}" method="post" th:object="${reward}" enctype="multipart/form-data">
 
                 <!-- Use Method PUT -->
                 <input type="hidden" name="_method" value="put">
 
                 <!-- Hidden Attributes -->
                 <input type="hidden" name="id" th:field="*{id}">
+                <input type="hidden" name="image" th:field="*{image}" >
+
+                <!-- Image -->
+                <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">
+
+                <label for="imagenFile">Selecciona una imatge (.JPEG):</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg"/>
+                <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
 
                 <!-- Name -->
                 <label for="name">Nom:</label>

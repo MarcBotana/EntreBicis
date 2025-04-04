@@ -52,7 +52,7 @@
                     <tbody class="web-item" th:each="reward : ${allRewards}">
                         <tr th:onclick="|location.href='/reward/detail/${reward.id}'|">
                             <td>
-                                <img th:src="@{/images/EntreBicis_Logo.png}" alt="web Image" class="web-avatar">
+                                <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">
                             </td>
                             <td class="web-info" th:text="${reward.name}"></td>
                             <td class="web-info" th:text="${reward.rewardState.display}"></td>

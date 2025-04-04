@@ -22,7 +22,12 @@
             <div class="web-detail-content">
 
                 <div class="detail-image">
-                    <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
+                    <div th:if="${user.image != null}">
+                        <img th:src="'data:image/jpeg;base64,' + ${user.image}" alt="User Image" class="web-avatar">
+                    </div>
+                    <div th:if="${user.image == null}">
+                        <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
+                    </div>
                     <div class="detail-role" th:text="${user.role.display}"></div>
                     <div class="detail-state" th:text="${user.userState.display}"></div>
                 </div>

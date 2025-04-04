@@ -22,7 +22,7 @@
                 <p th:text="${exceptionError}"></p>
             </div>
 
-            <form th:action="@{/user/update/new}" method="post" th:object="${user}">
+            <form th:action="@{/user/update/new}" method="post" th:object="${user}" enctype="multipart/form-data">
 
                 <!-- Use Method PUT -->
                 <input type="hidden" name="_method" value="put">
@@ -31,8 +31,22 @@
                 <input type="hidden" name="email" th:field="*{email}">
                 <input type="hidden" name="password" th:field="*{password}">
                 <input type="hidden" name="totalPoints" th:field="*{totalPoints}">
-                <input type="hidden" name="isRouteStarted" th:field="*{isRouteStarted}">
                 <input type="hidden" name="isPasswordChanged" th:field="*{isPasswordChanged}">
+                <div th:if="${user.image != null}">
+                    <input type="hidden" name="image" th:field="*{image}" >
+                </div>
+
+                <!-- Image -->
+                <div th:if="${user.image != null}">
+                    <img th:src="'data:image/jpeg;base64,' + ${user.image}" alt="User Image" class="web-avatar">
+                </div>
+                <div th:if="${user.image == null}">
+                    <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
+                </div>
+
+                <label for="imagenFile">Selecciona una imatge (.JPEG):</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg"/>
+                <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
 
                 <!-- Name -->
                 <label for="name">Nom:</label>

@@ -4,6 +4,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -69,9 +71,21 @@ public class WebRewardController {
 
     @PostMapping("/create/new")
     public String createReward(@Valid @ModelAttribute("reward") Reward newReward, BindingResult result,
+            @RequestParam(value = "imageFile", required = true) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
 
-        try {             
+        try {    
+            
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageType = imageFile.getContentType();
+
+                if (imageType != null && !imageType.equals("image/jpeg")) {
+                    result.rejectValue("image", "error.reward", ErrorMessage.IMAGE_TYPE);
+                }
+                newReward.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
+            } else {
+                result.rejectValue("image", "error.reward", ErrorMessage.NOT_BLANK);
+            }
                         
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("reward", newReward);
@@ -142,7 +156,7 @@ public class WebRewardController {
 
         model.addAttribute("allRewards", allRewards);
 
-        return "rewards_list";
+        return "reward_list";
     }
 
     @GetMapping("/detail/{id}")
@@ -198,9 +212,19 @@ public class WebRewardController {
 
     @PutMapping("/update/new")
     public String updateUser(@Valid @ModelAttribute("reward") Reward newReward, BindingResult result,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
 
         try {    
+
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String imageType = imageFile.getContentType();
+
+                if (imageType != null && !imageType.equals("image/jpeg")) {
+                    result.rejectValue("image", "error.reward", ErrorMessage.IMAGE_TYPE);
+                }
+                newReward.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));                
+            } 
                     
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("reward", newReward);
