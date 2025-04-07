@@ -22,7 +22,20 @@
                 <p th:text="${exceptionError}"></p>
             </div>
 
-            <form th:action="@{/reward/create/new}" method="post" th:object="${reward}">
+            <form th:action="@{/reward/create/new}" method="post" th:object="${reward}" enctype="multipart/form-data">
+
+
+                <!-- Image -->
+                <div th:if="${reward.image != null}">
+                    <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">
+                </div>
+                <div th:if="${reward.image == null}">
+                    <img th:src="@{/images/User-Avatar.png}" alt="Reward Image" class="web-avatar">
+                </div>
+
+                <label for="imagenFile">Selecciona una imatge (.JPEG):</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg"/>
+                <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
 
                 <!-- Name -->
                 <label for="name">Nom:</label>

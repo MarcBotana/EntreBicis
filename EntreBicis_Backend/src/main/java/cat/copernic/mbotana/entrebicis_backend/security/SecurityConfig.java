@@ -1,6 +1,5 @@
 package cat.copernic.mbotana.entrebicis_backend.security;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,6 @@ import cat.copernic.mbotana.entrebicis_backend.entity.enums.Role;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.UserState;
 import cat.copernic.mbotana.entrebicis_backend.logic.SystemParamsLogic;
 import cat.copernic.mbotana.entrebicis_backend.logic.UserLogic;
-
 
 @Configuration
 @EnableWebSecurity
@@ -44,34 +42,30 @@ public class SecurityConfig {
         http
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
+                        .logoutSuccessUrl("/login")
                         .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                )
+                        .clearAuthentication(true))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/logout", "/css/**", "/images/**", "/scripts/**").permitAll()
                         .requestMatchers("/**").hasAuthority(Role.ADMIN.toString())
-                        .requestMatchers("/user/**").hasAuthority(Role.ADMIN.toString())
-                        .requestMatchers("/reward/**").hasAuthority(Role.ADMIN.toString())
-                        .requestMatchers("/exchangePoint/**").hasAuthority(Role.ADMIN.toString())
-                        .requestMatchers("/route/**").hasAuthority(Role.ADMIN.toString())
-                        .requestMatchers("/system/**").hasAuthority(Role.ADMIN.toString())
-                        .anyRequest().authenticated()
-                )                
+                        .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .defaultSuccessUrl("/", true)
-                        .failureUrl("/login?error=true")
-                )
+                        .failureUrl("/login?error=true"))
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler((_, response, _) -> {
+                            response.sendRedirect("/login?errorDenied=true");
+                        }))
                 .userDetailsService(userValidator);
 
-        //Generate Default Admin User
+        // Generate Default Admin User
         generateAdminUser();
 
-        //Generate Default System Params
+        // Generate Default System Params
         generateSystemParams();
 
         return http.build();
@@ -87,7 +81,6 @@ public class SecurityConfig {
                 .build();
     }
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -96,7 +89,9 @@ public class SecurityConfig {
     private void generateAdminUser() {
         try {
             if (!userLogic.existUserByEmail("marc.botana@gmail.com")) {
-                User newADmin = new User("marc.botana@gmail.com", Role.ADMIN,"Marc", "Botana", passwordEncoder().encode("1234"), "Terrassa", 620016600, null, false, true ,UserState.ACTIVE, 0.0, null, null);
+                User newADmin = new User("marc.botana@gmail.com", Role.ADMIN, "Marc", "Botana",
+                        passwordEncoder().encode("1234"), "Terrassa", 620016600, null, true, UserState.ACTIVE,
+                        0.0, null, null);
                 userLogic.saveUser(newADmin);
                 System.out.println("Usuari Admin generat!");
             } else {
@@ -110,15 +105,16 @@ public class SecurityConfig {
     private void generateSystemParams() {
         try {
             if (!systemParamsLogic.existSystemParamsById(1L)) {
-                SystemParams newSystemParams = new SystemParams(1L, "Paràmetres Bicicleta", "Paràmetres del comportament de l'aplicació amb els recorreguts amb bicicleta.", 120, 1.0, 5, 72);
+                SystemParams newSystemParams = new SystemParams(1L, "Paràmetres per les Rutes",
+                        "Paràmetres del comportament de l'aplicació amb els recorreguts amb bicicleta.", 120, 1.0, 5,
+                        72);
                 systemParamsLogic.saveSystemParams(newSystemParams);
-                System.out.println("Paràmetres Bicicleta generats!");
+                System.out.println("Paràmetres Rutes generats!");
             } else {
-                System.out.println("Paràmetres Bicicleta ja generats!");
+                System.out.println("Paràmetres Rutes ja generats!");
             }
         } catch (Exception e) {
             System.out.println(e);
         }
     }
 }
-

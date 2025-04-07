@@ -22,10 +22,22 @@
                 <p th:text="${exceptionError}"></p>
             </div>
 
-            <form th:action="@{/user/create/new}" method="post" th:object="${user}">
+            <form th:action="@{/user/create/new}" method="post" th:object="${user}" enctype="multipart/form-data">
 
-                <!-- Hidden Inputs -->
+                <!-- Hidden Attributes -->
                 <input type="hidden" id="password" name="password" th:field="*{password}">
+
+                <!-- Image -->
+                <div th:if="${user.image != null}">
+                    <img th:src="'data:image/jpeg;base64,' + ${user.image}" alt="User Image" class="web-avatar">
+                </div>
+                <div th:if="${user.image == null}">
+                    <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
+                </div>
+
+                <label for="imagenFile">Selecciona una imatge (.JPEG):</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg"/>
+                <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
 
                 <!-- Email -->
                 <label for="email">Email:</label>

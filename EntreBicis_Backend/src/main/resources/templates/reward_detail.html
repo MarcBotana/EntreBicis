@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/web_items_detail.css">
-    <title>EntreBicis - Usuari</title>
+    <title>EntreBicis - Recompensa</title>
 </head>
 
 <body>
@@ -22,7 +22,7 @@
             <div class="web-detail-content">
 
                 <div class="detail-image">
-                    <img th:src="@{/images/EntreBicis_Logo.png}" alt="User Image" class="web-avatar">
+                    <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">
                     <div class="detail-state" th:text="${reward.rewardState.display}"></div>
                 </div>
 
@@ -37,7 +37,7 @@
                         <div th:text="${reward.name}"></div>
                         <div th:text="${reward.description}"></div>
                         <div th:text="${reward.observation}"></div>
-                        <div th:text="${reward.exchangePoint.name} + ' - ' + ${reward.exchangePoint.address}"></div>
+                        <div th:text="${reward.exchangePoint.name} + ' - (' + ${reward.exchangePoint.address} + ')'"></div>
                     </div>
                 </div>
 

@@ -7,6 +7,7 @@ import cat.copernic.mbotana.entrebicis_backend.config.DataFormat;
 import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.Role;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.UserState;
+import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -69,11 +70,10 @@ public class User{
     private int mobile;
 
     @Lob
-    private byte[] image;
-
-    @Column(nullable = false)
-    private Boolean isRouteStarted;
-
+    @Column(nullable = true, columnDefinition = "LONGTEXT")
+    @Basic(fetch = FetchType.LAZY)
+    private String image;
+    
     @Column(nullable = false)
     private Boolean isPasswordChanged;
 

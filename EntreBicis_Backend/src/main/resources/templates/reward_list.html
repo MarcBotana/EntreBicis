@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/web_items_list.css">
-    <title>EntreBicis - Usuaris</title>
+    <title>EntreBicis - Recompenses</title>
 </head>
 
 <body>
@@ -50,9 +50,9 @@
                         </tr>
                     </thead>
                     <tbody class="web-item" th:each="reward : ${allRewards}">
-                        <tr th:onclick="|location.href='/reward/detail?id=' + '@{${reward.id}}'|">
+                        <tr th:onclick="|location.href='/reward/detail/${reward.id}'|">
                             <td>
-                                <img th:src="@{/images/EntreBicis_Logo.png}" alt="web Image" class="web-avatar">
+                                <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">
                             </td>
                             <td class="web-info" th:text="${reward.name}"></td>
                             <td class="web-info" th:text="${reward.rewardState.display}"></td>
@@ -70,7 +70,7 @@
                     <tbody class="web-item" th:each="reward : ${allRewards}">
                         <tr>
                             <td>
-                                <button th:onclick="|location.href='/reward/update?id=' + '@{${reward.id}}'|">Editar</button>
+                                <button th:onclick="|location.href='/reward/update/${reward.id}'|">Editar</button>
                                 <button th:onclick="|location.href='/reward/list'|">Assignar</button>
                             </td>
                         </tr>
