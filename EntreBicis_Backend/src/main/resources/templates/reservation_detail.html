@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/web_items_detail.css">
+    <title>EntreBicis - Reserva</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content -->
+    <div class="content">
+        <section class="web-detail">
+            <div class="web-detail-header">
+                <h2 th:text="'Reserva - ' + ${reservation.id}"></h2>
+            </div>
+            <div class="web-detail-content">
+
+                <div class="detail-image">
+                    <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
+                    <div class="detail-state" th:text="${reservation.reservationState.display}"></div>
+                </div>
+
+                <div class="detail-data">
+                    <div class="data-title">
+                        <div>Usuari: </div>
+                        <div>Recompensa: </div>
+                        <div>Estat Recompensa: </div>
+                        <div> - </div>
+                        <div>Data Reserva: </div>
+                        <div>Data Max Recollida: </div>
+                    </div>
+                    <div class="data-text">
+                        <div th:text="${reservation.user.name} + ' ' + ${reservation.user.surname}"></div>
+                        <div th:text="${reservation.reward.name}"></div>
+                        <div th:text="${reservation.reward.rewardState.display}"></div>
+                        <div> - </div>
+                        <div th:text="${reservation.reservationTime}"></div>
+                        <div th:text="${reservation.returnTime}"></div>
+                    </div>
+                </div>
+
+                <div class="detail-options">
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/user/detail/' + '@{${reservation.user.email}}'|">Usuari</button>
+                    </div>
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/reward/detail/' + '@{${reservation.reward.id}}'|">Recompensa</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+    </div>
+
+</body>
+
+</html>
