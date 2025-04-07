@@ -23,8 +23,8 @@ public class ApiUserController {
     @Autowired
     private UserLogic apiUserLogic;
 
-    @GetMapping("/detail/{email}")
-    public ResponseEntity<User> userDetail(@PathVariable String email, Model model) {
+    @GetMapping("/getUserEmail/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email, Model model) {
 
         ResponseEntity<User> response = null;
 
@@ -48,7 +48,7 @@ public class ApiUserController {
     }
 
     @PutMapping("/update/{email}")
-    public ResponseEntity<Void> putMethodName(@PathVariable String email, @RequestBody User user) {
+    public ResponseEntity<Void> updateUser(@PathVariable String email, @RequestBody User user) {
 
         ResponseEntity<Void> response = null;
 
