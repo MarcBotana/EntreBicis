@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_frontend.core.session.screen
+package cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import cat.copernic.mbotana.entrebicis_frontend.core.session.viewModel.SessionViewModel
+import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 import kotlinx.coroutines.delay
 
 @Composable
