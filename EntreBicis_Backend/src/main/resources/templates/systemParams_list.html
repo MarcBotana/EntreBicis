@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/systemParams_list.css">
     <title>EntreBicis - Paràmetres del Sistema</title>
 </head>
+
 <body>
     <!-- NavBar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -29,10 +30,9 @@
                     <button th:onclick="|location.href='/system/detail/${systemParams.id}'|">Veure Paràmetres</button>
                 </div>
             </div>
+
         </section>
-
-
     </div>
-    
 </body>
+
 </html>

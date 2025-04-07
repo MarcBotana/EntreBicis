@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/web_items_detail.css">
-    <title>EntreBicis - Usuari</title>
+    <title>EntreBicis - Recompensa</title>
 </head>
 
 <body>
@@ -37,7 +37,7 @@
                         <div th:text="${reward.name}"></div>
                         <div th:text="${reward.description}"></div>
                         <div th:text="${reward.observation}"></div>
-                        <div th:text="${reward.exchangePoint.name} + ' - ' + ${reward.exchangePoint.address}"></div>
+                        <div th:text="${reward.exchangePoint.name} + ' - (' + ${reward.exchangePoint.address} + ')'"></div>
                     </div>
                 </div>
 
