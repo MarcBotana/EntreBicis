@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import cat.copernic.mbotana.entrebicis_backend.entity.User;
 import cat.copernic.mbotana.entrebicis_backend.logic.UserLogic;
@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
-
-@Controller
+@RestController
 @RequestMapping("/api/user")
 public class ApiUserController {
 
@@ -27,7 +25,7 @@ public class ApiUserController {
 
     @GetMapping("/detail/{email}")
     public ResponseEntity<User> userDetail(@PathVariable String email, Model model) {
-        
+
         ResponseEntity<User> response = null;
 
         User user = new User();
@@ -51,13 +49,13 @@ public class ApiUserController {
 
     @PutMapping("/update/{email}")
     public ResponseEntity<Void> putMethodName(@PathVariable String email, @RequestBody User user) {
-        
+
         ResponseEntity<Void> response = null;
 
         try {
             if (email.isEmpty() || user == null) {
                 response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }else if (!apiUserLogic.existUserByEmail(email)) {
+            } else if (!apiUserLogic.existUserByEmail(email)) {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 apiUserLogic.updateUser(user);
@@ -65,10 +63,8 @@ public class ApiUserController {
         } catch (Exception e) {
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
+
         return response;
     }
 
-
-    
 }
