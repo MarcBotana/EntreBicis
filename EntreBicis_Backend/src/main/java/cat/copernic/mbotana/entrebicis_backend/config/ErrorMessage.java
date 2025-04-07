@@ -3,9 +3,9 @@ package cat.copernic.mbotana.entrebicis_backend.config;
 public class ErrorMessage {
 
     //Exception Messages BDD
-    public static final String DATA_ACCESS_EXCEPTION = "Error al conectar a la BDD! ";
+    public static final String DATA_ACCESS_EXCEPTION = "Error amb la BDD! ";
     public static final String SQL_EXCEPTION = "Error SQL! ";
-    public static final String GENERAL_EXCEPTION = "Error! ";
+    public static final String GENERAL_EXCEPTION = "Error General! ";
 
     //Error Messages Validation
     public static final String NOT_BLANK = "El camp no pot estar buit!";

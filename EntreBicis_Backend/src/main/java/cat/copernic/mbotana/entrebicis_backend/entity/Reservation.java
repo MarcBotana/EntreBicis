@@ -2,6 +2,7 @@ package cat.copernic.mbotana.entrebicis_backend.entity;
 
 import java.time.LocalTime;
 
+import cat.copernic.mbotana.entrebicis_backend.entity.enums.ReservationState;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +26,9 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
+    private ReservationState reservationState;
 
     @Column
     private LocalTime reservationTime;
