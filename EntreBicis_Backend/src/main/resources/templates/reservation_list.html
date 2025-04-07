@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/web_items_list.css">
+    <title>EntreBicis - Reserva</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content -->
+    <div class="content">
+        <aside class="sidebar">
+            <h3 class="sidebar-title">Ordenar</h3>
+            <button th:onclick="|location.href='/reservation/list?sort=userName'|">Nom Usuari</button>
+            <button th:onclick="|location.href='/reservation/list?sort=rewardName'|">Nom Recompensa</button>
+            <button th:onclick="|location.href='/reservation/list?sort=ACTIVE'|">Activa</button>
+            <button th:onclick="|location.href='/reservation/list?sort=COMPLETED'|">Completada</button>
+            <button th:onclick="|location.href='/reservation/list?sort=CANCELED'|">Cancel·lada</button>
+
+        </aside>
+
+        <section class="web-list">
+            <div class="web-list-header">
+                <h2>Reserves</h2>
+            </div>
+
+            <!-- Search Bar -->
+            <form action="/reservation/list" method="get" class="search-bar">
+                <input type="text" name="search" placeholder="Cercar..." th:value="${param.search}">
+                <button type="submit">🔍</button>
+            </form>
+
+            <div class="web-list-content">
+                <table class="web-list-webBar">
+                    <thead>
+                        <tr>
+                            <th class="web-info">Id</th>
+                            <th class="web-info">Estat</th>
+                            <th class="web-info">Recompensa</th>
+                            <th class="web-info">Usuari</th>
+                        </tr>
+                    </thead>
+                    <tbody class="web-item" th:each="reservation : ${allReservations}">
+                        <tr th:onclick="|location.href='/reservation/detail/${reservation.id}'|">
+                            <td class="web-info" th:text="${reservation.id}"></td>
+                            <td class="web-info" th:text="${reservation.reservationState.display}"></td>
+                            <td class="web-info" th:text="${reservation.reward.name}"></td>
+                            <td class="web-info" th:text="${reservation.user.name}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </div>
+
+</body>
+
+</html>
