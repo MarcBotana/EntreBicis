@@ -59,6 +59,10 @@ class LoginViewModel : ViewModel() {
         _passwordError.value = null
     }
 
+    private fun  updateRole(value: Role) {
+        _role.value = value
+    }
+
     fun resetUserLogged() {
         _isUserLogged.value = false
     }
@@ -81,6 +85,7 @@ class LoginViewModel : ViewModel() {
                         savedUser = response.body()
                         if (savedUser != null) {
                             if (savedUser.isPasswordChanged ) {
+                                updateRole(savedUser.role)
                                 Log.d("LoginViewModel", "Usuari loginat amb éxit! $savedUser")
                                 _isUserLogged.value = true
                             }else {
@@ -121,20 +126,16 @@ class LoginViewModel : ViewModel() {
         if (_email.value.isEmpty()) {
             _emptyEmailError.value = "El camp no pot estar buit!"
             valid = false
-        }
-
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(_email.value).matches()) {
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(_email.value).matches()) {
             _emailError.value = "El correu electrònic no és vàlid!"
-            valid = false
-        }
-
-        if (_password.value.length < 8) {
-            _passwordError.value = "La contrasenya ha de tenir almenys 8 caràcters!"
             valid = false
         }
 
         if (_password.value.isEmpty()) {
             _emptyPasswordError.value = "El camp no pot estar buit!"
+            valid = false
+        } else if (_password.value.length < 4) {
+            _passwordError.value = "La contrasenya ha de tenir almenys 4 caràcters!"
             valid = false
         }
 

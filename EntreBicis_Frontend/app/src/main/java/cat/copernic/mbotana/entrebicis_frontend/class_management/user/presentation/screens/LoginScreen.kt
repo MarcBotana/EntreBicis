@@ -68,7 +68,8 @@ fun LoginScreen(
                 SessionUser(email, role, true)
             )
             viewModel.resetUserLogged()
-            navController.navigate("map") {
+            val bottomNavIndex = "M"
+            navController.navigate("main/$bottomNavIndex") {
                 popUpTo(0) { inclusive = true }
             }
         }

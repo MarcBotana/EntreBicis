@@ -8,13 +8,13 @@ import retrofit2.http.Path
 
 interface LoginApiRest {
 
-    @GET("/validate/{email}/{password}")
+    @GET("validate/{email}/{password}")
     suspend fun validateUser(@Path("email") email : String, @Path("password") password : String) : Response<User>
 
-    @POST("/sendEmail/{email}")
+    @POST("sendEmail/{email}")
     suspend fun sendEmail(@Path("email") email: String) : Response<Void>
 
-    @GET("/validateToken/{token}/{email}")
+    @GET("validateToken/{token}/{email}")
     suspend fun validateToken(@Path("token") token : String, @Path("email") email: String) : Response<Boolean>
 
 }

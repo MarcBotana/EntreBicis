@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomNavItem(val route: String, val icon: ImageVector, val label: String) {
-    object Rec : BottomNavItem("rewards", Icons.Default.ShoppingCart, "Recompenses")
-    object Map : BottomNavItem("map", Icons.Default.LocationOn, "Mapa")
-    object Opt : BottomNavItem("options", Icons.Default.Menu, "Opcions")
+    data object Rec : BottomNavItem("rewards", Icons.Default.ShoppingCart, "Recompenses")
+    data object Map : BottomNavItem("map", Icons.Default.LocationOn, "Mapa")
+    data object Opt : BottomNavItem("options", Icons.Default.Menu, "Opcions")
 }

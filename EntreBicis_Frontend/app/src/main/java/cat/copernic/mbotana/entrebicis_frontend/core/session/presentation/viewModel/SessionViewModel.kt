@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+
 class SessionViewModel(private val sessionRepository: SessionRepository) : ViewModel() {
 
     private val _userSession = MutableStateFlow(SessionUser("", Role.BIKER, false))
@@ -29,10 +30,21 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
         loadSession()
     }
 
-    fun updateSession(sessionUser: SessionUser) {
+    private fun loadSession() {
         viewModelScope.launch {
-            sessionRepository.saveSession(sessionUser)
-            _userSession.value = sessionUser
+            sessionRepository.getSession().collect { session ->
+                _userSession.value = session
+                Log.i("SessionINFO", _userSession.value.email)
+                Log.i("SessionINFO", _userSession.value.role.toString())
+                Log.i("SessionINFO", _userSession.value.isConnected.toString())
+                if (userSession.value.email.isNotBlank()) {
+                    val response = userApi.getUserByEmail(userSession.value.email)
+                    updateUserData(response.body())
+                    userData.value?.let { Log.i("SessionINFO", it.email) }
+                } else {
+                    Log.w("SessionINFO", "No email in userSession!")
+                }
+            }
         }
     }
 
@@ -40,24 +52,18 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
         _userData.value = user
     }
 
-    private fun loadSession() {
-        viewModelScope.launch {
-            sessionRepository.getSession().collect { session ->
-                _userSession.value = session
-                Log.i("SessionINFO", _userSession.value.email)
-                Log.i("SessionINFO", _userSession.value.role.toString())
-                val response = userApi.getUserByEmail(userSession.value.email)
-                updateUserData(response.body())
-                userData.value?.let { Log.i("SessionINFO", it.toString()) }
-            }
-        }
-    }
-
     fun logout() {
         _userSession.value = SessionUser("", Role.BIKER, false)
         _userData.value = null
         viewModelScope.launch {
             sessionRepository.saveSession(SessionUser("", Role.BIKER, false))
+        }
+    }
+
+    fun updateSession(sessionUser: SessionUser) {
+        viewModelScope.launch {
+            sessionRepository.saveSession(sessionUser)
+            _userSession.value = sessionUser
         }
     }
 }

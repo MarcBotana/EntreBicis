@@ -20,7 +20,8 @@ fun SplashScreen(navController: NavController, sessionViewModel: SessionViewMode
     LaunchedEffect(userSession) {
         delay(750)
         if (userSession.isConnected) {
-            navController.navigate("map") {
+            val bottomNavIndex = "M"
+            navController.navigate("main/$bottomNavIndex") {
                 popUpTo(0) { inclusive = true }
             }
         } else {

@@ -8,9 +8,9 @@ import retrofit2.http.Path
 
 interface UserApiRest {
 
-    @GET("/getUserEmail/{email}")
+    @GET("getUserEmail/{email}")
     suspend fun getUserByEmail(@Path("email") email : String) : Response<User>
 
-    @PUT("/update/{email}")
+    @PUT("update/{email}")
     suspend fun updateUser(@Path("email") email : String) : Response<Void>
 }
