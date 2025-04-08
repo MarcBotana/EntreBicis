@@ -52,7 +52,3 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
         }
     }
 }
-
-
-
-

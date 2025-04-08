@@ -1,8 +1,6 @@
 package cat.copernic.mbotana.entrebicis_frontend.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -12,7 +10,6 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentati
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.LoginViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen.SplashScreen
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
-import cat.copernic.mbotana.entrebicis_frontend.main.screens.MainScreen
 
 @Composable
 fun AppNavigation(sessionViewModel: SessionViewModel) {
@@ -29,11 +26,10 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
 
         composable("main/{bottomNavIndex}") { backStackEntry ->
             val bottomNavIndex = backStackEntry.arguments?.getString("bottomNavIndex")
-            MainScreen(sessionViewModel, navController, bottomNavIndex ?: "BottomNavItem.Map.route")
+            MainScreen(sessionViewModel, navController, bottomNavIndex ?: "")
         }
-
-
-
     }
 }
+
+
 
