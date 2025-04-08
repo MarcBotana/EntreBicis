@@ -14,13 +14,13 @@ import kotlinx.coroutines.withContext
 class LoginViewModel : ViewModel() {
 
     //Variable Preparation
-    private val _email = MutableStateFlow<String>("")
+    private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
 
-    private val _password = MutableStateFlow<String>("")
+    private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password
 
-    private val _role = MutableStateFlow<Role>(Role.BIKER)
+    private val _role = MutableStateFlow(Role.BIKER)
     val role: StateFlow<Role> = _role
 
     //Error Messages
@@ -43,7 +43,7 @@ class LoginViewModel : ViewModel() {
     val unauthorizedError: StateFlow<String?> = _unauthorizedError
 
     //Others
-    private val _isUserLogged = MutableStateFlow<Boolean>(false)
+    private val _isUserLogged = MutableStateFlow(false)
     val isUserLogged: StateFlow<Boolean> = _isUserLogged
 
     //Update Functions
