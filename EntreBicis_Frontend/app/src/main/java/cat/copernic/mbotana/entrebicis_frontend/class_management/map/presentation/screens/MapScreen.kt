@@ -21,14 +21,14 @@ fun MapScreen(
     sessionViewModel: SessionViewModel,
     navController: NavController
 ) {
-    val user by sessionViewModel.userData.collectAsState()
+    val userSession by sessionViewModel.userSession.collectAsState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.Transparent
     ) {
         Text(
-            text = user.toString(),
+            text = userSession.toString(),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
         )

@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object UserRetrofitInstance {
 
-    private const val URL = Constants.BASE_URL + "/user"
+    private const val URL = Constants.BASE_URL + "/user/"
 
     val retrofitInstance: Retrofit by lazy {
         Retrofit.Builder()

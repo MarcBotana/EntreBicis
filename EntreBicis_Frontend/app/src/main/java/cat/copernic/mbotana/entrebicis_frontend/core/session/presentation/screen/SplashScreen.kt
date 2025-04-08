@@ -20,7 +20,7 @@ fun SplashScreen(navController: NavController, sessionViewModel: SessionViewMode
     LaunchedEffect(userSession) {
         delay(750)
         if (userSession.isConnected) {
-            navController.navigate("home") {
+            navController.navigate("map") {
                 popUpTo(0) { inclusive = true }
             }
         } else {
