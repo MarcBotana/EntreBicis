@@ -36,7 +36,7 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
         }
     }
 
-    private fun updateUserData(user: User?) {
+    fun updateUserData(user: User?) {
         _userData.value = user
     }
 
