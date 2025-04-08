@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .clearAuthentication(true))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/login", "/logout", "/css/**", "/images/**", "/scripts/**").permitAll()
                         .requestMatchers("/**").hasAuthority(Role.ADMIN.toString())
                         .anyRequest().authenticated())
