@@ -1,14 +1,19 @@
 package cat.copernic.mbotana.entrebicis_backend.controller.api;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cat.copernic.mbotana.entrebicis_backend.entity.Token;
 import cat.copernic.mbotana.entrebicis_backend.entity.User;
+import cat.copernic.mbotana.entrebicis_backend.logic.TokenLogic;
 import cat.copernic.mbotana.entrebicis_backend.logic.UserLogic;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +27,12 @@ public class ApiUserController {
 
     @Autowired
     private UserLogic apiUserLogic;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    TokenLogic tokenLogic;
 
     @GetMapping("/getUserEmail/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email, Model model) {
@@ -47,24 +58,58 @@ public class ApiUserController {
         return response;
     }
 
-    @PutMapping("/update/{email}")
-    public ResponseEntity<Void> updateUser(@PathVariable String email, @RequestBody User user) {
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateUser(@RequestBody User user) {
 
         ResponseEntity<Void> response = null;
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-store");
+
         try {
-            if (email.isEmpty() || user == null) {
+            if (user == null) {
                 response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else if (!apiUserLogic.existUserByEmail(email)) {
+            } else if (!apiUserLogic.existUserByEmail(user.getEmail())) {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 apiUserLogic.updateUser(user);
+                response = new ResponseEntity<>(headers, HttpStatus.OK);
             }
         } catch (Exception e) {
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         return response;
+    }
+
+    @PutMapping("/updatePassword")
+    public ResponseEntity<Void> updateUserPassword(@RequestBody User user) {
+
+        ResponseEntity<Void> response = null;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-store");
+
+        try {
+            if (user == null) {
+                response = new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else if (!apiUserLogic.existUserByEmail(user.getEmail())) {
+                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+                user.setIsPasswordChanged(true);
+                deleteToken(user);
+                apiUserLogic.updateUser(user);
+                response = new ResponseEntity<>(headers, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return response;
+    }
+
+    public void deleteToken(User user) {
+        Optional<Token> token = tokenLogic.getByUser(user);
+        token.ifPresent(tokenLogic::deleteToken);
     }
 
 }

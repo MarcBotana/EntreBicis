@@ -24,6 +24,12 @@ class LoginViewModel : ViewModel() {
     val role: StateFlow<Role> = _role
 
     //Error Messages
+    private val _backendException = MutableStateFlow<String?>(null)
+    val backendException: StateFlow<String?> = _backendException
+
+    private val _frontendException = MutableStateFlow<String?>(null)
+    val frontendException: StateFlow<String?> = _frontendException
+
     private val _emptyEmailError = MutableStateFlow<String?>(null)
     val emptyEmailError: StateFlow<String?> = _emptyEmailError
 
@@ -51,15 +57,18 @@ class LoginViewModel : ViewModel() {
         _email.value = value
         _emptyEmailError.value = null
         _emailError.value = null
+        _emailNotFoundError.value = null
+        _unauthorizedError.value = null
     }
 
     fun updatePassword(value: String) {
         _password.value = value
         _emptyPasswordError.value = null
         _passwordError.value = null
+        _unauthorizedError.value = null
     }
 
-    private fun  updateRole(value: Role) {
+    private fun updateRole(value: Role) {
         _role.value = value
     }
 
@@ -76,7 +85,7 @@ class LoginViewModel : ViewModel() {
         return withContext(Dispatchers.IO) {
             var savedUser: User? = null
             try {
-                val isFormValid = checkFormData()
+                val isFormValid = checkDataForm()
 
                 if (isFormValid) {
 
@@ -84,43 +93,36 @@ class LoginViewModel : ViewModel() {
                     if (response.isSuccessful) {
                         savedUser = response.body()
                         if (savedUser != null) {
-                            if (savedUser.isPasswordChanged ) {
+                            if (savedUser.isPasswordChanged) {
                                 updateRole(savedUser.role)
-                                Log.d("LoginViewModel", "Usuari loginat amb éxit! $savedUser")
+                                Log.d("LoginViewModel", "USER LOGGED SUCCESS: $savedUser")
                                 _isUserLogged.value = true
-                            }else {
-                                Log.d("LoginViewModel", "Has de modificar la contrasenya inicial! $savedUser")
-                                _isUserLogged.value = false
+                            } else {
+                                Log.e("LoginViewModel", "NO PASSWORD CHANGED: $savedUser")
                                 _passwordError.value = "Has de modificar la contrasenya inicial!"
                                 savedUser = null
                             }
                         }
                     } else if (response.code() == 404) {
-                        Log.e(
-                            "LoginViewModel",
-                            "No s'ha trobat el correu: ${response.errorBody()?.string()} "
-                        )
-                        _isUserLogged.value = false
+                        Log.e("LoginViewModel", "EMAIL_NOT_FOUND!")
                         _emailNotFoundError.value = "Correu no registrat!"
                     } else if (response.code() == 401) {
-                        Log.e(
-                            "LoginViewModel",
-                            "Correu o contrasenya incorrectes!"
-                        )
-                        _isUserLogged.value = false
+                        Log.e("LoginViewModel", "EMAIL OR PASSWORD ERROR! (UNAUTHORIZED)")
                         _emailNotFoundError.value = "Correu o contrasenya incorrectes!"
+                    } else if (response.code() == 500) {
+                        Log.e("LoginViewModel", "BACKEND EXCEPTION: ${response.errorBody()?.string()}")
+                        _backendException.value = "Error amb el servidor!"
                     }
                 }
             } catch (e: Exception) {
-                Log.e("LoginViewModel", "Exepció al iniciar sessió: ${e.message}")
-                _isUserLogged.value = false
+                Log.e("LoginViewModel", "FRONTEND EXCEPTION: ${e.message}")
+                _frontendException.value = "Error amb el client!"
             }
             savedUser
         }
-
     }
 
-    private fun checkFormData(): Boolean {
+    private fun checkDataForm(): Boolean {
         var valid = true
 
         if (_email.value.isEmpty()) {

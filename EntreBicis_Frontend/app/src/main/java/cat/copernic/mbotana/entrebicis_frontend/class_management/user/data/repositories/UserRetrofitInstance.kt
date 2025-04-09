@@ -1,6 +1,6 @@
 package cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.repositories
 
-import cat.copernic.mbotana.entrebicis_frontend.core.Constants
+import cat.copernic.mbotana.entrebicis_frontend.core.common.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

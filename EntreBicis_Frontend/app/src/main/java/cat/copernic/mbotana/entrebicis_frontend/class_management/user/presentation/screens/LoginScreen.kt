@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +37,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.LoginViewModel
+import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
 import cat.copernic.mbotana.entrebicis_frontend.core.session.model.SessionUser
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 import kotlinx.coroutines.launch
@@ -46,6 +48,7 @@ fun LoginScreen(
     sessionViewModel: SessionViewModel,
     navController: NavController
 ) {
+    val context = LocalContext.current
 
     val isUserLogged by viewModel.isUserLogged.collectAsState()
 
@@ -62,6 +65,10 @@ fun LoginScreen(
 
     val unauthorizedError by viewModel.unauthorizedError.collectAsState()
 
+    val backendException by viewModel.backendException.collectAsState()
+    val frontendException by viewModel.frontendException.collectAsState()
+
+
     LaunchedEffect(isUserLogged) {
         if (isUserLogged) {
             sessionViewModel.updateSession(
@@ -73,6 +80,14 @@ fun LoginScreen(
                 popUpTo(0) { inclusive = true }
             }
         }
+    }
+
+    LaunchedEffect(backendException) {
+        backendException?.let { ToastMessage(context, it) }
+    }
+
+    LaunchedEffect(frontendException) {
+        frontendException?.let { ToastMessage(context, it) }
     }
 
     Surface(
