@@ -92,6 +92,24 @@ fun ChangePasswordScreen(
         }
     }
 
+    LaunchedEffect(sendEmailSuccess) {
+        if (sendEmailSuccess) {
+            viewModel.nextFormStep()
+        }
+    }
+
+    LaunchedEffect(tokenCodeSuccess) {
+        if (tokenCodeSuccess) {
+            viewModel.nextFormStep()
+        }
+    }
+
+    LaunchedEffect(changePasswordSuccess) {
+        if (changePasswordSuccess) {
+            viewModel.nextFormStep()
+        }
+    }
+
     LaunchedEffect(backendException) {
         backendException?.let { ToastMessage(context, it) }
     }
@@ -156,8 +174,7 @@ fun ChangePasswordScreen(
                                     viewModel,
                                     emptyEmailError,
                                     emailNotFoundError,
-                                    emailError,
-                                    sendEmailSuccess
+                                    emailError
                                 )
                             }
 
@@ -167,8 +184,7 @@ fun ChangePasswordScreen(
                                     viewModel,
                                     emptyTokenCodeError,
                                     tokenCodeNotFoundError,
-                                    tokenCodeError,
-                                    tokenCodeSuccess
+                                    tokenCodeError
                                 )
                             }
 
@@ -181,8 +197,7 @@ fun ChangePasswordScreen(
                                     emptyRepNewPasswordError,
                                     passwordNotMatchError,
                                     newPasswordError,
-                                    repNewPasswordError,
-                                    changePasswordSuccess
+                                    repNewPasswordError
                                 )
                             }
 
@@ -205,8 +220,7 @@ fun ShowEmailForm(
     viewModel: ChangePasswordViewModel,
     emptyEmailError: String?,
     emailNotFoundError: String?,
-    emailError: String?,
-    sendEmailSuccess: Boolean
+    emailError: String?
 ) {
 
     Column(
@@ -269,9 +283,6 @@ fun ShowEmailForm(
                 .align(Alignment.CenterHorizontally),
             onClick = {
                 viewModel.sendEmail()
-                if (sendEmailSuccess) {
-                    viewModel.nextFormStep()
-                }
             }) {
             Text("Seguent")
         }
@@ -285,8 +296,7 @@ fun ShowTokenForm(
     viewModel: ChangePasswordViewModel,
     emptyTokenCodeError: String?,
     tokenCodeNotFoundError: String?,
-    tokenCodeError: String?,
-    tokenCodeSuccess: Boolean
+    tokenCodeError: String?
 ) {
 
     Column(
@@ -349,9 +359,6 @@ fun ShowTokenForm(
                 .align(Alignment.CenterHorizontally),
             onClick = {
                 viewModel.validateTokenCode()
-                if (tokenCodeSuccess) {
-                    viewModel.nextFormStep()
-                }
             }) {
             Text("Seguent")
         }
@@ -367,8 +374,7 @@ fun ShowPasswordForm(
     emptyRepNewPasswordError: String?,
     passwordNotMatchError: String?,
     newPasswordError: String?,
-    repNewPasswordError: String?,
-    changePasswordSuccess: Boolean
+    repNewPasswordError: String?
 ) {
     Column(modifier = Modifier.padding(top = 4.dp)) {
         Text(
@@ -492,9 +498,6 @@ fun ShowPasswordForm(
                 .align(Alignment.CenterHorizontally),
             onClick = {
                 viewModel.updatePasswordUser()
-                if (changePasswordSuccess) {
-                    viewModel.nextFormStep()
-                }
             }) {
             Text("Canviar")
         }
