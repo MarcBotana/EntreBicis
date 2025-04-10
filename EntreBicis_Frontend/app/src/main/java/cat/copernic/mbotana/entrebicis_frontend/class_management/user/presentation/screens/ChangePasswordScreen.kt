@@ -255,8 +255,7 @@ fun ShowEmailForm(
     buttonOnClick: () -> Unit
 ) {
 
-    Column(
-    ) {
+    Column{
         Text(
             text = "Correu:",
             style = MaterialTheme.typography.headlineSmall,
@@ -345,8 +344,7 @@ fun ShowTokenForm(
     buttonOnClick: () -> Unit
 ) {
 
-    Column(
-    ) {
+    Column{
         Text(
             text = "Codi:",
             style = MaterialTheme.typography.headlineSmall,
@@ -589,7 +587,6 @@ fun ShowPasswordForm(
     }
 }
 
-
 @Composable
 fun FinishFormScreen(
     viewModel: ChangePasswordViewModel
@@ -615,7 +612,6 @@ fun FinishFormScreen(
         }
     }
 }
-
 
 @Composable
 fun ContinuousStepProgressBar(
@@ -648,7 +644,7 @@ fun ContinuousStepProgressBar(
                 .fillMaxHeight()
                 .fillMaxWidth(fraction = animatedProgress)
                 .clip(RoundedCornerShape(50))
-                .background(Color(0xFF2196F3)) // Azul
+                .background(Color(0xFF2196F3))
         )
     }
 }
