@@ -1,47 +1,39 @@
 package cat.copernic.mbotana.entrebicis_frontend.main
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import cat.copernic.mbotana.entrebicis_frontend.main.ui.theme.EntreBicis_FrontendTheme
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.ViewModelProvider
+import cat.copernic.mbotana.entrebicis_frontend.core.session.repository.SessionRepository
+import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
+import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.ViewModelFactory
+import cat.copernic.mbotana.entrebicis_frontend.navigation.AppNavigation
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var sessionRepository: SessionRepository
+    private lateinit var sessionViewModel: SessionViewModel
+
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        requestedOrientation = SCREEN_ORIENTATION_PORTRAIT
         setContent {
-            EntreBicis_FrontendTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            sessionRepository = SessionRepository(dataStore = applicationContext.dataStore)
+            sessionViewModel = ViewModelProvider(
+                this,
+                ViewModelFactory(sessionRepository)
+            ).get(SessionViewModel::class.java)
+            AppNavigation(sessionViewModel = sessionViewModel)
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    EntreBicis_FrontendTheme {
-        Greeting("Android")
-    }
-}

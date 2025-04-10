@@ -6,3 +6,4 @@ enum class RewardState {
     ASSIGNED,
     RETURNED
 }
+
