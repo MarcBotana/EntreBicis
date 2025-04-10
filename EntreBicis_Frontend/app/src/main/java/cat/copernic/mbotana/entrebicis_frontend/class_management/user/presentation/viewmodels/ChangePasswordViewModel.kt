@@ -7,9 +7,11 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.repos
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.repositories.UserRetrofitInstance
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.sources.remote.LoginApiRest
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.sources.remote.UserApiRest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ChangePasswordViewModel : ViewModel() {
 
@@ -130,87 +132,103 @@ class ChangePasswordViewModel : ViewModel() {
         UserApiRest::class.java
     )
 
-    fun sendEmail() {
-        viewModelScope.launch {
-            try {
-                val isEmailValid = checkEmailForm()
-                if (isEmailValid) {
-                    val response = loginApi.sendEmail(_email.value)
-                    if (response.isSuccessful) {
-                        Log.d("ChangePasswordViewModel", "SEND EMAIL SUCCESS!")
-                        _sendEmailSuccess.value = true
-                    } else if (response.code() == 404) {
-                        Log.e("ChangePasswordViewModel", "EMAIL_NOT_FOUND: ${response.errorBody()?.string()}")
-                        _emailNotFoundError.value = "Correu no registrat!"
-                    } else if (response.code() == 500) {
-                        Log.e("ChangePasswordViewModel", "BACKEND EXCEPTION: ${response.errorBody()?.string()}")
-                        _backendException.value = "Error amb el servidor!"
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("LoginViewModel", "EXCEPTION: ${e.message}")
-                _frontendException.value = "Error amb el client!"
-            }
-        }
-    }
-
-    fun validateTokenCode() {
-        viewModelScope.launch {
-            try {
-                val isTokenValid = checkTokenCodeForm()
-                if (isTokenValid) {
-                    val response = loginApi.validateToken(_tokenCode.value, _email.value)
-                    if (response.isSuccessful) {
-                        Log.d("ChangePasswordViewModel", "TOKEN CODE SUCCESS!")
-                        _tokenCodeSuccess.value = true
-                    } else if (response.code() == 404) {
-                        Log.d("ChangePasswordViewModel", "TOKEN CODE NOT FOUND!")
-                        _tokenCodeNotFoundError.value = "El codi no és vàlid!"
-                    } else if (response.code() == 401) {
-                        Log.d("ChangePasswordViewModel", "TOKEN CODE EXPIRED! (UNAUTHORIZED)")
-                        _tokenCodeError.value = "El codi ha expirat!"
-                    } else if (response.code() == 400) {
-                        Log.d("ChangePasswordViewModel", "TOKEN CODE NOT FOUND!")
-                        _tokenCodeNotFoundError.value = "El codi no és vàlid!"
-                    } else if (response.code() == 500) {
-                        Log.e("ChangePasswordViewModel", "BACKEND EXCEPTION: ${response.errorBody()?.string()}")
-                        _backendException.value = "Error amb el servidor!"
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("ChangePasswordViewModel", "FRONTEND EXCEPTION: ${e.message}")
-                _frontendException.value = "Error amb el client!"
-            }
-        }
-    }
-
-    fun updatePasswordUser() {
-        viewModelScope.launch {
-            try {
-                val isNewPasswordValid = checkPasswordForm()
-                if (isNewPasswordValid) {
-                    val userDB = userApi.getUserByEmail(_email.value).body()
-                    if (userDB != null) {
-                        userDB.password = _newPassword.value
-                        val response = userApi.updateUser(userDB)
+    suspend fun sendEmail() {
+        return withContext(Dispatchers.IO) {
+            viewModelScope.launch {
+                try {
+                    val isEmailValid = checkEmailForm()
+                    if (isEmailValid) {
+                        val response = loginApi.sendEmail(_email.value)
                         if (response.isSuccessful) {
-                            Log.d("ChangePasswordViewModel", "PASSWORD CHANGE SUCCESS!")
-                            _changePasswordSuccess.value = true
+                            Log.d("ChangePasswordViewModel", "SEND EMAIL SUCCESS!")
+                            _sendEmailSuccess.value = true
+                        } else if (response.code() == 404) {
+                            Log.e(
+                                "ChangePasswordViewModel",
+                                "EMAIL_NOT_FOUND: ${response.errorBody()?.string()}"
+                            )
+                            _emailNotFoundError.value = "Correu no registrat!"
+                        } else if (response.code() == 500) {
+                            Log.e(
+                                "ChangePasswordViewModel",
+                                "BACKEND EXCEPTION: ${response.errorBody()?.string()}"
+                            )
+                            _backendException.value = "Error amb el servidor!"
                         }
                     }
+                } catch (e: Exception) {
+                    Log.e("LoginViewModel", "EXCEPTION: ${e.message}")
+                    _frontendException.value = "Error amb el client!"
                 }
-
-            } catch (e: Exception) {
-                Log.e("ChangePasswordViewModel", "FRONTEND EXCEPTION: ${e.message}")
-                _frontendException.value = "Error amb el client!"
             }
         }
     }
 
-    fun finishStep() {
-        viewModelScope.launch {
-            _isPasswordChanged.value = true
-            _currentFormStep.value = 1
+    suspend fun validateTokenCode() {
+        return withContext(Dispatchers.IO) {
+            viewModelScope.launch {
+                try {
+                    val isTokenValid = checkTokenCodeForm()
+                    if (isTokenValid) {
+                        val response = loginApi.validateToken(_tokenCode.value, _email.value)
+                        if (response.isSuccessful) {
+                            Log.d("ChangePasswordViewModel", "TOKEN CODE SUCCESS!")
+                            _tokenCodeSuccess.value = true
+                        } else if (response.code() == 404) {
+                            Log.d("ChangePasswordViewModel", "TOKEN CODE NOT FOUND!")
+                            _tokenCodeNotFoundError.value = "El codi no és vàlid!"
+                        } else if (response.code() == 401) {
+                            Log.d("ChangePasswordViewModel", "TOKEN CODE EXPIRED! (UNAUTHORIZED)")
+                            _tokenCodeError.value = "El codi ha expirat!"
+                        } else if (response.code() == 400) {
+                            Log.d("ChangePasswordViewModel", "TOKEN CODE NOT FOUND!")
+                            _tokenCodeNotFoundError.value = "El codi no és vàlid!"
+                        } else if (response.code() == 500) {
+                            Log.e(
+                                "ChangePasswordViewModel",
+                                "BACKEND EXCEPTION: ${response.errorBody()?.string()}"
+                            )
+                            _backendException.value = "Error amb el servidor!"
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("ChangePasswordViewModel", "FRONTEND EXCEPTION: ${e.message}")
+                    _frontendException.value = "Error amb el client!"
+                }
+            }
+        }
+    }
+
+    suspend fun updatePasswordUser() {
+        return withContext(Dispatchers.IO) {
+            viewModelScope.launch {
+                try {
+                    val isNewPasswordValid = checkPasswordForm()
+                    if (isNewPasswordValid) {
+                        val userDB = userApi.getUserByEmail(_email.value).body()
+                        if (userDB != null) {
+                            userDB.password = _newPassword.value
+                            val response = userApi.updateUser(userDB)
+                            if (response.isSuccessful) {
+                                Log.d("ChangePasswordViewModel", "PASSWORD CHANGE SUCCESS!")
+                                _changePasswordSuccess.value = true
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("ChangePasswordViewModel", "FRONTEND EXCEPTION: ${e.message}")
+                    _frontendException.value = "Error amb el client!"
+                }
+            }
+        }
+    }
+
+    suspend fun finishStep() {
+        return withContext(Dispatchers.IO) {
+            viewModelScope.launch {
+                _isPasswordChanged.value = true
+                _currentFormStep.value = 1
+            }
         }
     }
 

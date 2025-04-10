@@ -29,6 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,10 +43,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.ChangePasswordViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
+import kotlinx.coroutines.launch
+
+
 
 @Composable
 fun ChangePasswordScreen(
@@ -62,6 +69,12 @@ fun ChangePasswordScreen(
     val sendEmailSuccess by viewModel.sendEmailSuccess.collectAsState()
     val tokenCodeSuccess by viewModel.tokenCodeSuccess.collectAsState()
     val changePasswordSuccess by viewModel.changePasswordSuccess.collectAsState()
+
+    var isButtonEnabled by remember { mutableStateOf(true) }
+
+    fun change() {
+        isButtonEnabled = false
+    }
 
     val backendException by viewModel.backendException.collectAsState()
     val frontendException by viewModel.frontendException.collectAsState()
@@ -95,18 +108,21 @@ fun ChangePasswordScreen(
     LaunchedEffect(sendEmailSuccess) {
         if (sendEmailSuccess) {
             viewModel.nextFormStep()
+            isButtonEnabled = true
         }
     }
 
     LaunchedEffect(tokenCodeSuccess) {
         if (tokenCodeSuccess) {
             viewModel.nextFormStep()
+            isButtonEnabled = true
         }
     }
 
     LaunchedEffect(changePasswordSuccess) {
         if (changePasswordSuccess) {
             viewModel.nextFormStep()
+            isButtonEnabled = true
         }
     }
 
@@ -174,7 +190,9 @@ fun ChangePasswordScreen(
                                     viewModel,
                                     emptyEmailError,
                                     emailNotFoundError,
-                                    emailError
+                                    emailError,
+                                    isButtonEnabled,
+                                    buttonOnClick = { change() }
                                 )
                             }
 
@@ -184,7 +202,9 @@ fun ChangePasswordScreen(
                                     viewModel,
                                     emptyTokenCodeError,
                                     tokenCodeNotFoundError,
-                                    tokenCodeError
+                                    tokenCodeError,
+                                    isButtonEnabled,
+                                    buttonOnClick = { change() }
                                 )
                             }
 
@@ -197,7 +217,9 @@ fun ChangePasswordScreen(
                                     emptyRepNewPasswordError,
                                     passwordNotMatchError,
                                     newPasswordError,
-                                    repNewPasswordError
+                                    repNewPasswordError,
+                                    isButtonEnabled,
+                                    buttonOnClick = { change() }
                                 )
                             }
 
@@ -220,7 +242,9 @@ fun ShowEmailForm(
     viewModel: ChangePasswordViewModel,
     emptyEmailError: String?,
     emailNotFoundError: String?,
-    emailError: String?
+    emailError: String?,
+    isButtonEnabled: Boolean,
+    buttonOnClick: () -> Unit
 ) {
 
     Column(
@@ -281,8 +305,12 @@ fun ShowEmailForm(
         Button(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
+            enabled = isButtonEnabled,
             onClick = {
-                viewModel.sendEmail()
+                buttonOnClick()
+                viewModel.viewModelScope.launch {
+                    viewModel.sendEmail()
+                }
             }) {
             Text("Seguent")
         }
@@ -296,7 +324,9 @@ fun ShowTokenForm(
     viewModel: ChangePasswordViewModel,
     emptyTokenCodeError: String?,
     tokenCodeNotFoundError: String?,
-    tokenCodeError: String?
+    tokenCodeError: String?,
+    isButtonEnabled: Boolean,
+    buttonOnClick: () -> Unit
 ) {
 
     Column(
@@ -357,8 +387,12 @@ fun ShowTokenForm(
         Button(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
+            enabled = isButtonEnabled,
             onClick = {
-                viewModel.validateTokenCode()
+                buttonOnClick()
+                viewModel.viewModelScope.launch {
+                    viewModel.validateTokenCode()
+                }
             }) {
             Text("Seguent")
         }
@@ -374,7 +408,9 @@ fun ShowPasswordForm(
     emptyRepNewPasswordError: String?,
     passwordNotMatchError: String?,
     newPasswordError: String?,
-    repNewPasswordError: String?
+    repNewPasswordError: String?,
+    isButtonEnabled: Boolean,
+    buttonOnClick: () -> Unit
 ) {
     Column(modifier = Modifier.padding(top = 4.dp)) {
         Text(
@@ -496,8 +532,12 @@ fun ShowPasswordForm(
         Button(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
+            enabled = isButtonEnabled,
             onClick = {
-                viewModel.updatePasswordUser()
+                buttonOnClick()
+                viewModel.viewModelScope.launch {
+                    viewModel.updatePasswordUser()
+                }
             }) {
             Text("Canviar")
         }
@@ -522,7 +562,9 @@ fun FinishFormScreen(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
             onClick = {
-                viewModel.finishStep()
+                viewModel.viewModelScope.launch {
+                    viewModel.finishStep()
+                }
             }) {
             Text("Inicair Sessió")
         }
@@ -535,7 +577,6 @@ fun ContinuousStepProgressBar(
     currentStep: Int,
     modifier: Modifier = Modifier
 ) {
-    // Progreso como porcentaje (0.33f, 0.66f, 1f)
     val progress = when (currentStep) {
         1 -> 0.1f
         2 -> 0.5f
