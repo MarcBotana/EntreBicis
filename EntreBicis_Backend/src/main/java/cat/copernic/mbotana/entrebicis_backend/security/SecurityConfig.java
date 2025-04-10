@@ -3,6 +3,7 @@ package cat.copernic.mbotana.entrebicis_backend.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,6 +48,8 @@ public class SecurityConfig {
                         .clearAuthentication(true))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/**").permitAll()
                         .requestMatchers("/login", "/logout", "/css/**", "/images/**", "/scripts/**").permitAll()
                         .requestMatchers("/**").hasAuthority(Role.ADMIN.toString())
                         .anyRequest().authenticated())
