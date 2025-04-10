@@ -27,7 +27,7 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
 
     NavHost(
         navController = navController,
-        startDestination = "changePassword",
+        startDestination = "splash",
         modifier = Modifier.fillMaxSize()
     ) {
         composable("splash") { SplashScreen(navController, sessionViewModel) }

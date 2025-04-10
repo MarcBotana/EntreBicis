@@ -258,7 +258,7 @@ fun LoginScreen(
                 Text(
                     text = "Canviar contrasenya",
                     modifier = Modifier.clickable {
-                        navController.navigate("changePass") {
+                        navController.navigate("changePassword") {
                             popUpTo(0) { inclusive = true }
                         }
                     }

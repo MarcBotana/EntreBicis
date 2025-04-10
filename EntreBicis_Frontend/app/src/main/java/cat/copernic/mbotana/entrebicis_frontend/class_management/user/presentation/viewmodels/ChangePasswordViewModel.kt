@@ -26,6 +26,10 @@ class ChangePasswordViewModel : ViewModel() {
     private val _repNewPassword = MutableStateFlow("")
     val repNewPassword: StateFlow<String> = _repNewPassword
 
+    //Form Steps
+    private val _currentFormStep = MutableStateFlow(1)
+    val currentFormStep: StateFlow<Int> = _currentFormStep
+
     //Ok Messages
     private val _sendEmailSuccess = MutableStateFlow<Boolean>(false)
     val sendEmailSuccess: StateFlow<Boolean> = _sendEmailSuccess
@@ -102,6 +106,18 @@ class ChangePasswordViewModel : ViewModel() {
         _emptyRepNewPasswordError.value = null
         _repNewPasswordError.value = null
         _passwordNotMatchError.value = null
+    }
+
+    fun nextFormStep() {
+        if (_currentFormStep.value != 3) {
+            _currentFormStep.value + 1
+        }
+    }
+
+    fun previousFormStep() {
+        if (_currentFormStep.value != 1) {
+            _currentFormStep.value - 1
+        }
     }
 
     fun resetPasswordChanged() {

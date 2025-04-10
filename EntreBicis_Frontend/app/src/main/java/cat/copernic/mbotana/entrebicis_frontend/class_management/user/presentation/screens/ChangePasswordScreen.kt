@@ -1,6 +1,14 @@
 package cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens
 
 import android.content.Context
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -51,6 +59,8 @@ fun ChangePasswordScreen(
     val tokenCode by viewModel.tokenCode.collectAsState()
     val newPassword by viewModel.newPassword.collectAsState()
     val repNewPassword by viewModel.repNewPassword.collectAsState()
+
+    val currentFormStep by viewModel.currentFormStep.collectAsState()
 
     val sendEmailSuccess by viewModel.sendEmailSuccess.collectAsState()
     val tokenCodeSuccess by viewModel.tokenCodeSuccess.collectAsState()
@@ -117,14 +127,44 @@ fun ChangePasswordScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                ShowEmailForm(
-                    email,
-                    viewModel,
-                    emptyEmailError,
-                    emailNotFoundError,
-                    emailError,
-                    context)
+                AnimatedContent(
+                    targetState = currentFormStep,
+                    transitionSpec = {
+                        (slideInHorizontally { it } + fadeIn())
+                            .togetherWith(slideOutHorizontally { -it } + fadeOut())
+                    },
+                    label = "StepAnimation"
+                ) { step ->
+                    when (step) {
+                        1 -> {
+                            ShowEmailForm(
+                                email,
+                                viewModel,
+                                emptyEmailError,
+                                emailNotFoundError,
+                                emailError)
+                        }
 
+                        2 -> {
+                            ShowEmailForm(
+                                email,
+                                viewModel,
+                                emptyEmailError,
+                                emailNotFoundError,
+                                emailError)
+                        }
+
+                        3 -> {
+                            ShowEmailForm(
+                                email,
+                                viewModel,
+                                emptyEmailError,
+                                emailNotFoundError,
+                                emailError)
+                        }
+                    }
+
+                }
             }
         }
     }
@@ -136,8 +176,7 @@ fun ShowEmailForm(
     viewModel: ChangePasswordViewModel,
     emptyEmailError: String?,
     emailNotFoundError: String?,
-    emailError: String?,
-    context: Context) {
+    emailError: String?) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -204,7 +243,7 @@ fun ShowEmailForm(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally),
                 onClick = {
-                    ToastMessage(context, "Hola")
+                    viewModel.nextFormStep()
                 }) {
                 Text("Seguent")
             }
