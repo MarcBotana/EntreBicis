@@ -104,6 +104,10 @@ class ChangePasswordViewModel : ViewModel() {
         _passwordNotMatchError.value = null
     }
 
+    fun resetPasswordChanged() {
+        _isPasswordChanged.value = false
+    }
+
     //Api Instance
     private val loginApi: LoginApiRest = LoginRetrofitInstance.retrofitInstance.create(
         LoginApiRest::class.java
