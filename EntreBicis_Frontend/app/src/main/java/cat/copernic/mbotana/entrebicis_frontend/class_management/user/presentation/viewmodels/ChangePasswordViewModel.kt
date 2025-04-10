@@ -110,13 +110,13 @@ class ChangePasswordViewModel : ViewModel() {
 
     fun nextFormStep() {
         if (_currentFormStep.value != 3) {
-            _currentFormStep.value + 1
+            _currentFormStep.value += 1
         }
     }
 
     fun previousFormStep() {
         if (_currentFormStep.value != 1) {
-            _currentFormStep.value - 1
+            _currentFormStep.value -= 1
         }
     }
 

@@ -138,7 +138,7 @@ fun ChangePasswordScreen(
                     when (step) {
                         1 -> {
                             ShowEmailForm(
-                                email,
+                                currentFormStep,
                                 viewModel,
                                 emptyEmailError,
                                 emailNotFoundError,
@@ -146,8 +146,8 @@ fun ChangePasswordScreen(
                         }
 
                         2 -> {
-                            ShowEmailForm(
-                                email,
+                            ShowTokenForm(
+                                currentFormStep,
                                 viewModel,
                                 emptyEmailError,
                                 emailNotFoundError,
@@ -156,7 +156,7 @@ fun ChangePasswordScreen(
 
                         3 -> {
                             ShowEmailForm(
-                                email,
+                                currentFormStep,
                                 viewModel,
                                 emptyEmailError,
                                 emailNotFoundError,
@@ -172,7 +172,7 @@ fun ChangePasswordScreen(
 
 @Composable
 fun ShowEmailForm(
-    email: String,
+    email: Int,
     viewModel: ChangePasswordViewModel,
     emptyEmailError: String?,
     emailNotFoundError: String?,
@@ -193,7 +193,88 @@ fun ShowEmailForm(
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
             )
             OutlinedTextField(
-                value = email,
+                value = email.toString(),
+                onValueChange = { viewModel.updateEmail(it) },
+                isError = emptyEmailError != null || emailNotFoundError != null || emailError != null,
+                shape = RoundedCornerShape(50.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 10.dp)
+                    .height(46.dp)
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(Color.White),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    cursorColor = Color.Gray
+                )
+            )
+            emptyEmailError?.let {
+                Text(
+                    text = it,
+                    color = Color.Red,
+                    style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(start = 12.dp)
+                )
+            }
+            emailNotFoundError?.let {
+                Text(
+                    text = it,
+                    color = Color.Red,
+                    style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(start = 12.dp)
+                )
+            }
+            emailError?.let {
+                Text(
+                    text = it,
+                    color = Color.Red,
+                    style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
+                    modifier = Modifier.padding(start = 12.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Button(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                onClick = {
+                    viewModel.nextFormStep()
+                }) {
+                Text("Seguent")
+            }
+        }
+    }
+}
+
+@Composable
+fun ShowTokenForm(
+    email: Int,
+    viewModel: ChangePasswordViewModel,
+    emptyEmailError: String?,
+    emailNotFoundError: String?,
+    emailError: String?) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color.LightGray)
+            .padding(16.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "TokenCode",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+            )
+            OutlinedTextField(
+                value = email.toString(),
                 onValueChange = { viewModel.updateEmail(it) },
                 isError = emptyEmailError != null || emailNotFoundError != null || emailError != null,
                 shape = RoundedCornerShape(50.dp),
