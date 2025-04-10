@@ -14,4 +14,7 @@ interface UserApiRest {
 
     @PUT("update/")
     suspend fun updateUser(@Body user: User) : Response<Void>
+
+    @PUT("updatePassword/")
+    suspend fun updateUserPassword(@Body user: User) : Response<Void>
 }

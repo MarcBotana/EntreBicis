@@ -208,7 +208,7 @@ class ChangePasswordViewModel : ViewModel() {
                         val userDB = userApi.getUserByEmail(_email.value).body()
                         if (userDB != null) {
                             userDB.password = _newPassword.value
-                            val response = userApi.updateUser(userDB)
+                            val response = userApi.updateUserPassword(userDB)
                             if (response.isSuccessful) {
                                 Log.d("ChangePasswordViewModel", "PASSWORD CHANGE SUCCESS!")
                                 _changePasswordSuccess.value = true
