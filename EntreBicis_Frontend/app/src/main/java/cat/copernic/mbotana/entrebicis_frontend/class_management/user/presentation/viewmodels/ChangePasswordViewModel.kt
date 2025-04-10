@@ -212,6 +212,12 @@ class ChangePasswordViewModel : ViewModel() {
                             if (response.isSuccessful) {
                                 Log.d("ChangePasswordViewModel", "PASSWORD CHANGE SUCCESS!")
                                 _changePasswordSuccess.value = true
+                            } else if (response.code() == 404) {
+                                Log.e("ChangePasswordViewModel", "EMAIL_NOT_FOUND!")
+                                _newPasswordError.value = "Usuari no trobat"
+                            } else if (response.code() == 400) {
+                                Log.e("ChangePasswordViewModel", "EMAIL_NOT_FOUND!")
+                                _newPasswordError.value = "Dades no vàlides!"
                             }
                         }
                     }

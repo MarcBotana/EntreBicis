@@ -12,9 +12,9 @@ interface UserApiRest {
     @GET("getUserEmail/{email}")
     suspend fun getUserByEmail(@Path("email") email : String) : Response<User>
 
-    @PUT("update/")
+    @PUT("update")
     suspend fun updateUser(@Body user: User) : Response<Void>
 
-    @PUT("updatePassword/")
+    @PUT("updatePassword")
     suspend fun updateUserPassword(@Body user: User) : Response<Void>
 }

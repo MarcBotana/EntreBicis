@@ -73,7 +73,7 @@ fun ChangePasswordScreen(
     var isButtonEnabled by remember { mutableStateOf(true) }
 
     fun change() {
-        isButtonEnabled = false
+        isButtonEnabled = !isButtonEnabled
     }
 
     val backendException by viewModel.backendException.collectAsState()
@@ -110,6 +110,9 @@ fun ChangePasswordScreen(
             viewModel.nextFormStep()
             isButtonEnabled = true
         }
+        else {
+            isButtonEnabled = true
+        }
     }
 
     LaunchedEffect(tokenCodeSuccess) {
@@ -117,11 +120,17 @@ fun ChangePasswordScreen(
             viewModel.nextFormStep()
             isButtonEnabled = true
         }
+        else {
+            isButtonEnabled = true
+        }
     }
 
     LaunchedEffect(changePasswordSuccess) {
         if (changePasswordSuccess) {
             viewModel.nextFormStep()
+            isButtonEnabled = true
+        }
+        else {
             isButtonEnabled = true
         }
     }
@@ -170,7 +179,6 @@ fun ChangePasswordScreen(
                         currentStep = currentFormStep,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 32.dp, vertical = 16.dp)
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -248,10 +256,9 @@ fun ShowEmailForm(
 ) {
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Correu",
+            text = "Correu:",
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
         )
@@ -283,6 +290,9 @@ fun ShowEmailForm(
                 style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         emailNotFoundError?.let {
             Text(
@@ -291,6 +301,9 @@ fun ShowEmailForm(
                 style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         emailError?.let {
             Text(
@@ -299,6 +312,9 @@ fun ShowEmailForm(
                 style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -330,10 +346,9 @@ fun ShowTokenForm(
 ) {
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Codi",
+            text = "Codi:",
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
         )
@@ -365,6 +380,9 @@ fun ShowTokenForm(
                 style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         tokenCodeNotFoundError?.let {
             Text(
@@ -373,6 +391,9 @@ fun ShowTokenForm(
                 style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         tokenCodeError?.let {
             Text(
@@ -381,6 +402,9 @@ fun ShowTokenForm(
                 style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -412,9 +436,10 @@ fun ShowPasswordForm(
     isButtonEnabled: Boolean,
     buttonOnClick: () -> Unit
 ) {
-    Column(modifier = Modifier.padding(top = 4.dp)) {
+    Column(
+        modifier = Modifier.padding(top = 4.dp)) {
         Text(
-            text = "Nova Contrasenya",
+            text = "Nova contrasenya:",
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(top = 8.dp)
         )
@@ -449,6 +474,9 @@ fun ShowPasswordForm(
                 ),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         newPasswordError?.let {
             Text(
@@ -460,6 +488,9 @@ fun ShowPasswordForm(
                 ),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         passwordNotMatchError?.let {
             Text(
@@ -473,6 +504,11 @@ fun ShowPasswordForm(
             )
         }
         Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            text = "Repeteix contrasenya:",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(top = 8.dp)
+        )
         OutlinedTextField(
             value = repNewPassword,
             onValueChange = { viewModel.updateRepNewPassword(it) },
@@ -504,6 +540,9 @@ fun ShowPasswordForm(
                 ),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         repNewPasswordError?.let {
             Text(
@@ -515,6 +554,9 @@ fun ShowPasswordForm(
                 ),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         passwordNotMatchError?.let {
             Text(
@@ -526,6 +568,9 @@ fun ShowPasswordForm(
                 ),
                 modifier = Modifier.padding(start = 12.dp)
             )
+            if (!isButtonEnabled) {
+                buttonOnClick()
+            }
         }
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -566,7 +611,7 @@ fun FinishFormScreen(
                     viewModel.finishStep()
                 }
             }) {
-            Text("Inicair Sessió")
+            Text("Sortir")
         }
     }
 }
@@ -594,9 +639,9 @@ fun ContinuousStepProgressBar(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(10.dp)
+            .height(20.dp)
             .clip(RoundedCornerShape(50))
-            .background(Color.LightGray)
+            .background(Color.White)
     ) {
         Box(
             modifier = Modifier

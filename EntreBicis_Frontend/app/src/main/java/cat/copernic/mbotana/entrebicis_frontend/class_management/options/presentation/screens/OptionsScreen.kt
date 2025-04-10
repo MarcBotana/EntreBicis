@@ -26,7 +26,7 @@ fun OptionsScreen(sessionViewModel: SessionViewModel, navController: NavControll
                 .padding(16.dp),
         ) {
             Text(
-                text = "Pantalla de Opciones",
+                text = "Opcions",
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
             )

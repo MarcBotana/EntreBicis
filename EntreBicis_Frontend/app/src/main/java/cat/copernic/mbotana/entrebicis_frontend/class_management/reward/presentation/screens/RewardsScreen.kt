@@ -19,7 +19,7 @@ fun RewardsScreen(sessionViewModel: SessionViewModel, navController: NavControll
         color = Color.Transparent
     ) {
         Text(
-            text = "Pantalla de Recompensas",
+            text = "Recompenses",
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
         )
