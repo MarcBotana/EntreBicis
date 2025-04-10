@@ -31,11 +31,14 @@ class ChangePasswordViewModel : ViewModel() {
     val currentFormStep: StateFlow<Int> = _currentFormStep
 
     //Ok Messages
-    private val _sendEmailSuccess = MutableStateFlow<Boolean>(false)
+    private val _sendEmailSuccess = MutableStateFlow(false)
     val sendEmailSuccess: StateFlow<Boolean> = _sendEmailSuccess
 
-    private val _tokenCodeSuccess = MutableStateFlow<Boolean>(false)
+    private val _tokenCodeSuccess = MutableStateFlow(false)
     val tokenCodeSuccess: StateFlow<Boolean> = _tokenCodeSuccess
+
+    private val _changePasswordSuccess = MutableStateFlow(false)
+    val changePasswordSuccess: StateFlow<Boolean> = _changePasswordSuccess
 
     //Error Messages
     private val _backendException = MutableStateFlow<String?>(null)
@@ -109,14 +112,8 @@ class ChangePasswordViewModel : ViewModel() {
     }
 
     fun nextFormStep() {
-        if (_currentFormStep.value != 3) {
+        if (_currentFormStep.value != 4) {
             _currentFormStep.value += 1
-        }
-    }
-
-    fun previousFormStep() {
-        if (_currentFormStep.value != 1) {
-            _currentFormStep.value -= 1
         }
     }
 
@@ -198,14 +195,22 @@ class ChangePasswordViewModel : ViewModel() {
                         val response = userApi.updateUser(userDB)
                         if (response.isSuccessful) {
                             Log.d("ChangePasswordViewModel", "PASSWORD CHANGE SUCCESS!")
-                            _isPasswordChanged.value = true
+                            _changePasswordSuccess.value = true
                         }
                     }
                 }
 
             } catch (e: Exception) {
-
+                Log.e("ChangePasswordViewModel", "FRONTEND EXCEPTION: ${e.message}")
+                _frontendException.value = "Error amb el client!"
             }
+        }
+    }
+
+    fun finishStep() {
+        viewModelScope.launch {
+            _isPasswordChanged.value = true
+            _currentFormStep.value = 1
         }
     }
 
@@ -254,8 +259,7 @@ class ChangePasswordViewModel : ViewModel() {
         }
 
         if (_newPassword.value != _repNewPassword.value) {
-            _newPasswordError.value = "Les contrasenyes no son iguals!"
-            _repNewPasswordError.value = "Les contrasenyes no son iguals!"
+            _passwordNotMatchError.value = "Les contrasenyes no son iguals!"
         }
 
         return valid
