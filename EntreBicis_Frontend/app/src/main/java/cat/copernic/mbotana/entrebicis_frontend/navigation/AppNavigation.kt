@@ -13,7 +13,9 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentatio
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewmodels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.options.presentation.screens.OptionsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardsScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.ChangePasswordScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.LoginScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.ChangePasswordViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.LoginViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen.SplashScreen
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
@@ -25,12 +27,13 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
 
     NavHost(
         navController = navController,
-        startDestination = "splash",
+        startDestination = "changePassword",
         modifier = Modifier.fillMaxSize()
     ) {
         composable("splash") { SplashScreen(navController, sessionViewModel) }
 
         composable("login") { LoginScreen(LoginViewModel(), sessionViewModel, navController) }
+        composable("changePassword") { ChangePasswordScreen(ChangePasswordViewModel(), navController) }
 
         composable("main/{bottomNavIndex}") { backStackEntry ->
             val bottomNavIndex = backStackEntry.arguments?.getString("bottomNavIndex")
