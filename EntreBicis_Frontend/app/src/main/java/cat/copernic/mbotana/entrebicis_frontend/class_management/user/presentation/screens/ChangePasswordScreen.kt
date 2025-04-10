@@ -3,6 +3,8 @@ package cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentat
 import android.content.Context
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -34,6 +36,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -141,7 +144,12 @@ fun ChangePasswordScreen(
                         .padding(16.dp)
                 ) {
 
-                    StepProgressBar(currentFormStep)
+                    ContinuousStepProgressBar(
+                        currentStep = currentFormStep,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp, vertical = 16.dp)
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -453,28 +461,39 @@ fun ShowPasswordForm(
 }
 
 @Composable
-fun StepProgressBar(currentStep: Int, totalSteps: Int = 3) {
-    Row(
-        modifier = Modifier
+fun ContinuousStepProgressBar(
+    currentStep: Int,
+    modifier: Modifier = Modifier
+) {
+    // Progreso como porcentaje (0.33f, 0.66f, 1f)
+    val progress = when (currentStep) {
+        1 -> 0.1f
+        2 -> 0.5f
+        3 -> 0.9f
+        4 -> 1.0f
+        else -> 0f
+    }
+
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(durationMillis = 500),
+        label = "ProgressBarAnimation"
+    )
+
+    Box(
+        modifier = modifier
             .fillMaxWidth()
-            .height(8.dp)
+            .height(10.dp)
             .clip(RoundedCornerShape(50))
             .background(Color.LightGray)
     ) {
-        for (i in 1..totalSteps) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .background(
-                        if (i <= currentStep) Color(0xFF4CAF50)
-                        else Color.LightGray
-                    )
-            )
-            if (i != totalSteps) {
-                Spacer(modifier = Modifier.width(4.dp))
-            }
-        }
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(fraction = animatedProgress)
+                .clip(RoundedCornerShape(50))
+                .background(Color(0xFF2196F3)) // Azul
+        )
     }
 }
 
