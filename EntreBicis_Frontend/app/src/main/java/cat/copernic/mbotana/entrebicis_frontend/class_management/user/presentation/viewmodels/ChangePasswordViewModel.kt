@@ -254,7 +254,8 @@ class ChangePasswordViewModel : ViewModel() {
         }
 
         if (_newPassword.value != _repNewPassword.value) {
-            _newPasswordError
+            _newPasswordError.value = "Les contrasenyes no son iguals!"
+            _repNewPasswordError.value = "Les contrasenyes no son iguals!"
         }
 
         return valid
