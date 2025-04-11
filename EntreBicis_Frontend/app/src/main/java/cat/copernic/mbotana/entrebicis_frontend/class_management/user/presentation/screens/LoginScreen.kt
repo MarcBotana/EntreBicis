@@ -52,9 +52,10 @@ fun LoginScreen(
 
     val isUserLogged by viewModel.isUserLogged.collectAsState()
 
+    val user by viewModel.user.collectAsState()
+
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
-    val role by viewModel.role.collectAsState()
 
     val emailError by viewModel.emailError.collectAsState()
     val emptyEmailError by viewModel.emptyEmailError.collectAsState()
@@ -70,10 +71,8 @@ fun LoginScreen(
 
 
     LaunchedEffect(isUserLogged) {
-        if (isUserLogged) {
-            sessionViewModel.updateSession(
-                SessionUser(email, role, true)
-            )
+        if (isUserLogged && user != null) {
+            sessionViewModel.updateSession(SessionUser(user!!.email, user!!.role, user!!.totalPoints, true))
             viewModel.resetUserLogged()
             val bottomNavIndex = "M"
             navController.navigate("main/$bottomNavIndex") {
@@ -247,8 +246,7 @@ fun LoginScreen(
                             .align(Alignment.CenterHorizontally),
                         onClick = {
                             viewModel.viewModelScope.launch {
-                                val user = viewModel.loginUser()
-                                sessionViewModel.updateUserData(user)
+                                viewModel.loginUser()
                             }
                         }) {
                         Text("Entrar")
@@ -259,15 +257,13 @@ fun LoginScreen(
                     text = "Canviar contrasenya",
                     modifier = Modifier.clickable {
                         navController.navigate("changePassword") {
-                            popUpTo(0) { inclusive = true }
+                            popUpTo("splash") { inclusive = true }
                         }
                     }
                 )
             }
         }
     }
-
-
 }
 
 

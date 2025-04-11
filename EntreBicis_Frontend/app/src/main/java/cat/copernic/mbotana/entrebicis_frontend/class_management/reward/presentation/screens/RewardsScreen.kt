@@ -13,7 +13,10 @@ import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
 @Composable
-fun RewardsScreen(sessionViewModel: SessionViewModel, navController: NavController) {
+fun RewardsScreen(
+    sessionViewModel: SessionViewModel,
+    navController: NavController) {
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.Transparent

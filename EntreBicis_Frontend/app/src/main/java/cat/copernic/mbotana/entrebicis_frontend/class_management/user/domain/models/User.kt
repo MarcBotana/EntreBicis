@@ -15,6 +15,7 @@ data class User(
     var mobile: Int,
     var image: String,
     var isPasswordChanged: Boolean,
+    var isReservationActive: Boolean,
     var userState: UserState,
     var totalPoints: Double,
     var routes: List<Route>,

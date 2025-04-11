@@ -8,9 +8,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,8 +20,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -49,7 +56,6 @@ import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.ChangePasswordViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
 import kotlinx.coroutines.launch
-
 
 
 @Composable
@@ -109,8 +115,7 @@ fun ChangePasswordScreen(
         if (sendEmailSuccess) {
             viewModel.nextFormStep()
             isButtonEnabled = true
-        }
-        else {
+        } else {
             isButtonEnabled = true
         }
     }
@@ -119,8 +124,7 @@ fun ChangePasswordScreen(
         if (tokenCodeSuccess) {
             viewModel.nextFormStep()
             isButtonEnabled = true
-        }
-        else {
+        } else {
             isButtonEnabled = true
         }
     }
@@ -129,8 +133,7 @@ fun ChangePasswordScreen(
         if (changePasswordSuccess) {
             viewModel.nextFormStep()
             isButtonEnabled = true
-        }
-        else {
+        } else {
             isButtonEnabled = true
         }
     }
@@ -175,10 +178,10 @@ fun ChangePasswordScreen(
                         .background(Color.LightGray)
                         .padding(16.dp)
                 ) {
+
                     ContinuousStepProgressBar(
                         currentStep = currentFormStep,
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        navController
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -255,7 +258,7 @@ fun ShowEmailForm(
     buttonOnClick: () -> Unit
 ) {
 
-    Column{
+    Column {
         Text(
             text = "Correu:",
             style = MaterialTheme.typography.headlineSmall,
@@ -344,7 +347,7 @@ fun ShowTokenForm(
     buttonOnClick: () -> Unit
 ) {
 
-    Column{
+    Column {
         Text(
             text = "Codi:",
             style = MaterialTheme.typography.headlineSmall,
@@ -435,7 +438,8 @@ fun ShowPasswordForm(
     buttonOnClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(top = 4.dp)) {
+        modifier = Modifier.padding(top = 4.dp)
+    ) {
         Text(
             text = "Nova contrasenya:",
             style = MaterialTheme.typography.headlineSmall,
@@ -616,7 +620,7 @@ fun FinishFormScreen(
 @Composable
 fun ContinuousStepProgressBar(
     currentStep: Int,
-    modifier: Modifier = Modifier
+    navController: NavController
 ) {
     val progress = when (currentStep) {
         1 -> 0.1f
@@ -632,20 +636,41 @@ fun ContinuousStepProgressBar(
         label = "ProgressBarAnimation"
     )
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(20.dp)
-            .clip(RoundedCornerShape(50))
-            .background(Color.White)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
+
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "Icon",
+            modifier = Modifier
+                .size(24.dp)
+                .clickable {
+                    navController.navigate("splash") {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+        )
+
+        Spacer(modifier = Modifier.width(6.dp))
+
         Box(
             modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(fraction = animatedProgress)
+                .height(20.dp)
+                .fillMaxWidth()
                 .clip(RoundedCornerShape(50))
-                .background(Color(0xFF2196F3))
-        )
+                .background(Color.White)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(fraction = animatedProgress)
+                    .clip(RoundedCornerShape(50))
+                    .background(Color(0xFF2196F3))
+            )
+        }
     }
 }
 

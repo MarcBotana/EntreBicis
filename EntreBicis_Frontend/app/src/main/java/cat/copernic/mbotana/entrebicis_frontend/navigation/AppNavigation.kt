@@ -4,10 +4,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.screens.MapScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewmodels.MapViewModel
@@ -17,6 +20,7 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentati
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.LoginScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.ChangePasswordViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.LoginViewModel
+import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen.SplashScreen
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
@@ -46,6 +50,9 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
 fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController, bottomNavIndex: String) {
 
     val navHostController = rememberNavController()
+    val userSession by sessionViewModel.userSession.collectAsState()
+    val navBackStackEntry = navHostController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry.value?.destination?.route
 
     val startDestination = when (bottomNavIndex) {
         "M" -> BottomNavItem.Map.route
@@ -54,12 +61,20 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
         else -> BottomNavItem.Map.route
     }
 
+    val screenTitle =  when (currentRoute) {
+        BottomNavItem.Map.route -> "Mapa"
+        BottomNavItem.Rec.route -> "Recompenses"
+        BottomNavItem.Opt.route -> "Menu"
+        else -> ""
+    }
+
     Scaffold(
+        topBar =
+        { CustomTopBar(screenTitle, userSession.totalPoints, true) },
         bottomBar = {
             BottomNavigationBar(navController = navHostController)
         }
     ) { paddingValues ->
-        // Este NavHost se encarga de la navegación interna dentro de MainScreen
         NavHost(
             navController = navHostController,
             startDestination = startDestination,
@@ -69,7 +84,7 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
                 MapScreen(MapViewModel(), sessionViewModel, navController)
             }
             composable(BottomNavItem.Rec.route) {
-                RewardsScreen(sessionViewModel, navController)  // Este se mantiene en la misma jerarquía
+                RewardsScreen(sessionViewModel, navController)
             }
             composable(BottomNavItem.Opt.route) {
                 OptionsScreen(sessionViewModel, navController)
