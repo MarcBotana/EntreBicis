@@ -19,6 +19,9 @@ class LoginViewModel : ViewModel() {
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password
 
+    private val _user = MutableStateFlow<User?>(null)
+    val user: StateFlow<User?> = _user
+
 
     //Error Messages
     private val _backendException = MutableStateFlow<String?>(null)
@@ -74,7 +77,7 @@ class LoginViewModel : ViewModel() {
         LoginApiRest::class.java
     )
 
-    suspend fun loginUser(): User? {
+    suspend fun loginUser() {
         return withContext(Dispatchers.IO) {
             var savedUser: User? = null
             try {
@@ -89,6 +92,7 @@ class LoginViewModel : ViewModel() {
                             if (savedUser.isPasswordChanged) {
                                 Log.d("LoginViewModel", "USER LOGGED SUCCESS: $savedUser")
                                 _isUserLogged.value = true
+                                _user.value = savedUser
                             } else {
                                 Log.e("LoginViewModel", "NO PASSWORD CHANGED: $savedUser")
                                 _passwordError.value = "Has de modificar la contrasenya inicial!"
@@ -110,7 +114,6 @@ class LoginViewModel : ViewModel() {
                 Log.e("LoginViewModel", "FRONTEND EXCEPTION: ${e.message}")
                 _frontendException.value = "Error amb el client!"
             }
-            savedUser
         }
     }
 

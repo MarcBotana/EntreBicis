@@ -26,7 +26,7 @@ import cat.copernic.mbotana.entrebicis_frontend.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopBar(screen: String, points: Int, showPoints: Boolean) {
+fun CustomTopBar(screen: String, points: Double, showPoints: Boolean) {
     TopAppBar(
         title = {
             Row(
