@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -17,6 +19,7 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentati
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.LoginScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.ChangePasswordViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.LoginViewModel
+import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen.SplashScreen
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
@@ -47,6 +50,8 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
 
     val navHostController = rememberNavController()
 
+    val userSession by sessionViewModel.userSession.collectAsState()
+
     val startDestination = when (bottomNavIndex) {
         "M" -> BottomNavItem.Map.route
         "R" -> BottomNavItem.Rec.route
@@ -55,11 +60,12 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
     }
 
     Scaffold(
+        topBar =
+        { CustomTopBar("Menú", userSession.totalPoints, true) },
         bottomBar = {
             BottomNavigationBar(navController = navHostController)
         }
     ) { paddingValues ->
-        // Este NavHost se encarga de la navegación interna dentro de MainScreen
         NavHost(
             navController = navHostController,
             startDestination = startDestination,
@@ -69,7 +75,7 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
                 MapScreen(MapViewModel(), sessionViewModel, navController)
             }
             composable(BottomNavItem.Rec.route) {
-                RewardsScreen(sessionViewModel, navController)  // Este se mantiene en la misma jerarquía
+                RewardsScreen(sessionViewModel, navController)
             }
             composable(BottomNavItem.Opt.route) {
                 OptionsScreen(sessionViewModel, navController)
