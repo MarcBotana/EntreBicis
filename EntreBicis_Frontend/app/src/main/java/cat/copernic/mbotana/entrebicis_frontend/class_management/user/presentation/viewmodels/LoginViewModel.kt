@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.repositories.LoginRetrofitInstance
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.sources.remote.LoginApiRest
-import cat.copernic.mbotana.entrebicis_frontend.core.enums.Role
 import cat.copernic.mbotana.entrebicis_frontend.user.domain.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +19,6 @@ class LoginViewModel : ViewModel() {
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password
 
-    private val _role = MutableStateFlow(Role.BIKER)
-    val role: StateFlow<Role> = _role
 
     //Error Messages
     private val _backendException = MutableStateFlow<String?>(null)
@@ -68,10 +65,6 @@ class LoginViewModel : ViewModel() {
         _unauthorizedError.value = null
     }
 
-    private fun updateRole(value: Role) {
-        _role.value = value
-    }
-
     fun resetUserLogged() {
         _isUserLogged.value = false
     }
@@ -94,7 +87,6 @@ class LoginViewModel : ViewModel() {
                         savedUser = response.body()
                         if (savedUser != null) {
                             if (savedUser.isPasswordChanged) {
-                                updateRole(savedUser.role)
                                 Log.d("LoginViewModel", "USER LOGGED SUCCESS: $savedUser")
                                 _isUserLogged.value = true
                             } else {

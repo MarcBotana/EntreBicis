@@ -38,7 +38,6 @@ import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.LoginViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
-import cat.copernic.mbotana.entrebicis_frontend.core.session.model.SessionUser
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 import kotlinx.coroutines.launch
 
@@ -54,7 +53,6 @@ fun LoginScreen(
 
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
-    val role by viewModel.role.collectAsState()
 
     val emailError by viewModel.emailError.collectAsState()
     val emptyEmailError by viewModel.emptyEmailError.collectAsState()
@@ -71,9 +69,6 @@ fun LoginScreen(
 
     LaunchedEffect(isUserLogged) {
         if (isUserLogged) {
-            sessionViewModel.updateSession(
-                SessionUser(email, role, true)
-            )
             viewModel.resetUserLogged()
             val bottomNavIndex = "M"
             navController.navigate("main/$bottomNavIndex") {
