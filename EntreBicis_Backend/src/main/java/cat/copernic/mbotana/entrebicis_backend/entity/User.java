@@ -77,6 +77,9 @@ public class User{
     @Column(nullable = false)
     private Boolean isPasswordChanged;
 
+    @Column(nullable = false)
+    private Boolean isReservationActive;
+
     @Column
     @Enumerated(EnumType.STRING)
     private UserState userState;

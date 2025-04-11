@@ -104,6 +104,7 @@ public class WebUserController {
                 newUser.setTotalPoints(0.0);
                 newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
                 newUser.setIsPasswordChanged(false);
+                newUser.setIsReservationActive(false);
                 newUser.setUserState(UserState.ACTIVE);
                 webUserLogic.saveUser(newUser);
 

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.repositories.LoginRetrofitInstance
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.sources.remote.LoginApiRest
-import cat.copernic.mbotana.entrebicis_frontend.core.enums.Role
 import cat.copernic.mbotana.entrebicis_frontend.user.domain.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +19,9 @@ class LoginViewModel : ViewModel() {
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password
 
-    private val _role = MutableStateFlow(Role.BIKER)
-    val role: StateFlow<Role> = _role
+    private val _user = MutableStateFlow<User?>(null)
+    val user: StateFlow<User?> = _user
+
 
     //Error Messages
     private val _backendException = MutableStateFlow<String?>(null)
@@ -68,10 +68,6 @@ class LoginViewModel : ViewModel() {
         _unauthorizedError.value = null
     }
 
-    private fun updateRole(value: Role) {
-        _role.value = value
-    }
-
     fun resetUserLogged() {
         _isUserLogged.value = false
     }
@@ -81,7 +77,7 @@ class LoginViewModel : ViewModel() {
         LoginApiRest::class.java
     )
 
-    suspend fun loginUser(): User? {
+    suspend fun loginUser() {
         return withContext(Dispatchers.IO) {
             var savedUser: User? = null
             try {
@@ -94,15 +90,14 @@ class LoginViewModel : ViewModel() {
                         savedUser = response.body()
                         if (savedUser != null) {
                             if (savedUser.isPasswordChanged) {
-                                updateRole(savedUser.role)
                                 Log.d("LoginViewModel", "USER LOGGED SUCCESS: $savedUser")
                                 _isUserLogged.value = true
-                            } else {
-                                Log.e("LoginViewModel", "NO PASSWORD CHANGED: $savedUser")
-                                _passwordError.value = "Has de modificar la contrasenya inicial!"
-                                savedUser = null
+                                _user.value = savedUser
                             }
                         }
+                    } else if (response.code() == 409) {
+                        Log.e("LoginViewModel", "NO PASSWORD CHANGED: $savedUser")
+                        _passwordError.value = "Has de fer el canvi de contrasenya inicial!"
                     } else if (response.code() == 404) {
                         Log.e("LoginViewModel", "EMAIL_NOT_FOUND!")
                         _emailNotFoundError.value = "Correu no registrat!"
@@ -118,7 +113,6 @@ class LoginViewModel : ViewModel() {
                 Log.e("LoginViewModel", "FRONTEND EXCEPTION: ${e.message}")
                 _frontendException.value = "Error amb el client!"
             }
-            savedUser
         }
     }
 

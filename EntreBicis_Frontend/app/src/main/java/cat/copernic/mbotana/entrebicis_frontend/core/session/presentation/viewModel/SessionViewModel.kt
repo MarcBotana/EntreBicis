@@ -16,11 +16,11 @@ import kotlinx.coroutines.launch
 
 class SessionViewModel(private val sessionRepository: SessionRepository) : ViewModel() {
 
-    private val _userSession = MutableStateFlow(SessionUser("", Role.BIKER, false))
+    private val _userSession = MutableStateFlow(SessionUser("", Role.BIKER,0.0, false))
     val userSession: StateFlow<SessionUser> get() = _userSession
 
     private val _userData = MutableStateFlow<User?>(null)
-    val userData: StateFlow<User?> get() = _userData
+    private val userData: StateFlow<User?> get() = _userData
 
     private val userApi: UserApiRest = UserRetrofitInstance.retrofitInstance.create(
         UserApiRest::class.java
@@ -36,6 +36,7 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
                 _userSession.value = session
                 Log.i("SessionINFO", _userSession.value.email)
                 Log.i("SessionINFO", _userSession.value.role.toString())
+                Log.i("SessionINFO", _userSession.value.totalPoints.toString())
                 Log.i("SessionINFO", _userSession.value.isConnected.toString())
                 if (userSession.value.email.isNotBlank()) {
                     val response = userApi.getUserByEmail(userSession.value.email)
@@ -48,15 +49,15 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
         }
     }
 
-    fun updateUserData(user: User?) {
+    private fun updateUserData(user: User?) {
         _userData.value = user
     }
 
     fun logout() {
-        _userSession.value = SessionUser("", Role.BIKER, false)
+        _userSession.value = SessionUser("", Role.BIKER, 0.0,false)
         _userData.value = null
         viewModelScope.launch {
-            sessionRepository.saveSession(SessionUser("", Role.BIKER, false))
+            sessionRepository.saveSession(SessionUser("", Role.BIKER, 0.0,false))
         }
     }
 
