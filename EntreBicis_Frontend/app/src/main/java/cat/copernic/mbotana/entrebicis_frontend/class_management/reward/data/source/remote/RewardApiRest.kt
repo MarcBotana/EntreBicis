@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_frontend.class_management.gpsPoints.data.source.remote
+package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.data.source.remote
 
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.domain.models.Reward
 import retrofit2.Response

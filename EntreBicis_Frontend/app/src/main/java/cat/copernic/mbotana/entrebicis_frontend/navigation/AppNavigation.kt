@@ -16,6 +16,7 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentatio
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewmodels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.options.presentation.screens.OptionsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardsScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewmodel.RewardsViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.ChangePasswordScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.LoginScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.ChangePasswordViewModel
@@ -84,7 +85,7 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
                 MapScreen(MapViewModel(), sessionViewModel, navController)
             }
             composable(BottomNavItem.Rec.route) {
-                RewardsScreen(sessionViewModel, navController)
+                RewardsScreen(RewardsViewModel(), sessionViewModel, navController)
             }
             composable(BottomNavItem.Opt.route) {
                 OptionsScreen(sessionViewModel, navController)
