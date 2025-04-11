@@ -24,7 +24,7 @@ fun RewardsScreen(
 
     Scaffold(
         topBar =
-        { CustomTopBar("Map", userSession.totalPoints, true) }
+        { CustomTopBar("Recompenses", userSession.totalPoints, true) }
     ) { innerPadding ->
         Surface(
             modifier = Modifier.padding(innerPadding),

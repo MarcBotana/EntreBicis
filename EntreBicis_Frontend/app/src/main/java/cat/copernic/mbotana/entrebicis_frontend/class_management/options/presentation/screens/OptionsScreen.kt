@@ -28,7 +28,7 @@ fun OptionsScreen(
 
     Scaffold(
         topBar =
-        { CustomTopBar("Map", userSession.totalPoints, true) }
+        { CustomTopBar("Menú", userSession.totalPoints, true) }
     ) { innerPadding ->
 
         Surface(
