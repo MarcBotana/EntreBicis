@@ -257,15 +257,13 @@ fun LoginScreen(
                     text = "Canviar contrasenya",
                     modifier = Modifier.clickable {
                         navController.navigate("changePassword") {
-                            popUpTo(0) { inclusive = true }
+                            popUpTo("splash") { inclusive = true }
                         }
                     }
                 )
             }
         }
     }
-
-
 }
 
 

@@ -64,7 +64,7 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
     val screenTitle =  when (currentRoute) {
         BottomNavItem.Map.route -> "Mapa"
         BottomNavItem.Rec.route -> "Recompenses"
-        BottomNavItem.Opt.route -> "Menú"
+        BottomNavItem.Opt.route -> "Menu"
         else -> ""
     }
 

@@ -93,12 +93,11 @@ class LoginViewModel : ViewModel() {
                                 Log.d("LoginViewModel", "USER LOGGED SUCCESS: $savedUser")
                                 _isUserLogged.value = true
                                 _user.value = savedUser
-                            } else {
-                                Log.e("LoginViewModel", "NO PASSWORD CHANGED: $savedUser")
-                                _passwordError.value = "Has de modificar la contrasenya inicial!"
-                                savedUser = null
                             }
                         }
+                    } else if (response.code() == 409) {
+                        Log.e("LoginViewModel", "NO PASSWORD CHANGED: $savedUser")
+                        _passwordError.value = "Has de fer el canvi de contrasenya inicial!"
                     } else if (response.code() == 404) {
                         Log.e("LoginViewModel", "EMAIL_NOT_FOUND!")
                         _emailNotFoundError.value = "Correu no registrat!"
