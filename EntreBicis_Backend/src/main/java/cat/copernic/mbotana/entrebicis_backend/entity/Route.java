@@ -54,7 +54,7 @@ public class Route {
     private Double avgRouteVelocity;
 
     @OneToMany(mappedBy = "route")
-    private List<GpsPoint> gpsPoints;
+    private List<GpsPoints> gpsPoints;
 
     @ManyToOne
     @JoinColumn(name = "user_email", unique = true)

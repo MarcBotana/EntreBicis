@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +34,7 @@ public class ApiUserController {
     TokenLogic tokenLogic;
 
     @GetMapping("/getUserEmail/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email, Model model) {
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
 
         ResponseEntity<User> response = null;
 
