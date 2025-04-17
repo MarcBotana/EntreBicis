@@ -85,7 +85,7 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
                 MapScreen(MapViewModel(), sessionViewModel, navController)
             }
             composable(BottomNavItem.Rec.route) {
-                RewardsScreen(RewardsViewModel(), sessionViewModel, navController)
+                RewardsScreen(RewardsViewModel(), navController)
             }
             composable(BottomNavItem.Opt.route) {
                 OptionsScreen(sessionViewModel, navController)
