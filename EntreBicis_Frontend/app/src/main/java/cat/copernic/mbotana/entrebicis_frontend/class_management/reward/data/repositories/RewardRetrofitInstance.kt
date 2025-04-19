@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_frontend.class_management.gpsPoints.data.repositories
+package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.data.repositories
 
 import cat.copernic.mbotana.entrebicis_frontend.core.common.Constants
 import retrofit2.Retrofit
