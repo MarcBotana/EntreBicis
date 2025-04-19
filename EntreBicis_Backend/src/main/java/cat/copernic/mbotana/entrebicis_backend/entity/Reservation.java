@@ -1,5 +1,6 @@
 package cat.copernic.mbotana.entrebicis_backend.entity;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.ReservationState;
@@ -31,10 +32,10 @@ public class Reservation {
     private ReservationState reservationState;
 
     @Column
-    private LocalTime reservationTime;
+    private LocalDateTime reservationTime;
 
     @Column
-    private LocalTime returnTime;
+    private LocalDateTime returnTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id", unique = true)
