@@ -3,8 +3,10 @@ package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.present
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.data.repositories.ReservationRetrofitInstance
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.data.repositories.RewardRetrofitInstance
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.data.source.remote.ReservationApiRest
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.data.source.remote.RewardApiRest
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.domain.models.Reward
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,7 +38,11 @@ class RewardsViewModel: ViewModel() {
         _search.value = value
     }
 
-    private val rewardApi: ReservationApiRest = RewardRetrofitInstance.retrofitInstance.create(
+    private val rewardApi: RewardApiRest = RewardRetrofitInstance.retrofitInstance.create(
+        RewardApiRest::class.java
+    )
+
+    private val reservationApi: ReservationApiRest = ReservationRetrofitInstance.retrofitInstance.create(
         ReservationApiRest::class.java
     )
 
@@ -80,9 +86,19 @@ class RewardsViewModel: ViewModel() {
         }
     }
 
-    fun makereseRvation() {
+    fun makeReservation(email: String, rewardId: Long) {
         viewModelScope.launch {
             try {
+                val response = reservationApi.createReservation(email, rewardId)
+                if (response.isSuccessful) {
+                    Log.e("RewardsViewModel", "RESERVATION_SUCCESS!")
+                } else if (response.code() == 409) {
+                    Log.e("RewardsViewModel", "USER HAS RESERVATION ACTIVE!")
+                    _backendException.value = "Ja tens una reserva activa!"
+                } else if (response.code() == 500) {
+                    Log.e("RewardsViewModel", "BACKEND EXCEPTION: ${response.errorBody()?.string()}")
+                    _backendException.value = "Error amb el servidor!"
+                }
 
             } catch (e: Exception) {
                 Log.e("RewardsViewModel", "FRONTEND EXCEPTION: ${e.message}")

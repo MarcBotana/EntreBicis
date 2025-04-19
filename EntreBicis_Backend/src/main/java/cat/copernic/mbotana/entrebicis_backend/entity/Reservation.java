@@ -1,7 +1,6 @@
 package cat.copernic.mbotana.entrebicis_backend.entity;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.ReservationState;
 import jakarta.persistence.Column;

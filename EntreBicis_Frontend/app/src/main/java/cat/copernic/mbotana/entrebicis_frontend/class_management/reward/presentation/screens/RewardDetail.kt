@@ -21,19 +21,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewmodel.RewardsViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
+import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun RewardDetail(
@@ -42,6 +42,8 @@ fun RewardDetail(
     navController: NavController,
     id: Long
 ) {
+    val context = LocalContext.current
+
     val navHostController = rememberNavController()
 
     val userSession by sessionViewModel.userSession.collectAsState()
@@ -49,8 +51,19 @@ fun RewardDetail(
 
     val rewardNotFoundError by viewModel.rewardNotFoundError.collectAsState()
 
+    val backendException by viewModel.backendException.collectAsState()
+    val frontendException by viewModel.frontendException.collectAsState()
+
     LaunchedEffect(id) {
         viewModel.loadRewardDetail(id)
+    }
+
+    LaunchedEffect(backendException) {
+        backendException?.let { ToastMessage(context, it) }
+    }
+
+    LaunchedEffect(frontendException) {
+        frontendException?.let { ToastMessage(context, it) }
     }
 
     Scaffold(
@@ -113,9 +126,7 @@ fun RewardDetail(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         onClick = {
-                            viewModel.viewModelScope.launch {
-
-                            }
+                                viewModel.makeReservation(userSession.email, id)
                         }) {
                         Text("Reservar")
                     }

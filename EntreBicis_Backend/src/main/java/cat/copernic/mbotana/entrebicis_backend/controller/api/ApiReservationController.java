@@ -42,9 +42,9 @@ public class ApiReservationController {
     private UserLogic apiUserLogic;
 
     @PostMapping("/create/{email}/{rewardId}")
-    public ResponseEntity<List<Reward>> createReservation(@PathVariable String email, @PathVariable Long rewardId) {
+    public ResponseEntity<Void> createReservation(@PathVariable String email, @PathVariable Long rewardId) {
 
-        ResponseEntity<List<Reward>> response = null;
+        ResponseEntity<Void> response = null;
 
         Reservation newReservation = null;
 
@@ -61,7 +61,8 @@ public class ApiReservationController {
                 User user = apiUserLogic.getUserByEmail(email);
                 Reward reward = apiRewardLogic.getRewardById(rewardId);
 
-                newReservation = new Reservation(
+                if (!user.getIsReservationActive()) {
+                    newReservation = new Reservation(
                     null, 
                     ReservationState.ACTIVE, 
                     LocalDateTime.now(), 
@@ -71,11 +72,17 @@ public class ApiReservationController {
                 );
 
                 apiReservationLogic.saveReservation(newReservation);
-                
+
                 reward.setRewardState(RewardState.RESERVED);
                 apiRewardLogic.updateReward(reward);
 
+                user.setIsReservationActive(true);
+                apiUserLogic.updateUser(user);
+
                 response = new ResponseEntity<>(headers, HttpStatus.OK);
+                } else {
+                    response = new ResponseEntity<>(HttpStatus.CONFLICT);
+                }
             }
         } catch (Exception e) {
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
