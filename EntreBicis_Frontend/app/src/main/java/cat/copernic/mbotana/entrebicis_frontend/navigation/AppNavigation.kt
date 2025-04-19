@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.screens.MapScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewmodels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.options.presentation.screens.OptionsScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardDetail
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewmodel.RewardsViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.ChangePasswordScreen
@@ -44,6 +46,14 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
             val bottomNavIndex = backStackEntry.arguments?.getString("bottomNavIndex")
             MainScreen(sessionViewModel, navController, bottomNavIndex ?: "")
         }
+
+        composable("rewardDetail/{id}",
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toLong()
+            val rewardsViewModel: RewardsViewModel = viewModel()
+            RewardDetail(rewardsViewModel, sessionViewModel, navController, id ?: -1L)
+        }
+
     }
 }
 

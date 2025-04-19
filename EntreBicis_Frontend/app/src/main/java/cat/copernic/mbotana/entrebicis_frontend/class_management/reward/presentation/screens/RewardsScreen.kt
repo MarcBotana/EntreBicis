@@ -24,23 +24,39 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewmodel.RewardsViewModel
+import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
 
 @Composable
 fun RewardsScreen(
     viewModel: RewardsViewModel,
     navController: NavController) {
+    val context = LocalContext.current
+
 
     val search by viewModel.search.collectAsState()
 
     val rewardsList by viewModel.rewardsList.collectAsState()
+
+    val backendException by viewModel.backendException.collectAsState()
+    val frontendException by viewModel.frontendException.collectAsState()
+
+    LaunchedEffect(backendException) {
+        backendException?.let { ToastMessage(context, it) }
+    }
+
+    LaunchedEffect(frontendException) {
+        frontendException?.let { ToastMessage(context, it) }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
