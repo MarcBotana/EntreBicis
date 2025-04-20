@@ -1,5 +1,7 @@
 package cat.copernic.mbotana.entrebicis_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.RewardState;
 import jakarta.persistence.Basic;
@@ -62,6 +64,7 @@ public class Reward {
     private ExchangePoint exchangePoint;
 
     @OneToOne(mappedBy = "reward")
+    @JsonIgnoreProperties({"user", "reward"})
     private Reservation reservation;
 
 }
