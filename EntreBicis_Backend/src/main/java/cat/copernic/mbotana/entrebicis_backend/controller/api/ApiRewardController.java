@@ -55,7 +55,7 @@ public class ApiRewardController {
 
         try {
             allRewards = apiRewardLogic.getAllRewards();
-            allRewards.stream()
+            allRewards = allRewards.stream()
                     .filter(reward -> reward.getRewardState().equals(RewardState.AVAILABLE)).toList();
                     
             response = new ResponseEntity<>(allRewards, headers, HttpStatus.OK);

@@ -2,6 +2,7 @@ package cat.copernic.mbotana.entrebicis_backend.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import cat.copernic.mbotana.entrebicis_backend.config.DataFormat;
 import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
@@ -91,6 +92,7 @@ public class User{
     private List<Route> routes;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"user", "reward"})
     private List<Reservation> reservations;
 
 }
