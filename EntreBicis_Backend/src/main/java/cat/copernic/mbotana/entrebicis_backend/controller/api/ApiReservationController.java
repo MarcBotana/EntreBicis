@@ -3,6 +3,7 @@ package cat.copernic.mbotana.entrebicis_backend.controller.api;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -61,11 +62,14 @@ public class ApiReservationController {
                 User user = apiUserLogic.getUserByEmail(email);
                 Reward reward = apiRewardLogic.getRewardById(rewardId);
 
+                String reservationCode = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
+
                 if (!user.getIsReservationActive()) {
                     newReservation = new Reservation(
                     null, 
+                    reservationCode,
                     ReservationState.ACTIVE, 
-                    LocalDateTime.now(), 
+                    LocalDateTime.now().withSecond(0).withNano(0),
                     LocalDateTime.now().plusHours(systemCollectionHours).withHour(23).withMinute(59).withSecond(0).withNano(0), 
                     user, 
                     reward
@@ -91,22 +95,26 @@ public class ApiReservationController {
         return response;
     }
 
-    @GetMapping("/list/available")
-    public ResponseEntity<List<Reward>> getAvailableRewardList() {
+    @GetMapping("/list/{email}")
+    public ResponseEntity<List<Reservation>> getUserReservationList(@PathVariable String email) {
 
-        ResponseEntity<List<Reward>> response = null;
+        ResponseEntity<List<Reservation>> response = null;
 
-        List<Reward> allRewards = new ArrayList<>();
+        List<Reservation> allUserReservations = new ArrayList<>();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cache-Control", "no-store");
 
         try {
-            allRewards = apiRewardLogic.getAllRewards();
-            allRewards.stream()
-                    .filter(reward -> reward.getRewardState().equals(RewardState.AVAILABLE)).toList();
-                    
-            response = new ResponseEntity<>(allRewards, headers, HttpStatus.OK);
+
+            if (!apiUserLogic.existUserByEmail(email)) {
+                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {  
+                User user = apiUserLogic.getUserByEmail(email);
+
+                allUserReservations = apiReservationLogic.getAllUserReservations(user);
+                response = new ResponseEntity<>(allUserReservations, headers, HttpStatus.OK);
+            }
         } catch (Exception e) {
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -115,21 +123,21 @@ public class ApiReservationController {
     }
 
     @GetMapping("/detail/{id}")
-    public ResponseEntity<Reward> getRewardDetail(@PathVariable Long id) {
+    public ResponseEntity<Reservation> getReservationDetail(@PathVariable Long id) {
 
-        ResponseEntity<Reward> response = null;
+        ResponseEntity<Reservation> response = null;
 
-        Reward reward = new Reward();
+        Reservation reservation = new Reservation();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cache-Control", "no-store");
 
         try {
-            if (!apiRewardLogic.existRewardById(id)) {
+            if (!apiReservationLogic.existReservationById(id)) {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                reward = apiRewardLogic.getRewardById(id);
-                response = new ResponseEntity<>(reward, headers, HttpStatus.OK);
+                reservation = apiReservationLogic.getReservationById(id);
+                response = new ResponseEntity<>(reservation, headers, HttpStatus.OK);
             }
         } catch (Exception e) {
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

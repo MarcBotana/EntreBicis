@@ -33,7 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewmodel.RewardsViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewModels.RewardsViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
 
 @Composable

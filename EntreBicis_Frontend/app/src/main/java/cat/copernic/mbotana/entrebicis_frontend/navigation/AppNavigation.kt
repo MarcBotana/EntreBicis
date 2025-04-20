@@ -14,15 +14,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.screens.MapScreen
-import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewmodels.MapViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewModels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.options.presentation.screens.OptionsScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens.ReservationDetail
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.viewModels.ReservationViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardDetail
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardsScreen
-import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewmodel.RewardsViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewModels.RewardsViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.ChangePasswordScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.LoginScreen
-import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.ChangePasswordViewModel
-import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.LoginViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.ChangePasswordViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.LoginViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen.SplashScreen
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
@@ -47,11 +49,16 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
             MainScreen(sessionViewModel, navController, bottomNavIndex ?: "")
         }
 
-        composable("rewardDetail/{id}",
-        ) { backStackEntry ->
+        composable("rewardDetail/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toLong()
             val rewardsViewModel: RewardsViewModel = viewModel()
             RewardDetail(rewardsViewModel, sessionViewModel, navController, id ?: -1L)
+        }
+
+        composable("reservationDetail/{id}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toLong()
+            val reservationViewModel: ReservationViewModel = viewModel()
+            ReservationDetail(reservationViewModel, sessionViewModel, navController, id ?: -1L)
         }
 
     }

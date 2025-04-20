@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewmodel
+package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewModels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

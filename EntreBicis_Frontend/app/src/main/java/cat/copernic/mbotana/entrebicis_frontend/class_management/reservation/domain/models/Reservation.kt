@@ -6,6 +6,7 @@ import cat.copernic.mbotana.entrebicis_frontend.user.domain.models.User
 
 data class Reservation(
     var id: Long? = null,
+    var reservationCode: String,
     var reservationTime: String,
     var returnTime: String,
     var user: User,

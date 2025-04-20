@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cat.copernic.mbotana.entrebicis_backend.entity.Reservation;
+import cat.copernic.mbotana.entrebicis_backend.entity.User;
 import cat.copernic.mbotana.entrebicis_backend.repository.ReservationRepository;
 
 @Service
@@ -24,6 +25,10 @@ public class ReservationLogic {
 
     public List<Reservation> getAllReservation() throws Exception {
         return reservationRepository.findAll();
+    }
+
+    public List<Reservation> getAllUserReservations(User user) throws Exception {
+        return reservationRepository.findReservationByUser(user);
     }
 
     public void updateReservation(Reservation reservation) throws Exception {

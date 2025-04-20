@@ -118,33 +118,35 @@ public class WebRewardController {
         try {
             allRewards = webRewardLogic.getAllRewards();
 
-            switch (sort) {
-                case "name":
-                    allRewards.sort(Comparator.comparing(Reward::getName));
-                    break;
-                case "exchangePoint":
-                    allRewards.sort(Comparator.comparing(reward -> reward.getExchangePoint().getName()));
-                    break;
-                case "AVAILABLE":
-                    allRewards = allRewards.stream()
-                            .filter(reward -> reward.getRewardState().equals(RewardState.AVAILABLE)).toList();
-                    break;
-                case "RESERVED":
-                    allRewards = allRewards.stream()
-                            .filter(reward -> reward.getRewardState().equals(RewardState.RESERVED)).toList();
-                    break;
-                case "ASSIGNED":
-                    allRewards = allRewards.stream()
-                            .filter(reward -> reward.getRewardState().equals(RewardState.ASSIGNED)).toList();
-                    break;
-                case "RETURNED":
-                    allRewards = allRewards.stream()
-                            .filter(reward -> reward.getRewardState().equals(RewardState.RETURNED)).toList();
-                    break;
-                default:
-                    break;
+            if (sort != null && !sort.isEmpty()) {
+                switch (sort) {
+                    case "name":
+                        allRewards.sort(Comparator.comparing(Reward::getName));
+                        break;
+                    case "exchangePoint":
+                        allRewards.sort(Comparator.comparing(reward -> reward.getExchangePoint().getName()));
+                        break;
+                    case "AVAILABLE":
+                        allRewards = allRewards.stream()
+                                .filter(reward -> reward.getRewardState().equals(RewardState.AVAILABLE)).toList();
+                        break;
+                    case "RESERVED":
+                        allRewards = allRewards.stream()
+                                .filter(reward -> reward.getRewardState().equals(RewardState.RESERVED)).toList();
+                        break;
+                    case "ASSIGNED":
+                        allRewards = allRewards.stream()
+                                .filter(reward -> reward.getRewardState().equals(RewardState.ASSIGNED)).toList();
+                        break;
+                    case "RETURNED":
+                        allRewards = allRewards.stream()
+                                .filter(reward -> reward.getRewardState().equals(RewardState.RETURNED)).toList();
+                        break;
+                    default:
+                        break;
+                }
             }
-
+            
             if (search != null && !search.isEmpty()) {
                 allRewards = allRewards.stream()
                         .filter(reward -> reward.getName().toLowerCase().contains(search.toLowerCase())).toList();

@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens
+package cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -30,14 +30,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
-import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewModels.RewardsViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.viewModels.ReservationViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
 import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
 @Composable
-fun RewardDetail(
-    viewModel: RewardsViewModel,
+fun ReservationDetail(
+    viewModel: ReservationViewModel,
     sessionViewModel: SessionViewModel,
     navController: NavController,
     id: Long

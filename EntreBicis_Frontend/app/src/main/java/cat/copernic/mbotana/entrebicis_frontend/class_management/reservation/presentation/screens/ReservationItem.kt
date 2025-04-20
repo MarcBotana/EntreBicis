@@ -1,7 +1,5 @@
-package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens
+package cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,22 +27,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
-import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.domain.models.Reward
-import cat.copernic.mbotana.entrebicis_frontend.core.enums.RewardState
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.domain.models.Reservation
+
 
 @Composable
-fun RewardItem(reward: Reward, navController: NavController) {
+fun ReservationItem(reservation: Reservation, navController: NavController) {
     Card(
         modifier = Modifier
             .padding(top = 12.dp, start = 12.dp, end = 12.dp)
             .fillMaxWidth()
             .clickable {
-                navController.navigate("reservationDetail/${reward.id}")
+                navController.navigate("rewardDetail/${reservation.id}")
             },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -76,11 +72,11 @@ fun RewardItem(reward: Reward, navController: NavController) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = reward.name,
+                        text = reservation.user.name,
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = "${reward.valuePoints} pts",
+                        text = "${reservation.id} pts",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -88,7 +84,7 @@ fun RewardItem(reward: Reward, navController: NavController) {
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = reward.description,
+                    text = reservation.reward.name,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -110,23 +106,23 @@ fun RewardItem(reward: Reward, navController: NavController) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun PreviewRewardItem() {
-
-    val reward = Reward(
-        1,
-        "Name",
-        "Description",
-        "Observation",
-        "",
-        20.0,
-        RewardState.AVAILABLE,
-        null,
-        null
-    )
-
-    val navController = rememberNavController()
-    RewardItem(reward, navController)
-}
+//@RequiresApi(Build.VERSION_CODES.O)
+//@Preview
+//@Composable
+//fun PreviewReservationItem() {
+//
+//    val reward = Reward(
+//        1,
+//        "Name",
+//        "Description",
+//        "Observation",
+//        "",
+//        20.0,
+//        RewardState.AVAILABLE,
+//        null,
+//        null
+//    )
+//
+//    val navController = rememberNavController()
+//    ReservationItem(reward, navController)
+//}
