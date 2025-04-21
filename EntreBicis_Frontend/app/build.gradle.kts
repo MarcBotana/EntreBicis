@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,5 +67,28 @@ dependencies {
 
     //Data Store
     implementation(libs.androidx.datastore.preferences)
+
+    //Maps
+
+    //Permissions
+    implementation(libs.accompanist.permissions)
+
+    //Icons
+    implementation(libs.androidx.material.icons.extended)
+
+    implementation(libs.osmdroid.android)
+
+    // Para los permisos en Compose
+    implementation(libs.accompanist.permissions.v0320)
+
+    // ViewModel y LiveData
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // Location services
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
+
+
 
 }

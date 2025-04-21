@@ -42,7 +42,6 @@ fun RewardsScreen(
     navController: NavController) {
     val context = LocalContext.current
 
-
     val search by viewModel.search.collectAsState()
 
     val rewardsList by viewModel.rewardsList.collectAsState()
