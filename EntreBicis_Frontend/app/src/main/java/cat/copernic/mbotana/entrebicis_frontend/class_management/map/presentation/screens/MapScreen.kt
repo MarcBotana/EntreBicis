@@ -25,11 +25,15 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewModels.MapViewModel
@@ -43,14 +47,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 
-
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
+@OptIn(ExperimentalPermissionsApi::class)
 fun MapScreen(
     viewModel: MapViewModel,
     sessionViewModel: SessionViewModel,
@@ -60,33 +61,39 @@ fun MapScreen(
 
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     val cameraPositionState = rememberCameraPositionState()
+    var mapLoaded by remember { mutableStateOf(false) }
+
 
     val currentLocation by viewModel.currentLocation.collectAsState()
     val routePoints by viewModel.routePoints.collectAsState()
     val currentSpeed by viewModel.currentSpeed.collectAsState()
+
+    Log.d("UIUpdate", "Recomposing with location = $currentLocation and speed = $currentSpeed")
+
 
     val userSession by sessionViewModel.userSession.collectAsState()
 
     val showStartDialog by viewModel.showStartDialog.collectAsState()
     val isTracking by viewModel.isTracking.collectAsState()
 
-    LaunchedEffect(locationPermissionState.status.isGranted) {
+    LaunchedEffect(mapLoaded) {
         if (locationPermissionState.status.isGranted) {
             viewModel.startTracking(context)
+        } else {
+            locationPermissionState.launchPermissionRequest()
+        }
+    }
+
+    LaunchedEffect(mapLoaded, currentLocation) {
+        if (mapLoaded && currentLocation != null) {
+            Log.d("LocationCamera", "Centrando la cámara en: $currentLocation")
+            cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(currentLocation!!, 18f))
         }
     }
 
     DisposableEffect(Unit) {
         onDispose {
             viewModel.stopTracking()
-        }
-    }
-
-    // Centrar la cámara en la ubicación actual cada vez que cambie
-    LaunchedEffect(currentLocation) {
-        currentLocation?.let { location ->
-            Log.d("LocationCamera", "Centrando la cámara en: $location")
-            cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(location, 16f))
         }
     }
 
@@ -97,27 +104,21 @@ fun MapScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
-                properties = MapProperties(isMyLocationEnabled = false),
+                properties = MapProperties(isMyLocationEnabled = true),
                 cameraPositionState = cameraPositionState,
+                onMapLoaded = {
+                    mapLoaded = true
+                },
                 uiSettings = MapUiSettings(
                     zoomControlsEnabled = true,
-                    myLocationButtonEnabled = false,
+                    myLocationButtonEnabled = true,
                     compassEnabled = true,
                     scrollGesturesEnabled = true,
                     zoomGesturesEnabled = true,
                     tiltGesturesEnabled = true
                 )
             ) {
-                // Mostrar la ubicación del usuario como un marcador
-                currentLocation?.let { location ->
-                    Marker(
-                        state = MarkerState(position = location),
-                        title = "You",
-                        icon = createCustomMarker() // Usar el icono personalizado
-                    )
-                }
 
-                // Mostrar la ruta si hay puntos
                 if (routePoints.size > 1) {
                     Polyline(
                         points = routePoints,
@@ -127,22 +128,42 @@ fun MapScreen(
                 }
             }
 
-            // Mostrar la velocidad actual
-            currentSpeed?.let { speed ->
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopCenter),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
-                    text = "Velocidad: ${"%.1f".format(speed)} km/h",
+                    text = "Ubicació: ${currentLocation?.let { "%.2f".format(it.latitude) }} - ${currentLocation?.let {
+                        "%.2f".format(
+                            it.longitude)
+                    }}",
                     modifier = Modifier
-                        .align(Alignment.TopCenter)
                         .background(Color.Black.copy(alpha = 0.6f))
                         .padding(8.dp),
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "Velocitat: ${"%.1f".format(currentSpeed)} km/h",
+                    modifier = Modifier
+                        .background(Color.Black.copy(alpha = 0.6f))
+                        .padding(8.dp),
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+
                 )
             }
 
+
             Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.End
+                horizontalAlignment = Alignment.Start
             ) {
                 FloatingActionButton(
                     onClick = {
@@ -161,26 +182,31 @@ fun MapScreen(
                 }
             }
         }
+
     }
 
-    // Mostrar el diálogo de confirmación para iniciar la ruta
+
+
+
     if (showStartDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.updateShowStartDialog(false) },
-            title = { Text("Start Route") },
-            text = { Text("Do you want to start tracking your route?") },
+            title = { Text("Começar ruta") },
+            text = { Text("Vols començar a registrar una nova ruta?") },
             confirmButton = {
                 TextButton(onClick = {
+                    viewModel.beginRoute(true)
                     viewModel.updateShowStartDialog(false)
-                    viewModel.updateIsTracking(true)
-                    viewModel.beginRoute()
+
                 }) {
-                    Text("Start")
+                    Text("Començar")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { viewModel.updateShowStartDialog(false) }) {
-                    Text("Cancel")
+                TextButton(onClick = {
+                    viewModel.updateShowStartDialog(false)
+                }) {
+                    Text("Cancel·lar")
                 }
             }
         )
@@ -189,7 +215,7 @@ fun MapScreen(
 
 fun createCustomMarker(): BitmapDescriptor {
     val width = 100
-    val height = 120 // Un poco más alto para que parezca un marcador
+    val height = 120
 
     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     val canvas = android.graphics.Canvas(bitmap)
