@@ -1,57 +1,100 @@
 package cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewModels
 
-import android.location.Location
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Looper
+import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 class MapViewModel : ViewModel() {
-    // Estado de grabación
-    private val _isRecording = MutableStateFlow(false)
-    val isRecording: StateFlow<Boolean> = _isRecording.asStateFlow()
 
-    // Ubicación actual del usuario
-    private val _currentLocation = MutableStateFlow<Location?>(null)
-    val currentLocation: StateFlow<Location?> = _currentLocation.asStateFlow()
+    private var fusedLocationClient: FusedLocationProviderClient? = null
+    private var locationCallback: LocationCallback? = null
 
-    // Lista de ubicaciones de la ruta
-    private val _routeLocations = MutableStateFlow<List<Location>>(emptyList())
-    val routeLocations: StateFlow<List<Location>> = _routeLocations.asStateFlow()
+    private val _currentLocation = MutableStateFlow<LatLng?>(null)
+    val currentLocation: StateFlow<LatLng?> = _currentLocation
 
-    // Distancia total
-    private val _totalDistance = MutableStateFlow(0f)
-    val totalDistance: StateFlow<Float> = _totalDistance.asStateFlow()
+    private val _routePoints = MutableStateFlow<List<LatLng>>(emptyList())
+    val routePoints: StateFlow<List<LatLng>> = _routePoints
 
-    // Modo seguimiento de cámara
-    private val _cameraTracking = MutableStateFlow(true)
-    val cameraTracking: StateFlow<Boolean> = _cameraTracking.asStateFlow()
+    private val _currentSpeed = MutableStateFlow<Float?>(null)
+    val currentSpeed: StateFlow<Float?> = _currentSpeed
 
-    fun toggleRecording() {
-        _isRecording.value = !_isRecording.value
-        if (!_isRecording.value) {
-            _routeLocations.value = emptyList()
-            _totalDistance.value = 0f
-        }
+    private var trackingRoute = false
+
+    private val _showStartDialog = MutableStateFlow(false)
+    val showStartDialog: StateFlow<Boolean> = _showStartDialog
+
+    private val _isTracking = MutableStateFlow(false)
+    val isTracking: StateFlow<Boolean> = _isTracking
+
+    fun updateShowStartDialog(value: Boolean) {
+        _showStartDialog.value = value
     }
 
-    fun updateLocation(location: Location) {
-        viewModelScope.launch {
-            _currentLocation.value = location
+    fun updateIsTracking(value: Boolean) {
+        _isTracking.value = value
+    }
 
-            if (_isRecording.value) {
-                val currentLocations = _routeLocations.value
-                if (currentLocations.isNotEmpty()) {
-                    _totalDistance.value += location.distanceTo(currentLocations.last())
+    fun startTracking(context: Context) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+            val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).apply {
+                setMinUpdateIntervalMillis(1000)
+            }.build()
+
+            locationCallback = object : LocationCallback() {
+                override fun onLocationResult(result: LocationResult) {
+                    result.lastLocation?.let { location ->
+                        val latLng = LatLng(location.latitude, location.longitude)
+                        _currentLocation.value = latLng
+
+                        Log.d("LocationDebug", "New Location: ${_currentLocation.value}")
+                        _currentSpeed.value = location.speed * 3.6f // Convert m/s to km/h
+                        Log.d("LocationDebug", "New Speed: ${_currentSpeed.value}")
+
+
+                        if (trackingRoute) {
+                            _routePoints.value += latLng
+                        }
+                    }
                 }
-                _routeLocations.value = currentLocations + location
             }
+
+            fusedLocationClient?.requestLocationUpdates(
+                locationRequest,
+                locationCallback as LocationCallback,
+                Looper.getMainLooper()
+            )
         }
     }
 
-    fun toggleCameraTracking() {
-        _cameraTracking.value = !_cameraTracking.value
+    fun beginRoute() {
+        _routePoints.value = emptyList()
+        trackingRoute = true
+    }
+
+    fun stopRoute() {
+        trackingRoute = false
+    }
+
+    fun stopTracking() {
+        fusedLocationClient?.removeLocationUpdates(locationCallback ?: return)
     }
 }

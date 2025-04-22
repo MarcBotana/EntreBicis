@@ -28,8 +28,9 @@
             android:exported="true"
             android:theme="@style/Theme.EntreBicis_Frontend">
             <meta-data
-                android:name="android.webkit.WebView.EnableSafeBrowsing"
-                android:value="false" />
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyDo44qmSlWlU47Sahr_RMuuXpv0nEKijao"/>
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -16,9 +16,12 @@ activityCompose = "1.10.1"
 composeBom = "2025.03.01"
 lifecycleViewmodelCompose = "2.8.7"
 mapsCompose = "2.11.4"
+mapsComposeVersion = "4.1.1"
 navigationCompose = "2.8.9"
 osmdroidAndroid = "6.1.16"
+playServicesLocationVersion = "21.0.1"
 playServicesMaps = "19.2.0"
+playServicesMapsVersion = "18.1.0"
 retrofit = "2.9.0"
 playServicesLocation = "21.3.0"
 
@@ -48,8 +51,11 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+maps-compose-v411 = { module = "com.google.maps.android:maps-compose", version.ref = "mapsComposeVersion" }
 osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
+play-services-location-v2101 = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocationVersion" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+play-services-maps-v1810 = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMapsVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 

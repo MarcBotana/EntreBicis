@@ -69,26 +69,15 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     //Maps
+    implementation(libs.maps.compose.v411)
+    implementation(libs.play.services.location.v2101)
+    implementation(libs.play.services.maps)
 
     //Permissions
     implementation(libs.accompanist.permissions)
 
     //Icons
     implementation(libs.androidx.material.icons.extended)
-
-    implementation(libs.osmdroid.android)
-
-    // Para los permisos en Compose
-    implementation(libs.accompanist.permissions.v0320)
-
-    // ViewModel y LiveData
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-
-    // Location services
-    implementation("com.google.android.gms:play-services-location:21.0.1")
-
-
 
 
 }
