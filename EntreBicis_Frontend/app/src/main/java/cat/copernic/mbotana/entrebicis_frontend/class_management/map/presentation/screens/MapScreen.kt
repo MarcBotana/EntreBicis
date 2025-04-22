@@ -123,7 +123,7 @@ fun MapScreen(
                     Polyline(
                         points = routePoints,
                         color = Color.Blue,
-                        width = 6f
+                        width = 20f
                     )
                 }
             }
