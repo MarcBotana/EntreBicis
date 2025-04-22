@@ -6,11 +6,14 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
@@ -33,20 +36,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewModels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.RoundCap
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 
@@ -67,6 +72,10 @@ fun MapScreen(
     val currentLocation by viewModel.currentLocation.collectAsState()
     val routePoints by viewModel.routePoints.collectAsState()
     val currentSpeed by viewModel.currentSpeed.collectAsState()
+    val bearing by viewModel.bearing.collectAsState()
+
+    val startRoutePoint by viewModel.startRoutePoint.collectAsState()
+    val endRoutePoint by viewModel.endRoutePoint.collectAsState()
 
     Log.d("UIUpdate", "Recomposing with location = $currentLocation and speed = $currentSpeed")
 
@@ -74,6 +83,7 @@ fun MapScreen(
     val userSession by sessionViewModel.userSession.collectAsState()
 
     val showStartDialog by viewModel.showStartDialog.collectAsState()
+    val showEndDialog by viewModel.showEndDialog.collectAsState()
     val isTracking by viewModel.isTracking.collectAsState()
 
     LaunchedEffect(mapLoaded) {
@@ -86,8 +96,7 @@ fun MapScreen(
 
     LaunchedEffect(mapLoaded, currentLocation) {
         if (mapLoaded && currentLocation != null) {
-            Log.d("LocationCamera", "Centrando la cámara en: $currentLocation")
-            cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(currentLocation!!, 18f))
+            viewModel.centerCamera(cameraPositionState)
         }
     }
 
@@ -119,42 +128,70 @@ fun MapScreen(
                 )
             ) {
 
-                if (routePoints.size > 1) {
+                if (isTracking && routePoints.size > 1) {
                     Polyline(
                         points = routePoints,
                         color = Color.Blue,
-                        width = 20f
+                        width = 50f,
+                        startCap = RoundCap(),
+                        endCap = RoundCap()
+                    )
+                } else if (routePoints.size > 1) {
+                    Polyline(
+                        points = routePoints,
+                        color = Color.Blue,
+                        width = 25f,
+                        startCap = RoundCap(),
+                        endCap = RoundCap()
+                    )
+                }
+
+                if (startRoutePoint != null) {
+                    Marker(
+                        state = MarkerState(position = startRoutePoint!!),
+                        title = "Start",
+                        snippet = "Route Start"
+                    )
+                }
+
+                if (endRoutePoint != null) {
+                    Marker(
+                        state = MarkerState(position = endRoutePoint!!),
+                        title = "End",
+                        snippet = "Route End"
                     )
                 }
             }
 
-            Column(
+            Box(
                 modifier = Modifier
-                    .align(Alignment.TopCenter),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(12.dp)
+                    .size(90.dp)
+                    .background(
+                        color = Color.White,
+                        shape = CircleShape
+                    )
+                    .border(6.dp, Color.Red, CircleShape)
+                    .padding(12.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Ubicació: ${currentLocation?.let { "%.2f".format(it.latitude) }} - ${currentLocation?.let {
-                        "%.2f".format(
-                            it.longitude)
-                    }}",
-                    modifier = Modifier
-                        .background(Color.Black.copy(alpha = 0.6f))
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = "Velocitat: ${"%.1f".format(currentSpeed)} km/h",
-                    modifier = Modifier
-                        .background(Color.Black.copy(alpha = 0.6f))
-                        .padding(8.dp),
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                Column(
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "%.1f".format(currentSpeed),
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp,
+                    )
+                    Text(
+                        text = "km/h",
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 10.sp,
 
-                )
+                        )
+                }
             }
 
 
@@ -170,8 +207,7 @@ fun MapScreen(
                         if (!isTracking) {
                             viewModel.updateShowStartDialog(true)
                         } else {
-                            viewModel.updateIsTracking(false)
-                            viewModel.stopRoute()
+                            viewModel.updateShowEndDialog(true)
                         }
                     }
                 ) {
@@ -186,8 +222,6 @@ fun MapScreen(
     }
 
 
-
-
     if (showStartDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.updateShowStartDialog(false) },
@@ -195,7 +229,7 @@ fun MapScreen(
             text = { Text("Vols començar a registrar una nova ruta?") },
             confirmButton = {
                 TextButton(onClick = {
-                    viewModel.beginRoute(true)
+                    viewModel.beginRoute()
                     viewModel.updateShowStartDialog(false)
 
                 }) {
@@ -205,6 +239,29 @@ fun MapScreen(
             dismissButton = {
                 TextButton(onClick = {
                     viewModel.updateShowStartDialog(false)
+                }) {
+                    Text("Cancel·lar")
+                }
+            }
+        )
+    }
+
+    if (showEndDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.updateShowEndDialog(false) },
+            title = { Text("Finalitzar ruta") },
+            text = { Text("Vols finalitzar aquesta ruta i guardar-la?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.stopRoute()
+                    viewModel.updateShowEndDialog(false)
+                }) {
+                    Text("Guardar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    viewModel.updateShowEndDialog(false)
                 }) {
                     Text("Cancel·lar")
                 }
