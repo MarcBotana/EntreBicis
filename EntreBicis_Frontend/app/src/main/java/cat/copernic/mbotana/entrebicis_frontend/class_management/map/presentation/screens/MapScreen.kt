@@ -254,6 +254,7 @@ fun MapScreen(
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.stopRoute()
+                    viewModel.saveRoute(userSession.email)
                     viewModel.updateShowEndDialog(false)
                 }) {
                     Text("Guardar")

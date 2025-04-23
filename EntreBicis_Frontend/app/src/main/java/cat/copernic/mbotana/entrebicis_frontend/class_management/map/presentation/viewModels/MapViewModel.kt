@@ -11,8 +11,11 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cat.copernic.mbotana.entrebicis_frontend.class_management.gpsPoints.domain.models.GpsPoints
+import cat.copernic.mbotana.entrebicis_frontend.class_management.gpsPoint.domain.models.GpsPoint
+import cat.copernic.mbotana.entrebicis_frontend.class_management.route.data.repositories.RouteRetrofitInstance
+import cat.copernic.mbotana.entrebicis_frontend.class_management.route.data.source.RouteApiRest
 import cat.copernic.mbotana.entrebicis_frontend.class_management.route.domain.models.Route
+import cat.copernic.mbotana.entrebicis_frontend.core.enums.RouteValidate
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -26,7 +29,9 @@ import com.google.maps.android.compose.CameraPositionState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.Duration
+import java.util.Locale
 
 class MapViewModel : ViewModel() {
 
@@ -34,6 +39,8 @@ class MapViewModel : ViewModel() {
     private var locationCallback: LocationCallback? = null
 
     private val _route = MutableStateFlow<Route?>(null)
+
+    private val _gpsPoint = MutableStateFlow<List<GpsPoint>>(emptyList())
 
     private val _bearing = MutableStateFlow<Float?>(null)
     val bearing: StateFlow<Float?> = _bearing
@@ -46,8 +53,6 @@ class MapViewModel : ViewModel() {
 
     private val _routePoints = MutableStateFlow<List<LatLng>>(emptyList())
     val routePoints: StateFlow<List<LatLng>> = _routePoints
-
-    private val _gpsPoints = MutableStateFlow<List<GpsPoints>>(emptyList())
 
     private val _showStartDialog = MutableStateFlow(false)
     val showStartDialog: StateFlow<Boolean> = _showStartDialog
@@ -64,6 +69,12 @@ class MapViewModel : ViewModel() {
     private val _endRoutePoint = MutableStateFlow<LatLng?>(null)
     val endRoutePoint: StateFlow<LatLng?> = _endRoutePoint
 
+    private val _backendException = MutableStateFlow<String?>(null)
+    val backendException: StateFlow<String?> = _backendException
+
+    private val _frontendException = MutableStateFlow<String?>(null)
+    val frontendException: StateFlow<String?> = _frontendException
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateLocation(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
@@ -78,20 +89,21 @@ class MapViewModel : ViewModel() {
         if (_isTracking.value) {
             _routePoints.value += latLng
 
-            val gpsPoints: GpsPoints = GpsPoints(
+            val gpsPoint = GpsPoint(
                 null,
                 latitude = latLng.latitude,
                 longitude = latLng.longitude,
-                time = LocalDateTime.now().toString(),
+                time = LocalTime.now().toString(),
                 speed = _currentSpeed.value,
+                isValid = true,
                 route = null
             )
 
-            _gpsPoints.value += gpsPoints
+            _gpsPoint.value += gpsPoint
 
         } else if (_routePoints.value.size > 1) {
-            _startRoutePoint.value = _routePoints.value[0]
-            _endRoutePoint.value = _routePoints.value[_routePoints.value.size - 1]
+            _startRoutePoint.value = _routePoints.value.first()
+            _endRoutePoint.value = _routePoints.value.last()
         }
     }
 
@@ -162,14 +174,89 @@ class MapViewModel : ViewModel() {
         }
     }
 
-    fun generateRoute(userEmail: String) {
+    private val routeApi: RouteApiRest = RouteRetrofitInstance.retrofitInstance.create(
+        RouteApiRest::class.java
+    )
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun saveRoute(email: String) {
         viewModelScope.launch {
-
-
-
+            try {
+                updateRouteData()
+                if (_route.value != null) {
+                    val response = routeApi.createRoute(
+                        email,
+                        route = _route.value!!,
+                    )
+                    if (response.isSuccessful) {
+                        Log.e("MapViewModel", "ROUTE_SAVE_SUCCESS!")
+                    } else if (response.code() == 500) {
+                        Log.e("MapViewModel", "BACKEND EXCEPTION: ${response.errorBody()?.string()}")
+                        _backendException.value = "Error amb el servidor!"
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("MapViewModel", "FRONTEND EXCEPTION: ${e.message}")
+                _frontendException.value = "Error amb el client!"
+            }
         }
-
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun updateRouteData() {
+        _route.value = Route(
+            id = null,
+            routeValidate = RouteValidate.NOT_VALIDATED,
+            totalRoutePoints = null,
+            totalRouteDistance = calculateRouteDistance(),
+            totalRouteTime = null,
+            maxRouteVelocity = _gpsPoint.value.maxOfOrNull { it.speed.toDouble() } ?: 0.0,
+            avgRouteVelocity = _gpsPoint.value.map { it.speed }.average().toFloat().toDouble(),
+            gpsPoints = _gpsPoint.value,
+            user = null
+        )
+    }
+
+    private fun calculateRouteDistance(): Double {
+        var totalDistance = 0.0
+
+        for (i in 0 until _gpsPoint.value.size - 1) {
+            val locationA = _gpsPoint.value[i]
+            val locationB = _gpsPoint.value[i + 1]
+
+            val pointA = Location("").apply {
+                latitude = locationA.latitude
+                longitude = locationA.longitude
+            }
+
+            val pointB = Location("").apply {
+                latitude = locationB.latitude
+                longitude = locationB.longitude
+            }
+            totalDistance += pointA.distanceTo(pointB)
+        }
+        return totalDistance / 1000.0
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun calculateRouteTime(): String {
+
+        val startTime = LocalTime.parse(_gpsPoint.value.first().time)
+        val finishTime = LocalTime.parse(_gpsPoint.value.last().time)
+
+        val duration = Duration.between(startTime, finishTime)
+
+        return String.format(
+            Locale.getDefault(),
+            "%02d:%02d:%02d",
+            duration.toHours(),
+            duration.toMinutes() % 60,
+            duration.seconds % 60
+        )
+    }
+
+
 
     fun beginRoute() {
         _isTracking.value = true
