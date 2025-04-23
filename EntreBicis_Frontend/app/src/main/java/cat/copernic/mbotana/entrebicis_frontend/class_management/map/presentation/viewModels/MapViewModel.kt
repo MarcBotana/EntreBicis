@@ -210,7 +210,7 @@ class MapViewModel : ViewModel() {
             routeValidate = RouteValidate.NOT_VALIDATED,
             totalRoutePoints = null,
             totalRouteDistance = calculateRouteDistance(),
-            totalRouteTime = null,
+            totalRouteTime = calculateRouteTime(),
             maxRouteVelocity = _gpsPoint.value.maxOfOrNull { it.speed.toDouble() } ?: 0.0,
             avgRouteVelocity = _gpsPoint.value.map { it.speed }.average().toFloat().toDouble(),
             gpsPoints = _gpsPoint.value,
@@ -248,7 +248,7 @@ class MapViewModel : ViewModel() {
         val duration = Duration.between(startTime, finishTime)
 
         return String.format(
-            Locale.getDefault(),
+            Locale.US,
             "%02d:%02d:%02d",
             duration.toHours(),
             duration.toMinutes() % 60,

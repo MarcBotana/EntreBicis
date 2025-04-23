@@ -52,7 +52,7 @@ public class Route {
     private List<GpsPoint> gpsPoints;
 
     @ManyToOne
-    @JoinColumn(name = "user_email", unique = true)
+    @JoinColumn(name = "user_email")
     @JsonIgnoreProperties({"role", "name", "surname", "password", "town", "mobile", "image","isPasswordChanged", "isReservationActive", "userState", "totalPoints", "routes", "reservations" })
     private User user;
 
