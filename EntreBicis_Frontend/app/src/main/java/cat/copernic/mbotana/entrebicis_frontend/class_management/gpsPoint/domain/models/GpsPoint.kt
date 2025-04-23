@@ -6,7 +6,7 @@ data class GpsPoint(
     var id: Long? = null,
     var latitude: Double,
     var longitude: Double,
-    var time: String,
+    var time: String?,
     var speed: Float,
     var isValid: Boolean,
     var route: Route?

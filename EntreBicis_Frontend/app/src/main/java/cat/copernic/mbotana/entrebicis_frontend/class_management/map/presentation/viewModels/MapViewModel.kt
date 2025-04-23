@@ -25,6 +25,7 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.CameraPositionState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -128,6 +129,27 @@ class MapViewModel : ViewModel() {
                         .build()
                 )
             )
+        } else if (_routePoints.value.size > 1) {
+            val latitudes = _routePoints.value.map { it.latitude }
+            val longitudes = _routePoints.value.map { it.longitude }
+
+            val minLat = latitudes.minOrNull() ?: 0.0
+            val maxLat = latitudes.maxOrNull() ?: 0.0
+            val minLng = longitudes.minOrNull() ?: 0.0
+            val maxLng = longitudes.maxOrNull() ?: 0.0
+
+            val bounds = LatLngBounds(
+                LatLng(minLat, minLng),
+                LatLng(maxLat, maxLng)
+            )
+
+            cameraPositionState.animate(
+                update = CameraUpdateFactory.newLatLngBounds(
+                    bounds,
+                    100
+                )
+            )
+
         } else {
             cameraPositionState.animate(
                 update = CameraUpdateFactory.newCameraPosition(
