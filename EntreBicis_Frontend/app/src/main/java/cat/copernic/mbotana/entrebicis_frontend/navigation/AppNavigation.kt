@@ -1,12 +1,17 @@
 package cat.copernic.mbotana.entrebicis_frontend.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -17,6 +22,7 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentatio
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewModels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.options.presentation.screens.OptionsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens.ReservationDetail
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens.ReservationsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.viewModels.ReservationViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardDetail
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardsScreen
@@ -58,12 +64,13 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         composable("reservationDetail/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toLong()
             val reservationViewModel: ReservationViewModel = viewModel()
-            ReservationDetail(reservationViewModel, sessionViewModel, navController, id ?: -1L)
+            //ReservationDetail(reservationViewModel, sessionViewModel, navController, id ?: -1L)
         }
 
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController, bottomNavIndex: String) {
 
@@ -73,20 +80,25 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
     val currentRoute = navBackStackEntry.value?.destination?.route
 
     val startDestination = when (bottomNavIndex) {
-        "M" -> BottomNavItem.Map.route
-        "R" -> BottomNavItem.Rec.route
-        "O" -> BottomNavItem.Opt.route
+        "Res" -> BottomNavItem.Res.route
+        "Rec" -> BottomNavItem.Rec.route
+        "Map" -> BottomNavItem.Map.route
+        "Rou" -> BottomNavItem.Rou.route
+        "Opt" -> BottomNavItem.Opt.route
         else -> BottomNavItem.Map.route
     }
 
     val screenTitle =  when (currentRoute) {
-        BottomNavItem.Map.route -> "Mapa"
+        BottomNavItem.Res.route -> "Reserves"
         BottomNavItem.Rec.route -> "Recompenses"
-        BottomNavItem.Opt.route -> "Menu"
+        BottomNavItem.Map.route -> "Mapa"
+        BottomNavItem.Rou.route -> "Rutes"
+        BottomNavItem.Opt.route -> "Opcions"
         else -> ""
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets.systemBars,
         topBar =
         { CustomTopBar(screenTitle, userSession.totalPoints, true) },
         bottomBar = {
@@ -96,13 +108,19 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
         NavHost(
             navController = navHostController,
             startDestination = startDestination,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.fillMaxSize().padding(paddingValues)
         ) {
-            composable(BottomNavItem.Map.route) {
-                MapScreen(MapViewModel(), sessionViewModel, navController)
+            composable(BottomNavItem.Res.route) {
+                ReservationsScreen(ReservationViewModel(userSession.email), sessionViewModel, navController)
             }
             composable(BottomNavItem.Rec.route) {
                 RewardsScreen(RewardsViewModel(), navController)
+            }
+            composable(BottomNavItem.Map.route) {
+                MapScreen(MapViewModel(), sessionViewModel, navController)
+            }
+            composable(BottomNavItem.Rou.route) {
+                //RoutesScreen(MapViewModel(), sessionViewModel, navController)
             }
             composable(BottomNavItem.Opt.route) {
                 OptionsScreen(sessionViewModel, navController)
@@ -110,6 +128,7 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
         }
     }
 }
+
 
 
 

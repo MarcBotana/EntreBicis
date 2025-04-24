@@ -74,7 +74,7 @@ fun LoginScreen(
         if (isUserLogged && user != null) {
             sessionViewModel.updateSession(SessionUser(user!!.email, user!!.role, user!!.totalPoints, true))
             viewModel.resetUserLogged()
-            val bottomNavIndex = "M"
+            val bottomNavIndex = "Map"
             navController.navigate("main/$bottomNavIndex") {
                 popUpTo(0) { inclusive = true }
             }

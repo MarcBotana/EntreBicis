@@ -7,6 +7,7 @@ public class DataFormat {
     //Data Format - User
     public static final int MAX_USR_NAME_LENGTH = 10;
     public static final int MAX_USR_SURNAME_LENGTH = 25;
+    public static final int MAX_OBSERVATION_LENGTH = 200;
     public static final int MIN_USR_PASS_LENGTH = 8;
     public static final int MAX_USR_PASS_LENGTH = 16;
     public static final int USR_MOBILE_LENGTH = 9;

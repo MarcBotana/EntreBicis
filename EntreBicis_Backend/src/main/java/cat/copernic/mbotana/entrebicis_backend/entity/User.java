@@ -60,6 +60,10 @@ public class User{
     @NotBlank(message = ErrorMessage.NOT_BLANK)
     private String password;
 
+    @Column(nullable = true)
+    @Size(max = DataFormat.MAX_USR_SURNAME_LENGTH, message = ErrorMessage.USR_SURNAME_LENGTH)
+    private String observation;
+
     @Column(nullable = false)
     @NotBlank(message = ErrorMessage.NOT_BLANK)
     private String town;

@@ -47,9 +47,9 @@ fun ReservationDetail(
     val navHostController = rememberNavController()
 
     val userSession by sessionViewModel.userSession.collectAsState()
-    val rewardDetail by viewModel.rewardDetail.collectAsState()
+    val reservationDetail by viewModel.reservationDetail.collectAsState()
 
-    val rewardNotFoundError by viewModel.rewardNotFoundError.collectAsState()
+    val reservationNotFoundError by viewModel.reservationNotFoundError.collectAsState()
 
     val backendException by viewModel.backendException.collectAsState()
     val frontendException by viewModel.frontendException.collectAsState()
@@ -75,7 +75,7 @@ fun ReservationDetail(
             modifier = Modifier.padding(paddingValues),
             color = Color.Transparent
         ) {
-            rewardNotFoundError?.let {
+            reservationNotFoundError?.let {
                 Text(
                     text = it,
                     color = Color.Red,
@@ -84,13 +84,13 @@ fun ReservationDetail(
                 )
             }
 
-            rewardDetail?.let {
+            reservationDetail?.let {
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Box {
                         Text(
-                            text = rewardDetail!!.valuePoints.toString()
+                            text = reservationDetail!!.reward.valuePoints.toString()
                         )
                     }
 
@@ -104,21 +104,21 @@ fun ReservationDetail(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = rewardDetail!!.name
+                            text = reservationDetail!!.reward.name
                         )
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Text(
-                            text = rewardDetail!!.description
+                            text = reservationDetail!!.reward.description
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row {
                         Text(
-                            text = rewardDetail!!.observation
+                            text = reservationDetail!!.reward.observation
                         )
                         Text(
-                            text = rewardDetail!!.rewardState.name
+                            text = reservationDetail!!.reward.rewardState.name
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
@@ -126,7 +126,7 @@ fun ReservationDetail(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         onClick = {
-                                viewModel.makeReservation(userSession.email, id)
+
                         }) {
                         Text("Reservar")
                     }

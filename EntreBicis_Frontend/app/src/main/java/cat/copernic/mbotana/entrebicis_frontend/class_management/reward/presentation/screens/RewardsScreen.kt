@@ -89,27 +89,6 @@ fun RewardsScreen(
                         cursorColor = Color.Gray
                     )
                 )
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Box(
-                    modifier = Modifier.padding(4.dp)
-                        .background(Color.White)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Icon",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable {
-                                navController.navigate("splash") {
-                                    popUpTo(0) { inclusive = true }
-                                }
-                            }
-                    )
-                }
-
-
             }
 
             Spacer(modifier = Modifier.height(12.dp))

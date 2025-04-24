@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,9 +29,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
@@ -50,7 +59,6 @@ fun RewardItem(reward: Reward, navController: NavController) {
     ) {
         Row(
             modifier = Modifier
-                .padding(12.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -69,6 +77,7 @@ fun RewardItem(reward: Reward, navController: NavController) {
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .padding(vertical = 4.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -77,12 +86,46 @@ fun RewardItem(reward: Reward, navController: NavController) {
                 ) {
                     Text(
                         text = reward.name,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier
+                            .weight(2f),
+                        textAlign = TextAlign.Start,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-                    Text(
-                        text = "${reward.valuePoints} pts",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+
+                    val pointsText = if ((reward.valuePoints % 1).toFloat() == 0f) {
+                        "${reward.valuePoints.toInt()}"
+                    } else {
+                        "${reward.valuePoints}"
+                    }
+
+                    val pointsTextAppend = buildAnnotatedString {
+                        append(pointsText)
+                        withStyle(style = SpanStyle(fontSize = MaterialTheme.typography.titleSmall.fontSize)) {
+                            append(" pts")
+                        }
+                    }
+                    val pointsWeight = if (pointsTextAppend.length > 8) 2f else 1f
+
+                    Box(
+                        modifier = Modifier
+                            .weight(pointsWeight),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Text(
+                            text = pointsTextAppend,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            textAlign = TextAlign.End,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(colorResource(R.color.appBlue).copy(alpha = 0.8f))
+                                .padding(horizontal = 6.dp),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -95,7 +138,9 @@ fun RewardItem(reward: Reward, navController: NavController) {
                         .padding(top = 4.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.White)
-                        .padding(8.dp)
+                        .padding(8.dp),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
