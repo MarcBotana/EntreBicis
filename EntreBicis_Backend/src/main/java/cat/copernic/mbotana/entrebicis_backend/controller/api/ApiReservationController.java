@@ -96,7 +96,7 @@ public class ApiReservationController {
     }
 
     @GetMapping("/list/{email}")
-    public ResponseEntity<List<Reservation>> getUserReservationList(@PathVariable String email) {
+    public ResponseEntity<List<Reservation>> getUserReservationsList(@PathVariable String email) {
 
         ResponseEntity<List<Reservation>> response = null;
 
@@ -106,7 +106,6 @@ public class ApiReservationController {
         headers.add("Cache-Control", "no-store");
 
         try {
-
             if (!apiUserLogic.existUserByEmail(email)) {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {  

@@ -2,6 +2,8 @@ package cat.copernic.mbotana.entrebicis_backend.entity;
 
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +21,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class GpsPoints {
+public class GpsPoint {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +36,15 @@ public class GpsPoints {
     @Column
     private LocalTime time;
 
+    @Column
+    private Double speed;
+
+    @Column
+    private Boolean isValid;
+
     @ManyToOne
-    @JoinColumn(name = "route_id", unique = true)
+    @JoinColumn(name = "route_id")
+    @JsonIgnoreProperties({"gpsPoints", "user"})
     private Route route;
 
 }
