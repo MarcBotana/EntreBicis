@@ -54,6 +54,11 @@
                 <input type="text" id="surname" name="surname" th:field="*{surname}">
                 <div class="error" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
 
+                <!-- Observation -->
+                <label for="observation">Observacions (Altres dades):</label>
+                <input type="text" id="observation" name="observation" th:field="*{observation}">
+                <div class="error" th:if="${#fields.hasErrors('observation')}" th:errors="*{observation}"></div>
+
                 <!-- Town -->
                 <label for="town">Localització:</label>
                 <input type="text" id="town" name="town" th:field="*{town}">

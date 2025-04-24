@@ -38,12 +38,14 @@
                         <div>Correu: </div>
                         <div>Telèfon: </div>
                         <div>Població: </div>
+                        <div>Observacions: </div>
                     </div>
                     <div class="data-text">
                         <div th:text="${user.name} + ' ' + ${user.surname}"></div>
                         <div th:text="${user.email}"></div>
                         <div th:text="${user.mobile}"></div>
                         <div th:text="${user.town}"></div>
+                        <div th:text="${user.observation}"></div>
                     
                     </div>
                 </div>
