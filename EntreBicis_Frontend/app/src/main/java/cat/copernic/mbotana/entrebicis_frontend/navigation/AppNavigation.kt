@@ -36,6 +36,7 @@ import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(sessionViewModel: SessionViewModel) {
     val navController = rememberNavController()
