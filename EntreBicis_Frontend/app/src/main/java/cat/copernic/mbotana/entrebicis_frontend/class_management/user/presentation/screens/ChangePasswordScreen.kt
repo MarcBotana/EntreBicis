@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.R
-import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewmodels.ChangePasswordViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.ChangePasswordViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
 import kotlinx.coroutines.launch
 

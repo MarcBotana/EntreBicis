@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.ReservationState;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,6 +30,10 @@ public class Reservation {
     private Long id;
 
     @Column
+    private String reservationCode;
+
+    @Column
+    @Enumerated(EnumType.STRING)
     private ReservationState reservationState;
 
     @Column

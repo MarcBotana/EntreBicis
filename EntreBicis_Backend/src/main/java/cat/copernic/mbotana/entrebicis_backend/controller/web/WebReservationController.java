@@ -36,30 +36,32 @@ public class WebReservationController {
 
             allReservations = webReservationLogic.getAllReservation();
 
-            switch (sort) {
-                case "userName":
-                    allReservations.sort(Comparator.comparing(reservation -> reservation.getUser().getName()));
-                    break;
-                case "rewardName":
-                    allReservations.sort(Comparator.comparing(reservation -> reservation.getReward().getName()));
-                    break;
-                case "ACTIVE":
-                    allReservations = allReservations.stream()
-                            .filter(reservation -> reservation.getReservationState().equals(ReservationState.ACTIVE))
-                            .toList();
-                    break;
-                case "COMPLETED":
-                    allReservations = allReservations.stream()
-                            .filter(reservation -> reservation.getReservationState().equals(ReservationState.COMPLETED))
-                            .toList();
-                    break;
-                case "CANCELED":
-                    allReservations = allReservations.stream()
-                            .filter(reservation -> reservation.getReservationState().equals(ReservationState.CANCELED))
-                            .toList();
-                    break;
-                default:
-                    break;
+            if (sort != null && !sort.isEmpty()) {
+                switch (sort) {
+                    case "userName":
+                        allReservations.sort(Comparator.comparing(reservation -> reservation.getUser().getName()));
+                        break;
+                    case "rewardName":
+                        allReservations.sort(Comparator.comparing(reservation -> reservation.getReward().getName()));
+                        break;
+                    case "ACTIVE":
+                        allReservations = allReservations.stream()
+                                .filter(reservation -> reservation.getReservationState().equals(ReservationState.ACTIVE))
+                                .toList();
+                        break;
+                    case "COMPLETED":
+                        allReservations = allReservations.stream()
+                                .filter(reservation -> reservation.getReservationState().equals(ReservationState.COMPLETED))
+                                .toList();
+                        break;
+                    case "CANCELED":
+                        allReservations = allReservations.stream()
+                                .filter(reservation -> reservation.getReservationState().equals(ReservationState.CANCELED))
+                                .toList();
+                        break;
+                    default:
+                        break;
+                }
             }
 
             if (search != null && !search.isEmpty()) {
