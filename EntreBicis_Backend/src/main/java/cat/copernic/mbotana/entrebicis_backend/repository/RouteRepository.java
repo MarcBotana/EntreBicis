@@ -4,12 +4,11 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import cat.copernic.mbotana.entrebicis_backend.entity.Reservation;
+import cat.copernic.mbotana.entrebicis_backend.entity.Route;
 import cat.copernic.mbotana.entrebicis_backend.entity.User;
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long>{
+public interface RouteRepository extends JpaRepository<Route, Long> {
 
-        List<Reservation> findReservationByUser(User user);
-
+    List<Route> findRouteByUser(User user);
 
 }

@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens
+package cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -30,14 +30,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
-import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewModels.RewardsViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.viewModels.ReservationViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
 import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
 @Composable
-fun RewardDetail(
-    viewModel: RewardsViewModel,
+fun ReservationDetail(
+    viewModel: ReservationViewModel,
     sessionViewModel: SessionViewModel,
     navController: NavController,
     id: Long
@@ -47,9 +47,9 @@ fun RewardDetail(
     val navHostController = rememberNavController()
 
     val userSession by sessionViewModel.userSession.collectAsState()
-    val rewardDetail by viewModel.rewardDetail.collectAsState()
+    val reservationDetail by viewModel.reservationDetail.collectAsState()
 
-    val rewardNotFoundError by viewModel.rewardNotFoundError.collectAsState()
+    val reservationNotFoundError by viewModel.reservationNotFoundError.collectAsState()
 
     val backendException by viewModel.backendException.collectAsState()
     val frontendException by viewModel.frontendException.collectAsState()
@@ -75,7 +75,7 @@ fun RewardDetail(
             modifier = Modifier.padding(paddingValues),
             color = Color.Transparent
         ) {
-            rewardNotFoundError?.let {
+            reservationNotFoundError?.let {
                 Text(
                     text = it,
                     color = Color.Red,
@@ -84,13 +84,13 @@ fun RewardDetail(
                 )
             }
 
-            rewardDetail?.let {
+            reservationDetail?.let {
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     Box {
                         Text(
-                            text = rewardDetail!!.valuePoints.toString()
+                            text = reservationDetail!!.reward.valuePoints.toString()
                         )
                     }
 
@@ -104,21 +104,21 @@ fun RewardDetail(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = rewardDetail!!.name
+                            text = reservationDetail!!.reward.name
                         )
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Text(
-                            text = rewardDetail!!.description
+                            text = reservationDetail!!.reward.description
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Row {
                         Text(
-                            text = rewardDetail!!.observation
+                            text = reservationDetail!!.reward.observation
                         )
                         Text(
-                            text = rewardDetail!!.rewardState.name
+                            text = reservationDetail!!.reward.rewardState.name
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
@@ -126,7 +126,7 @@ fun RewardDetail(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         onClick = {
-                                viewModel.makeReservation(userSession.email, id)
+
                         }) {
                         Text("Reservar")
                     }

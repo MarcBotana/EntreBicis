@@ -3,7 +3,7 @@ package cat.copernic.mbotana.entrebicis_frontend.user.domain.models
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.Role
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.UserState
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.domain.models.Reservation
-import cat.copernic.mbotana.entrebicis_frontend.route.domain.models.Route
+import cat.copernic.mbotana.entrebicis_frontend.class_management.route.domain.models.Route
 
 data class User(
     var email: String,

@@ -1,9 +1,8 @@
 package cat.copernic.mbotana.entrebicis_frontend.core.enums
 
-enum class RouteState {
-    PENDING,
-    IN_PROGRESS,
-    FINISHED,
+enum class ReservationState {
+    ACTIVE,
+    COMPLETED,
     CANCELED
 }
 

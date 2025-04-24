@@ -33,7 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewmodel.RewardsViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewModels.RewardsViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
 
 @Composable
@@ -41,7 +41,6 @@ fun RewardsScreen(
     viewModel: RewardsViewModel,
     navController: NavController) {
     val context = LocalContext.current
-
 
     val search by viewModel.search.collectAsState()
 
@@ -90,27 +89,6 @@ fun RewardsScreen(
                         cursorColor = Color.Gray
                     )
                 )
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Box(
-                    modifier = Modifier.padding(4.dp)
-                        .background(Color.White)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Icon",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable {
-                                navController.navigate("splash") {
-                                    popUpTo(0) { inclusive = true }
-                                }
-                            }
-                    )
-                }
-
-
             }
 
             Spacer(modifier = Modifier.height(12.dp))
