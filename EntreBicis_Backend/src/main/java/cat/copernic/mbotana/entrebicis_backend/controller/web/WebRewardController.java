@@ -171,7 +171,13 @@ public class WebRewardController {
         Reward reward = new Reward();
 
         try {
-            reward = webRewardLogic.getRewardById(id);
+            if (webRewardLogic.existRewardById(id)) {
+                reward = webRewardLogic.getRewardById(id);
+                model.addAttribute("reward", reward);
+            } else {
+                return "redirect:/reward/list";
+            }
+            
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
@@ -180,7 +186,6 @@ public class WebRewardController {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
-        model.addAttribute("reward", reward);
 
         return "reward_detail";
     }

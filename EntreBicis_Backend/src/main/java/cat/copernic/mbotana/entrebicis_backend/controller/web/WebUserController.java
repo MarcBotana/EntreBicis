@@ -169,7 +169,13 @@ public class WebUserController {
         User user = new User();
 
         try {
-            user = webUserLogic.getUserByEmail(email);
+            if (webUserLogic.existUserByEmail(email)) {
+                user = webUserLogic.getUserByEmail(email);
+                model.addAttribute("user", user);
+            } else {
+                return "redirect:/user/list";
+            }
+            
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
@@ -177,8 +183,6 @@ public class WebUserController {
         } catch (Exception e) {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
-
-        model.addAttribute("user", user);
 
         return "user_detail";
     }
