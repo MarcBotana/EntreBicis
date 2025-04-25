@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AccessTimeFilled
+import androidx.compose.material.icons.filled.Beenhere
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Card
@@ -153,13 +155,15 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
                     ) {
 
                         val colorState = when (reservation.reservationState) {
+                            ReservationState.PENDING -> Color(0xFFFFC107)
                             ReservationState.ACTIVE -> Color(0xFF2196F3)
                             ReservationState.CANCELED -> Color(0xFFF44336)
                             ReservationState.COMPLETED -> Color(0xFF4CAF50)
                         }
 
                         val iconState = when (reservation.reservationState) {
-                            ReservationState.ACTIVE -> Icons.Default.AccessTimeFilled
+                            ReservationState.PENDING -> Icons.Default.AccessTime
+                            ReservationState.ACTIVE -> Icons.Default.Beenhere
                             ReservationState.CANCELED -> Icons.Default.Cancel
                             ReservationState.COMPLETED -> Icons.Default.CheckCircle
                         }
