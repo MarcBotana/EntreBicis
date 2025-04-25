@@ -59,7 +59,13 @@ public class WebSystemParamsController {
         SystemParams systemParams = new SystemParams();
 
         try {
-            systemParams = webSystemParamsLogic.getSystemParamsById(id);
+            if (webSystemParamsLogic.existSystemParamsById(id)) {
+                systemParams = webSystemParamsLogic.getSystemParamsById(id);
+                model.addAttribute("systemParams", systemParams);
+            } else {
+                return "redirect:/system/list";
+            }
+            
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
@@ -68,7 +74,6 @@ public class WebSystemParamsController {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
-        model.addAttribute("systemParams", systemParams);
 
         return "systemParams_detail";
     }
