@@ -52,6 +52,9 @@
                     <div class="options-button">
                         <button th:onclick="|location.href='/reward/detail/' + '@{${reservation.reward.id}}'|">Recompensa</button>
                     </div>
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/reservation/assign/' + '@{${reservation.id}}' + '/@{${reservation.user.email}}'|">Assignar</button>
+                    </div>
                 </div>
 
             </div>
