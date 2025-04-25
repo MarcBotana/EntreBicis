@@ -49,6 +49,10 @@ fun RewardsScreen(
     val backendException by viewModel.backendException.collectAsState()
     val frontendException by viewModel.frontendException.collectAsState()
 
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.loadData()
+    }
+
     LaunchedEffect(backendException) {
         backendException?.let { ToastMessage(context, it) }
     }

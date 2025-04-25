@@ -47,7 +47,7 @@ class RewardsViewModel: ViewModel() {
     )
 
 
-    init {
+    fun loadData() {
         viewModelScope.launch {
             try {
                 val response = rewardApi.getAvailableRewardList()

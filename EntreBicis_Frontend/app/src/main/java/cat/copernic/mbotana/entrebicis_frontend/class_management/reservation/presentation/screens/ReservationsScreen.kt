@@ -42,54 +42,56 @@ import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewMo
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReservationsScreen(
-        viewModel: ReservationViewModel,
-        sessionViewModel: SessionViewModel,
-        navController: NavController
+    viewModel: ReservationViewModel,
+    sessionViewModel: SessionViewModel,
+    navController: NavController
+) {
+    val context = LocalContext.current
+
+    val userSession by sessionViewModel.userSession.collectAsState()
+
+    val reservationList by viewModel.reservationList.collectAsState()
+
+    val backendException by viewModel.backendException.collectAsState()
+    val frontendException by viewModel.frontendException.collectAsState()
+
+    LaunchedEffect(viewModel) {
+        viewModel.loadData(userSession.email)
+    }
+
+    LaunchedEffect(backendException) {
+        backendException?.let { ToastMessage(context, it) }
+    }
+
+    LaunchedEffect(frontendException) {
+        frontendException?.let { ToastMessage(context, it) }
+    }
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color.Transparent
     ) {
-        val context = LocalContext.current
-
-        val userSession by sessionViewModel.userSession.collectAsState()
-
-        val rewardsList by viewModel.reservationList.collectAsState()
-
-        val backendException by viewModel.backendException.collectAsState()
-        val frontendException by viewModel.frontendException.collectAsState()
-
-        LaunchedEffect(backendException) {
-            backendException?.let { ToastMessage(context, it) }
-        }
-
-        LaunchedEffect(frontendException) {
-            frontendException?.let { ToastMessage(context, it) }
-        }
-
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.Transparent
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center
         ) {
+            Spacer(modifier = Modifier.height(12.dp))
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.LightGray)
             ) {
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.LightGray)
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(items = rewardsList ?: emptyList()) { item ->
-                            ReservationItem(item, navController)
-                        }
+                    items(items = reservationList ?: emptyList()) { item ->
+                        ReservationItem(item, navController)
                     }
                 }
             }
         }
     }
+}
