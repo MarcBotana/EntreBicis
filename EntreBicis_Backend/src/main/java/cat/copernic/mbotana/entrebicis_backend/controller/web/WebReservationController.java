@@ -57,6 +57,12 @@ public class WebReservationController {
                     case "rewardName":
                         allReservations.sort(Comparator.comparing(reservation -> reservation.getReward().getName()));
                         break;
+                    case "PENDING":
+                        allReservations = allReservations.stream()
+                                .filter(reservation -> reservation.getReservationState()
+                                        .equals(ReservationState.PENDING))
+                                .toList();
+                        break;
                     case "ACTIVE":
                         allReservations = allReservations.stream()
                                 .filter(reservation -> reservation.getReservationState()

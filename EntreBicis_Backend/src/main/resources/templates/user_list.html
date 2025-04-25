@@ -17,8 +17,11 @@
     <div class="content">
         <aside class="sidebar">
             <h3 class="sidebar-title">Ordenar</h3>
+            <button th:onclick="|location.href='/user/list'|">Tots</button>
+            <hr>
             <button th:onclick="|location.href='/user/list?sort=email'|">Email</button>
             <button th:onclick="|location.href='/user/list?sort=name'|">Nom</button>
+            <hr>
             <button th:onclick="|location.href='/user/list?sort=BIKER'|">Ciclistes</button>
             <button th:onclick="|location.href='/user/list?sort=ADMIN'|">Administradors</button>
         </aside>

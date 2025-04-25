@@ -13,6 +13,10 @@ body {
     gap: 20px;
 }
 
+hr {
+    border: 1px solid #414141; margin: 2px 0;
+}
+
 /* Sidebar */
 .sidebar {
     background: #d9d9d9;

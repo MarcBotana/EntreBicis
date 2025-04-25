@@ -17,8 +17,12 @@
     <div class="content">
         <aside class="sidebar">
             <h3 class="sidebar-title">Ordenar</h3>
+            <button th:onclick="|location.href='/reservation/list'|">Totes</button>
+            <hr>
             <button th:onclick="|location.href='/reservation/list?sort=userName'|">Nom Usuari</button>
             <button th:onclick="|location.href='/reservation/list?sort=rewardName'|">Nom Recompensa</button>
+            <hr>
+            <button th:onclick="|location.href='/reservation/list?sort=PENDING'|">Pendent</button>
             <button th:onclick="|location.href='/reservation/list?sort=ACTIVE'|">Activa</button>
             <button th:onclick="|location.href='/reservation/list?sort=COMPLETED'|">Completada</button>
             <button th:onclick="|location.href='/reservation/list?sort=CANCELED'|">Cancel·lada</button>
