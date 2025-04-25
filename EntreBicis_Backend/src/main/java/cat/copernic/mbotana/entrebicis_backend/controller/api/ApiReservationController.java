@@ -68,7 +68,7 @@ public class ApiReservationController {
                     newReservation = new Reservation(
                     null, 
                     reservationCode,
-                    ReservationState.ACTIVE, 
+                    ReservationState.PENDING, 
                     LocalDateTime.now().withSecond(0).withNano(0),
                     LocalDateTime.now().plusHours(systemCollectionHours).withHour(23).withMinute(59).withSecond(0).withNano(0), 
                     user, 
