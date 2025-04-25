@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -36,6 +35,7 @@ import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(sessionViewModel: SessionViewModel) {
     val navController = rememberNavController()
@@ -47,12 +47,29 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
     ) {
         composable("splash") { SplashScreen(navController, sessionViewModel) }
 
-        composable("login") { LoginScreen(LoginViewModel(), sessionViewModel, navController) }
-        composable("changePassword") { ChangePasswordScreen(ChangePasswordViewModel(), navController) }
+        composable("login") {
+            val loginViewModel: LoginViewModel = viewModel()
+            LoginScreen(loginViewModel, sessionViewModel, navController)
+        }
+        composable("changePassword") {
+            val changePasswordViewModel: ChangePasswordViewModel = viewModel()
+            ChangePasswordScreen(changePasswordViewModel, navController)
+        }
 
         composable("main/{bottomNavIndex}") { backStackEntry ->
             val bottomNavIndex = backStackEntry.arguments?.getString("bottomNavIndex")
-            MainScreen(sessionViewModel, navController, bottomNavIndex ?: "")
+            val reservationViewModel: ReservationViewModel = viewModel()
+            val rewardsViewModel: RewardsViewModel = viewModel()
+            val mapViewModel: MapViewModel = viewModel()
+
+            MainScreen(
+                reservationViewModel,
+                rewardsViewModel,
+                mapViewModel,
+                sessionViewModel,
+                navController,
+                bottomNavIndex ?: ""
+            )
         }
 
         composable("rewardDetail/{id}") { backStackEntry ->
@@ -64,15 +81,21 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         composable("reservationDetail/{id}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")?.toLong()
             val reservationViewModel: ReservationViewModel = viewModel()
-            //ReservationDetail(reservationViewModel, sessionViewModel, navController, id ?: -1L)
+            ReservationDetail(reservationViewModel, sessionViewModel, navController, id ?: -1L)
         }
-
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController, bottomNavIndex: String) {
+fun MainScreen(
+    reservationViewModel: ReservationViewModel,
+    rewardsViewModel: RewardsViewModel,
+    mapViewModel: MapViewModel,
+    sessionViewModel: SessionViewModel,
+    navController: NavController,
+    bottomNavIndex: String
+) {
 
     val navHostController = rememberNavController()
     val userSession by sessionViewModel.userSession.collectAsState()
@@ -88,7 +111,7 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
         else -> BottomNavItem.Map.route
     }
 
-    val screenTitle =  when (currentRoute) {
+    val screenTitle = when (currentRoute) {
         BottomNavItem.Res.route -> "Reserves"
         BottomNavItem.Rec.route -> "Recompenses"
         BottomNavItem.Map.route -> "Mapa"
@@ -108,16 +131,18 @@ fun MainScreen(sessionViewModel: SessionViewModel, navController: NavController,
         NavHost(
             navController = navHostController,
             startDestination = startDestination,
-            modifier = Modifier.fillMaxSize().padding(paddingValues)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
             composable(BottomNavItem.Res.route) {
-                ReservationsScreen(ReservationViewModel(userSession.email), sessionViewModel, navController)
+                ReservationsScreen(reservationViewModel, sessionViewModel, navController)
             }
             composable(BottomNavItem.Rec.route) {
-                RewardsScreen(RewardsViewModel(), navController)
+                RewardsScreen(rewardsViewModel, navController)
             }
             composable(BottomNavItem.Map.route) {
-                MapScreen(MapViewModel(), sessionViewModel, navController)
+                MapScreen(mapViewModel, sessionViewModel, navController)
             }
             composable(BottomNavItem.Rou.route) {
                 //RoutesScreen(MapViewModel(), sessionViewModel, navController)

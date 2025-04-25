@@ -70,8 +70,8 @@
                     <tbody class="web-item" th:each="reward : ${allRewards}">
                         <tr>
                             <td>
-                                <button th:onclick="|location.href='/reward/update/${reward.id}'|">Editar</button>
-                                <button th:onclick="|location.href='/reward/list'|">Assignar</button>
+                                <button th:onclick="|location.href='/reward/update/${reward.id}'|"
+                                th:disabled="${reward.rewardState.name() != 'AVAILABLE'}">Editar</button>
                             </td>
                         </tr>
                     </tbody>

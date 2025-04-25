@@ -55,7 +55,7 @@ fun ReservationDetail(
     val frontendException by viewModel.frontendException.collectAsState()
 
     LaunchedEffect(id) {
-        viewModel.loadRewardDetail(id)
+        viewModel.loadReservationDetail(id)
     }
 
     LaunchedEffect(backendException) {
@@ -68,7 +68,7 @@ fun ReservationDetail(
 
     Scaffold(
         topBar =
-        { CustomTopBar("Recompensa", userSession.totalPoints, true) },
+        { CustomTopBar("Reserva", userSession.totalPoints, true) },
     ) { paddingValues ->
 
         Surface(
@@ -88,11 +88,9 @@ fun ReservationDetail(
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    Box {
-                        Text(
-                            text = reservationDetail!!.reward.valuePoints.toString()
-                        )
-                    }
+                    Text(
+                        text = "${reservationDetail!!.id}-${reservationDetail!!.reservationCode}"
+                    )
 
                     Column {
                         Image(
@@ -130,17 +128,8 @@ fun ReservationDetail(
                         }) {
                         Text("Reservar")
                     }
-
-
                 }
             }
-
-
-
         }
     }
-
-
-
-
 }

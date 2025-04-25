@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ReservationViewModel(userEmail: String) : ViewModel() {
+class ReservationViewModel: ViewModel() {
 
     //Variable Preparation
     private val _reservationList = MutableStateFlow<List<Reservation>?>(emptyList())
@@ -42,46 +42,46 @@ class ReservationViewModel(userEmail: String) : ViewModel() {
             ReservationApiRest::class.java
         )
 
-    init {
+    fun loadData(email: String) {
         viewModelScope.launch {
             try {
-                val response = reservationApi.getUserReservationList(userEmail)
+                val response = reservationApi.getUserReservationList(email)
                 if (response.isSuccessful) {
-                    Log.d("RewardsViewModel", "USER RESERVATIONS ACQUIRED SUCCESS")
+                    Log.d("ReservationViewModel", "USER RESERVATIONS ACQUIRED SUCCESS")
                     _reservationList.value = response.body()
                 } else if (response.code() == 500) {
                     Log.e(
-                        "RewardsViewModel",
+                        "ReservationViewModel",
                         "BACKEND EXCEPTION: ${response.errorBody()?.string()}"
                     )
                     _backendException.value = "Error amb el servidor!"
                 }
             } catch (e: Exception) {
-                Log.e("RewardsViewModel", "FRONTEND EXCEPTION: ${e.message}")
+                Log.e("ReservationViewModel", "FRONTEND EXCEPTION: ${e.message}")
                 _frontendException.value = "Error amb el client!"
             }
         }
     }
 
-    fun loadRewardDetail(id: Long) {
+    fun loadReservationDetail(id: Long) {
         viewModelScope.launch {
             try {
                 val response = reservationApi.getReservationDetail(id)
                 if (response.isSuccessful) {
-                    Log.d("RewardsViewModel", "RESERVATION ACQUIRED SUCCESS")
+                    Log.d("ReservationViewModel", "RESERVATION ACQUIRED SUCCESS")
                     _reservationDetail.value = response.body()
                 } else if (response.code() == 404) {
-                    Log.e("RewardsViewModel", "RESERVATION_NOT_FOUND!")
-                    _reservationNotFoundError.value = "No s'ha trobat la Recompensa!"
+                    Log.e("ReservationViewModel", "RESERVATION_NOT_FOUND!")
+                    _reservationNotFoundError.value = "No s'ha trobat la Reserva!"
                 } else if (response.code() == 500) {
                     Log.e(
-                        "RewardsViewModel",
+                        "ReservationViewModel",
                         "BACKEND EXCEPTION: ${response.errorBody()?.string()}"
                     )
                     _backendException.value = "Error amb el servidor!"
                 }
             } catch (e: Exception) {
-                Log.e("RewardsViewModel", "FRONTEND EXCEPTION: ${e.message}")
+                Log.e("ReservationViewModel", "FRONTEND EXCEPTION: ${e.message}")
                 _frontendException.value = "Error amb el client!"
             }
         }

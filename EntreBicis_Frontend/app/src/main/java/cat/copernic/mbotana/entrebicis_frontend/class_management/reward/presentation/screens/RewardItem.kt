@@ -39,7 +39,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
@@ -53,7 +52,7 @@ fun RewardItem(reward: Reward, navController: NavController) {
             .padding(top = 12.dp, start = 12.dp, end = 12.dp)
             .fillMaxWidth()
             .clickable {
-                navController.navigate("reservationDetail/${reward.id}")
+                navController.navigate("rewardDetail/${reward.id}")
             },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
