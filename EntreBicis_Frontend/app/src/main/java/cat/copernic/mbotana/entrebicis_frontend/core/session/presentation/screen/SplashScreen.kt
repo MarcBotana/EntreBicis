@@ -43,7 +43,7 @@ fun SplashScreen(viewModel: SplashViewModel, navController: NavController, sessi
     LaunchedEffect(isDataLoaded) {
         if (isDataLoaded) {
             val bottomNavIndex = "Map"
-            sessionViewModel.updateSession(SessionUser(user!!.email, user!!.role, user!!.totalPoints, true))
+            sessionViewModel.updateSession(SessionUser(user!!.email, user!!.image, user!!.role, user!!.totalPoints, true))
             navController.navigate("main/$bottomNavIndex") {
                 popUpTo(0) { inclusive = true }
             }

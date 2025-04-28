@@ -15,6 +15,7 @@ class SessionRepository(private val dataStore: DataStore<Preferences>) {
 
     companion object {
         private val USER_EMAIL_KEY = stringPreferencesKey("user_email")
+        private val USER_IMAGE_KEY = stringPreferencesKey("user_image")
         private val USER_ROLE_KEY = stringPreferencesKey("user_role")
         private val USER_POINTS_KEY = doublePreferencesKey("user_points")
         private val IS_CONNECTED_KEY = booleanPreferencesKey("is_connected")
@@ -23,6 +24,7 @@ class SessionRepository(private val dataStore: DataStore<Preferences>) {
     suspend fun saveSession(sessionUser: SessionUser) {
         dataStore.edit { preferences ->
             preferences[USER_EMAIL_KEY] = sessionUser.email
+            preferences[USER_IMAGE_KEY] = sessionUser.image
             preferences[USER_ROLE_KEY] = sessionUser.role.name
             preferences[USER_POINTS_KEY] = sessionUser.totalPoints
             preferences[IS_CONNECTED_KEY] = sessionUser.isConnected
@@ -32,10 +34,11 @@ class SessionRepository(private val dataStore: DataStore<Preferences>) {
     fun getSession(): Flow<SessionUser> {
         return dataStore.data.map { preferences ->
             val email = preferences[USER_EMAIL_KEY] ?: ""
+            val image = preferences[USER_IMAGE_KEY] ?: ""
             val role = Role.valueOf(preferences[USER_ROLE_KEY] ?: Role.BIKER.name)
             val totalPoints = preferences[USER_POINTS_KEY] ?: 0.0
             val isConnected = preferences[IS_CONNECTED_KEY] ?: false
-            SessionUser(email, role, totalPoints, isConnected)
+            SessionUser(email, image, role, totalPoints, isConnected)
         }
     }
 }

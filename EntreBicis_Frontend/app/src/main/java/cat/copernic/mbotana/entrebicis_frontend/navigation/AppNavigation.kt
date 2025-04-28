@@ -127,7 +127,7 @@ fun MainScreen(
     Scaffold(
         contentWindowInsets = WindowInsets.systemBars,
         topBar =
-        { CustomTopBar(screenTitle, userSession.totalPoints, true) },
+        { CustomTopBar(screenTitle, userSession, true) },
         bottomBar = {
             BottomNavigationBar(navController = navHostController)
         }

@@ -16,19 +16,26 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cat.copernic.mbotana.entrebicis_frontend.R
+import cat.copernic.mbotana.entrebicis_frontend.core.session.model.SessionUser
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopBar(screen: String, points: Double, showPoints: Boolean) {
+fun CustomTopBar(screen: String, user: SessionUser, showPoints: Boolean) {
+
+    val bitmap = remember { ImageUtils.convertBase64ToBitmap(user.image) }
+
     TopAppBar(
         modifier = Modifier
             .drawBehind {
@@ -49,8 +56,12 @@ fun CustomTopBar(screen: String, points: Double, showPoints: Boolean) {
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = painterResource(id = R.drawable.entrebicis_logo),
-                        contentDescription = "Logo",
+                        painter = if (bitmap != null) {
+                            BitmapPainter(bitmap.asImageBitmap())
+                        } else {
+                            painterResource(id = R.drawable.entrebicis_logo)
+                        },
+                        contentDescription = "User Image",
                         modifier = Modifier.size(36.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -63,7 +74,7 @@ fun CustomTopBar(screen: String, points: Double, showPoints: Boolean) {
                             .background(Color(0xFFDAD0D0), RoundedCornerShape(12.dp))
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
-                        Text("$points pts")
+                        Text("${user.totalPoints} pts")
                     }
                 }
             }
