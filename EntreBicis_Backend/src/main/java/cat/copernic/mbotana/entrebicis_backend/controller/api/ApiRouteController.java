@@ -85,6 +85,10 @@ public class ApiRouteController {
 
                 savedRoute.setGpsPoints(newGpsPoints);
 
+                user.setTotalPoints(newRoute.getTotalRutePoints());
+
+                apiUserLogic.updateUser(user);
+
                 apiRouteLogic.updateRoute(savedRoute);
 
                 response = new ResponseEntity<>(headers, HttpStatus.OK);
