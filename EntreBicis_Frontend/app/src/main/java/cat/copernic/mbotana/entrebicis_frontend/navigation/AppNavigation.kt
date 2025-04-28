@@ -33,6 +33,7 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentati
 import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen.SplashScreen
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
+import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SplashViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -45,7 +46,10 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
         startDestination = "splash",
         modifier = Modifier.fillMaxSize()
     ) {
-        composable("splash") { SplashScreen(navController, sessionViewModel) }
+        composable("splash") {
+            val splashViewModel: SplashViewModel = viewModel()
+            SplashScreen(splashViewModel, navController, sessionViewModel)
+        }
 
         composable("login") {
             val loginViewModel: LoginViewModel = viewModel()
