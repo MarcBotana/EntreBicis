@@ -1,6 +1,8 @@
 package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -20,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -87,36 +92,35 @@ fun RewardDetail(
             rewardDetail?.let {
                 Column(
                     modifier = Modifier.fillMaxSize()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.LightGray),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Box {
-                        Text(
-                            text = rewardDetail!!.valuePoints.toString()
-                        )
-                    }
-
-                    Column {
-                        Image(
-                            painter = painterResource(R.drawable.entrebicis_logo),
-                            contentDescription = "EntreBicis_Logo",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(16f / 12f)
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = rewardDetail!!.name
-                        )
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Text(
-                            text = rewardDetail!!.description
-                        )
-                    }
+                    Image(
+                        painter = painterResource(R.drawable.entrebicis_logo),
+                        contentDescription = "EntreBicis_Logo",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(16f / 12f)
+                    )
                     Spacer(modifier = Modifier.height(12.dp))
-                    Row {
+                    Text(
+                        text = rewardDetail!!.name
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = rewardDetail!!.description
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
                         Text(
                             text = rewardDetail!!.observation
                         )
+                        Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = rewardDetail!!.rewardState.name
                         )
@@ -126,21 +130,12 @@ fun RewardDetail(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         onClick = {
-                                viewModel.makeReservation(userSession.email, id)
+                            viewModel.makeReservation(userSession.email, id)
                         }) {
                         Text("Reservar")
                     }
-
-
                 }
             }
-
-
-
         }
     }
-
-
-
-
 }
