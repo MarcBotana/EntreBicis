@@ -24,7 +24,7 @@ class SessionRepository(private val dataStore: DataStore<Preferences>) {
     suspend fun saveSession(sessionUser: SessionUser) {
         dataStore.edit { preferences ->
             preferences[USER_EMAIL_KEY] = sessionUser.email
-            preferences[USER_IMAGE_KEY] = sessionUser.image
+            preferences[USER_IMAGE_KEY] = sessionUser.image ?: ""
             preferences[USER_ROLE_KEY] = sessionUser.role.name
             preferences[USER_POINTS_KEY] = sessionUser.totalPoints
             preferences[IS_CONNECTED_KEY] = sessionUser.isConnected

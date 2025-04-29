@@ -1,25 +1,29 @@
 package cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.screens
 
 import android.Manifest
-import android.graphics.Bitmap
-import android.graphics.Paint
-import android.graphics.Path
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -33,19 +37,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewModels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.RoundCap
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -63,6 +67,7 @@ fun MapScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     val cameraPositionState = rememberCameraPositionState()
@@ -72,7 +77,6 @@ fun MapScreen(
     val currentLocation by viewModel.currentLocation.collectAsState()
     val routePoints by viewModel.routePoints.collectAsState()
     val currentSpeed by viewModel.currentSpeed.collectAsState()
-    val bearing by viewModel.bearing.collectAsState()
 
     val startRoutePoint by viewModel.startRoutePoint.collectAsState()
     val endRoutePoint by viewModel.endRoutePoint.collectAsState()
@@ -84,10 +88,12 @@ fun MapScreen(
 
     val showStartDialog by viewModel.showStartDialog.collectAsState()
     val showEndDialog by viewModel.showEndDialog.collectAsState()
-    val isTracking by viewModel.isTracking.collectAsState()
+    val isTrackingRoute by viewModel.isTrackingRoute.collectAsState()
+
+    val isTrackingPosition by viewModel.isTrackingPosition.collectAsState()
 
     LaunchedEffect(mapLoaded) {
-        if (locationPermissionState.status.isGranted) {
+        if (locationPermissionState.status.isGranted && mapLoaded) {
             viewModel.startTracking(context)
         } else {
             locationPermissionState.launchPermissionRequest()
@@ -127,8 +133,7 @@ fun MapScreen(
                     tiltGesturesEnabled = true
                 )
             ) {
-
-                if (isTracking && routePoints.size > 1) {
+                if (isTrackingRoute && routePoints.size > 1) {
                     Polyline(
                         points = routePoints,
                         color = Color.Blue,
@@ -160,6 +165,33 @@ fun MapScreen(
                         title = "End",
                         snippet = "Route End"
                     )
+                }
+            }
+
+            if (!isTrackingPosition) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f)),
+                        shape = RoundedCornerShape(16.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            CircularProgressIndicator()
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "Obtenint Posició...",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Black
+                            )
+                        }
+                    }
                 }
             }
 
@@ -204,21 +236,23 @@ fun MapScreen(
             ) {
                 FloatingActionButton(
                     onClick = {
-                        if (!isTracking) {
-                            viewModel.updateShowStartDialog(true)
-                        } else {
-                            viewModel.updateShowEndDialog(true)
+                        if (isTrackingPosition) {
+                            if (!isTrackingRoute) {
+                                viewModel.updateShowStartDialog(true)
+                            } else {
+                                viewModel.updateShowEndDialog(true)
+                            }
                         }
-                    }
+                    },
+                    modifier = Modifier.alpha(if (isTrackingPosition) 1f else 0.5f)
                 ) {
                     Icon(
-                        imageVector = if (isTracking) Icons.Default.Stop else Icons.Default.PlayArrow,
-                        contentDescription = if (isTracking) "Stop Route" else "Start Route"
+                        imageVector = if (isTrackingRoute) Icons.Default.Stop else Icons.Default.PlayArrow,
+                        contentDescription = if (isTrackingRoute) "Stop Route" else "Start Route"
                     )
                 }
             }
         }
-
     }
 
 
@@ -269,33 +303,4 @@ fun MapScreen(
             }
         )
     }
-}
-
-fun createCustomMarker(): BitmapDescriptor {
-    val width = 100
-    val height = 120
-
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val canvas = android.graphics.Canvas(bitmap)
-
-    val paint = Paint().apply {
-        color = android.graphics.Color.BLUE
-        isAntiAlias = true
-        style = Paint.Style.FILL
-    }
-
-    val path = Path().apply {
-        moveTo(width / 2f, height.toFloat())
-        lineTo(0f, 0f)
-        lineTo(width.toFloat(), 0f)
-        close()
-    }
-
-    canvas.drawPath(path, paint)
-    paint.color = android.graphics.Color.WHITE
-    paint.style = Paint.Style.STROKE
-    paint.strokeWidth = 8f
-    canvas.drawPath(path, paint)
-
-    return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
