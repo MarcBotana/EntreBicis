@@ -75,7 +75,7 @@ fun ReservationDetail(
 
     Scaffold(
         topBar =
-        { CustomTopBar("Reserva", userSession.totalPoints, true) },
+        { CustomTopBar("Reserva", userSession, true) },
     ) { paddingValues ->
 
         Surface(

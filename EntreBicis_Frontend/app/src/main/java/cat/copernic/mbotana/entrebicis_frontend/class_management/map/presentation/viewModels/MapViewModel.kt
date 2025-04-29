@@ -44,7 +44,6 @@ class MapViewModel : ViewModel() {
     private val _gpsPoint = MutableStateFlow<List<GpsPoint>>(emptyList())
 
     private val _bearing = MutableStateFlow<Float?>(null)
-    val bearing: StateFlow<Float?> = _bearing
 
     private val _currentLocation = MutableStateFlow<LatLng?>(null)
     val currentLocation: StateFlow<LatLng?> = _currentLocation
@@ -61,8 +60,11 @@ class MapViewModel : ViewModel() {
     private val _showEndDialog = MutableStateFlow(false)
     val showEndDialog: StateFlow<Boolean> = _showEndDialog
 
-    private val _isTracking = MutableStateFlow(false)
-    val isTracking: StateFlow<Boolean> = _isTracking
+    private val _isTrackingRoute = MutableStateFlow(false)
+    val isTrackingRoute: StateFlow<Boolean> = _isTrackingRoute
+
+    private val _isTrackingPosition = MutableStateFlow(false)
+    val isTrackingPosition: StateFlow<Boolean> = _isTrackingPosition
 
     private val _startRoutePoint = MutableStateFlow<LatLng?>(null)
     val startRoutePoint: StateFlow<LatLng?> = _startRoutePoint
@@ -87,7 +89,7 @@ class MapViewModel : ViewModel() {
         Log.d("LocationDebug", "New Speed: ${_currentSpeed.value}")
 
 
-        if (_isTracking.value) {
+        if (_isTrackingRoute.value) {
             _routePoints.value += latLng
 
             val gpsPoint = GpsPoint(
@@ -105,6 +107,7 @@ class MapViewModel : ViewModel() {
         } else if (_routePoints.value.size > 1) {
             _startRoutePoint.value = _routePoints.value.first()
             _endRoutePoint.value = _routePoints.value.last()
+
         }
     }
 
@@ -116,9 +119,8 @@ class MapViewModel : ViewModel() {
         _showEndDialog.value = value
     }
 
-
     suspend fun centerCamera(cameraPositionState: CameraPositionState) {
-        if (_isTracking.value) {
+        if (_isTrackingRoute.value) {
             cameraPositionState.animate(
                 update = CameraUpdateFactory.newCameraPosition(
                     CameraPosition.Builder()
@@ -185,6 +187,7 @@ class MapViewModel : ViewModel() {
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onLocationResult(result: LocationResult) {
                     result.lastLocation?.let { updateLocation(it) }
+                    _isTrackingPosition.value = true
                 }
             }
 
@@ -193,6 +196,7 @@ class MapViewModel : ViewModel() {
                 locationCallback!!,
                 Looper.getMainLooper()
             )
+
         }
     }
 
@@ -214,7 +218,10 @@ class MapViewModel : ViewModel() {
                     if (response.isSuccessful) {
                         Log.e("MapViewModel", "ROUTE_SAVE_SUCCESS!")
                     } else if (response.code() == 500) {
-                        Log.e("MapViewModel", "BACKEND EXCEPTION: ${response.errorBody()?.string()}")
+                        Log.e(
+                            "MapViewModel",
+                            "BACKEND EXCEPTION: ${response.errorBody()?.string()}"
+                        )
                         _backendException.value = "Error amb el servidor!"
                     }
                 }
@@ -279,21 +286,21 @@ class MapViewModel : ViewModel() {
     }
 
 
-
     fun beginRoute() {
-        _isTracking.value = true
+        _isTrackingRoute.value = true
         _routePoints.value = emptyList()
         _startRoutePoint.value = null
         _endRoutePoint.value = null
     }
 
     fun stopRoute() {
-        _isTracking.value = false
+        _isTrackingRoute.value = false
     }
 
     fun stopTracking() {
         locationCallback?.let {
             fusedLocationClient?.removeLocationUpdates(it)
+            _isTrackingPosition.value = false
         }
     }
 }
