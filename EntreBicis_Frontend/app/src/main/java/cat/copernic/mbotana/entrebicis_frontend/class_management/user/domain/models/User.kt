@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_frontend.user.domain.models
+package cat.copernic.mbotana.entrebicis_frontend.class_management.user.domain.models
 
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.Role
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.UserState
@@ -13,7 +13,7 @@ data class User(
     var password: String,
     var town: String,
     var mobile: Int,
-    var image: String,
+    var image: String?,
     var isPasswordChanged: Boolean,
     var isReservationActive: Boolean,
     var userState: UserState,
