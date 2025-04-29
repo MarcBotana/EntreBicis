@@ -3,12 +3,9 @@ package cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewM
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.repositories.LoginRetrofitInstance
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.repositories.UserRetrofitInstance
-import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.sources.remote.LoginApiRest
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.sources.remote.UserApiRest
-import cat.copernic.mbotana.entrebicis_frontend.user.domain.models.User
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.domain.models.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

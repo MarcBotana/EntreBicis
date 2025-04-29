@@ -8,7 +8,7 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.sourc
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.Role
 import cat.copernic.mbotana.entrebicis_frontend.core.session.model.SessionUser
 import cat.copernic.mbotana.entrebicis_frontend.core.session.repository.SessionRepository
-import cat.copernic.mbotana.entrebicis_frontend.user.domain.models.User
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.domain.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
