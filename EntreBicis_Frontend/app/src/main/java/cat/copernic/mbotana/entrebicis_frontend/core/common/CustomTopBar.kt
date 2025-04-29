@@ -34,7 +34,7 @@ import cat.copernic.mbotana.entrebicis_frontend.core.session.model.SessionUser
 @Composable
 fun CustomTopBar(screen: String, user: SessionUser, showPoints: Boolean) {
 
-    val bitmap = remember { ImageUtils.convertBase64ToBitmap(user.image) }
+    val bitmap = remember(user.image) { ImageUtils.convertBase64ToBitmap(user.image) }
 
     TopAppBar(
         modifier = Modifier

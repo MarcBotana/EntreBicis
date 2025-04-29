@@ -1,6 +1,6 @@
 package cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.sources.remote
 
-import cat.copernic.mbotana.entrebicis_frontend.user.domain.models.User
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.domain.models.User
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.POST

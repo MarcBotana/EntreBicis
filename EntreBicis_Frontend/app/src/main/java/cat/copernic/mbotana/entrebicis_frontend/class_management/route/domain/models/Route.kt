@@ -2,7 +2,7 @@ package cat.copernic.mbotana.entrebicis_frontend.class_management.route.domain.m
 
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.RouteValidate
 import cat.copernic.mbotana.entrebicis_frontend.class_management.gpsPoint.domain.models.GpsPoint
-import cat.copernic.mbotana.entrebicis_frontend.user.domain.models.User
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.domain.models.User
 
 data class Route(
     var id: Long? = null,

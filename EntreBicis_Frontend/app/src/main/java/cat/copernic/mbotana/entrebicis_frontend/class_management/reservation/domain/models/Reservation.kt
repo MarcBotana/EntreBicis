@@ -2,7 +2,7 @@ package cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.do
 
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.domain.models.Reward
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.ReservationState
-import cat.copernic.mbotana.entrebicis_frontend.user.domain.models.User
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.domain.models.User
 
 
 data class Reservation(
