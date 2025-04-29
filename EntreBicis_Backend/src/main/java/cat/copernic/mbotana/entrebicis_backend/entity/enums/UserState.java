@@ -1,8 +1,8 @@
 package cat.copernic.mbotana.entrebicis_backend.entity.enums;
 
 public enum UserState {
-    ACTIVE("Actiu"),
-    INACTIVE("Inactiu");
+    ACTIVE("ACTIU"),
+    INACTIVE("INACTIU");
 
     private final String display;
 

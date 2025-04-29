@@ -1,8 +1,8 @@
 package cat.copernic.mbotana.entrebicis_backend.entity.enums;
 
 public enum Role {
-    ADMIN("Administrador"), 
-    BIKER("Ciclista");
+    ADMIN("ADMINISTRADOR"), 
+    BIKER("CICLISTA");
 
     private final String display;
 

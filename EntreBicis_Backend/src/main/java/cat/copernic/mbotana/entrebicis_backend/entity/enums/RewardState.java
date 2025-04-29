@@ -1,10 +1,10 @@
 package cat.copernic.mbotana.entrebicis_backend.entity.enums;
 
 public enum RewardState {
-    AVAILABLE("Disponible"), 
-    RESERVED("Reservat"), 
-    ASSIGNED("Assignat"), 
-    RETURNED("Retornat");
+    AVAILABLE("DISPONIBLE"), 
+    RESERVED("RESERVAT"), 
+    ASSIGNED("ASSIGNAT"), 
+    RETURNED("RETORNAT");
 
     private final String display;
 
