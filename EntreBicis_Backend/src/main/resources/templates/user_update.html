@@ -33,20 +33,24 @@
                 <input type="hidden" name="totalPoints" th:field="*{totalPoints}">
                 <input type="hidden" name="isPasswordChanged" th:field="*{isPasswordChanged}">
                 <input type="hidden" name="isReservationActive" th:field="*{isReservationActive}">
-                <input type="hidden" name="image" th:field="*{image}" >
-                
+                <input type="hidden" name="image" th:field="*{image}">
+
+                <input type="hidden" name="deleteImage" id="deleteImage" value="false">
+
                 <!-- Image -->
                 <div th:if="${user.image != null}">
                     <img th:src="'data:image/jpeg;base64,' + ${user.image}" alt="User Image" class="web-avatar">
+                    <button type="button" id="deleteImageButton" onclick="deleteImage()">Eliminar Imagen</button>
                 </div>
                 <div th:if="${user.image == null}">
                     <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
                 </div>
 
                 <label for="imagenFile">Selecciona una imatge (.JPEG):</label>
-                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg"/>
+                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg" />
                 <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
-                <div class="error" th:if="${imageFormatError != null and not #strings.isEmpty(imageFormatError)}" th:text="${imageFormatError}"></div>
+                <div class="error" th:if="${imageFormatError != null and not #strings.isEmpty(imageFormatError)}"
+                    th:text="${imageFormatError}"></div>
 
                 <!-- Name -->
                 <label for="name">Nom:</label>
@@ -84,6 +88,23 @@
             </form>
         </section>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var deleteImageButton = document.getElementById('deleteImageButton');
+            deleteImageButton.addEventListener('click', function () {
+                document.getElementById('deleteImage').value = 'true';
+                const imageInput = document.querySelector('input[name="image"]');
+                if (imageInput) {
+                    imageInput.value = ''; 
+                }
+
+                const imageElement = document.querySelector('.web-avatar');
+                if (imageElement) {
+                    imageElement.src = '/images/User-Avatar.png';
+                }
+            });
+        });
+    </script>
 
 </body>
 
