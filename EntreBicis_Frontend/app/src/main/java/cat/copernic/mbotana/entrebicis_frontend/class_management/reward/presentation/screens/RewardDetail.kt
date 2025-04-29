@@ -73,7 +73,7 @@ fun RewardDetail(
 
     Scaffold(
         topBar =
-        { CustomTopBar("Recompensa", userSession.totalPoints, true) },
+        { CustomTopBar("Recompensa", userSession, true) },
     ) { paddingValues ->
 
         Surface(

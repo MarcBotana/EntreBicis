@@ -227,10 +227,12 @@ public class WebUserController {
     @PutMapping("/update/new")
     public String updateUser(@Valid @ModelAttribute("user") User newUser, BindingResult result,
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+            @RequestParam(value = "deleteImage", required = false) String deleteImage,
             RedirectAttributes redirectAttributes) {
 
         try {
 
+             
             if (imageFile != null && !imageFile.isEmpty()) {
                 String imageType = imageFile.getContentType();
 
@@ -239,6 +241,8 @@ public class WebUserController {
                     redirectAttributes.addFlashAttribute("imageFormatError", ErrorMessage.IMAGE_TYPE);
                 }
                 newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));
+            } else {
+                newUser.setImage(null);  
             }
 
             if (result.hasErrors()) {
@@ -252,13 +256,13 @@ public class WebUserController {
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/user/create";
+            return "redirect:/user/update/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user/create";
+            return "redirect:/user/update/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);        
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user/create";
+            return "redirect:/user/update/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);        
         }
 
         return "redirect:/user/list";
