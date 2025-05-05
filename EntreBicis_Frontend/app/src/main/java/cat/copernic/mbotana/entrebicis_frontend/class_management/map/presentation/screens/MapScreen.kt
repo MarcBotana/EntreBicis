@@ -1,7 +1,6 @@
 package cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.screens
 
 import android.Manifest
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -71,16 +70,12 @@ fun MapScreen(
     val cameraPositionState = rememberCameraPositionState()
     var mapLoaded by remember { mutableStateOf(false) }
 
-
     val currentLocation by viewModel.currentLocation.collectAsState()
     val routePoints by viewModel.routePoints.collectAsState()
     val currentSpeed by viewModel.currentSpeed.collectAsState()
 
     val startRoutePoint by viewModel.startRoutePoint.collectAsState()
     val endRoutePoint by viewModel.endRoutePoint.collectAsState()
-
-    Log.d("UIUpdate", "Recomposing with location = $currentLocation and speed = $currentSpeed")
-
 
     val userSession by sessionViewModel.userSession.collectAsState()
 
