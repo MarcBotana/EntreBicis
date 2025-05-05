@@ -6,11 +6,13 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -183,7 +185,7 @@ fun MapScreen(
                             CircularProgressIndicator()
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = "Obtenint Posició...",
+                                text = "Obtenint posició...",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = Color.Black
                             )
@@ -218,18 +220,16 @@ fun MapScreen(
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
                         fontSize = 10.sp,
-
-                        )
+                    )
                 }
             }
 
-
-            Column(
+            Row(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.Start
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 FloatingActionButton(
                     onClick = {
@@ -243,10 +243,16 @@ fun MapScreen(
                     },
                     modifier = Modifier.alpha(if (isTrackingPosition) 1f else 0.5f)
                 ) {
-                    Icon(
-                        imageVector = if (isTrackingRoute) Icons.Default.Stop else Icons.Default.PlayArrow,
-                        contentDescription = if (isTrackingRoute) "Stop Route" else "Start Route"
-                    )
+                    Row(modifier = Modifier.padding(6.dp)) {
+                        Icon(
+                            imageVector = if (isTrackingRoute) Icons.Default.Stop else Icons.Default.PlayArrow,
+                            contentDescription = if (isTrackingRoute) "Stop Route" else "Start Route"
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Text( modifier = Modifier.padding(top = 2.dp),
+                            text = if (isTrackingRoute) "Finalitzar Ruta" else "Començar Ruta"
+                        )
+                    }
                 }
             }
         }
@@ -256,7 +262,7 @@ fun MapScreen(
     if (showStartDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.updateShowStartDialog(false) },
-            title = { Text("Começar ruta") },
+            title = { Text("Iniciar ruta") },
             text = { Text("Vols començar a registrar una nova ruta?") },
             confirmButton = {
                 TextButton(onClick = {
