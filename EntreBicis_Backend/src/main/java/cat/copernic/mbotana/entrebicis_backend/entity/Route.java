@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import cat.copernic.mbotana.entrebicis_backend.entity.enums.RouteValidate;
+import cat.copernic.mbotana.entrebicis_backend.entity.enums.RouteState;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,7 +31,7 @@ public class Route {
     private Long id;
 
     @Column
-    private RouteValidate isValidate;
+    private RouteState routeState;
 
     @Column
     private Double totalRutePoints;

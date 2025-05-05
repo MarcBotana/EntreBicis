@@ -64,7 +64,7 @@ public class ApiRouteController {
 
                 newRoute = new Route(
                         null,
-                        route.getIsValidate(),
+                        route.getRouteState(),
                         systemPointsConversion * route.getTotalRouteDistance(),
                         route.getTotalRouteDistance(),
                         route.getTotalRouteTime(),
@@ -77,7 +77,7 @@ public class ApiRouteController {
 
                 for (GpsPoint gpsPoint : route.getGpsPoints()) {
                     gpsPoint.setRoute(savedRoute);
-                    if (gpsPoint.getSpeed() >= systemMaxVelocity) {
+                    if (gpsPoint.getSpeed() >= systemMaxVelocity || gpsPoint.getSpeed() <= 0.5) {
                         gpsPoint.setIsValid(false);
                     }
                     newGpsPoints.add(apiGpsPointLogic.saveGpsPoint(gpsPoint));
@@ -85,7 +85,9 @@ public class ApiRouteController {
 
                 savedRoute.setGpsPoints(newGpsPoints);
 
-                user.setTotalPoints(newRoute.getTotalRutePoints());
+                Double totalPoints = user.getTotalPoints() + newRoute.getTotalRutePoints();
+
+                user.setTotalPoints(totalPoints);
 
                 apiUserLogic.updateUser(user);
 
@@ -137,6 +139,30 @@ public class ApiRouteController {
 
                 allUserRoutes = apiRouteLogic.getAllUserRoutes(user);
                 response = new ResponseEntity<>(allUserRoutes, headers, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return response;
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<Route> getRouteDetail(@PathVariable Long id) {
+
+        ResponseEntity<Route> response = null;
+
+        Route route = new Route();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-store");
+
+        try {
+            if (!apiRouteLogic.existRouteById(id)) {
+                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                route = apiRouteLogic.getRouteById(id);
+                response = new ResponseEntity<>(route, headers, HttpStatus.OK);
             }
         } catch (Exception e) {
             response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

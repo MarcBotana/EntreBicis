@@ -74,7 +74,7 @@ fun CustomTopBar(screen: String, user: SessionUser, showPoints: Boolean) {
                             .background(Color(0xFFDAD0D0), RoundedCornerShape(12.dp))
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
-                        Text("${user.totalPoints} pts")
+                        Text("${"%.2f".format(user.totalPoints)} pts")
                     }
                 }
             }

@@ -43,7 +43,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewModels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
@@ -67,7 +66,6 @@ fun MapScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
 
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     val cameraPositionState = rememberCameraPositionState()
@@ -88,6 +86,9 @@ fun MapScreen(
 
     val showStartDialog by viewModel.showStartDialog.collectAsState()
     val showEndDialog by viewModel.showEndDialog.collectAsState()
+    val showSaveDialog by viewModel.showSaveDialog.collectAsState()
+    val showStopTimeDialog by viewModel.showStopTimeDialog.collectAsState()
+
     val isTrackingRoute by viewModel.isTrackingRoute.collectAsState()
 
     val isTrackingPosition by viewModel.isTrackingPosition.collectAsState()
@@ -109,6 +110,7 @@ fun MapScreen(
     DisposableEffect(Unit) {
         onDispose {
             viewModel.stopTracking()
+            viewModel.clearRoute()
         }
     }
 
@@ -263,9 +265,9 @@ fun MapScreen(
             text = { Text("Vols començar a registrar una nova ruta?") },
             confirmButton = {
                 TextButton(onClick = {
+                    viewModel.clearRoute()
                     viewModel.beginRoute()
                     viewModel.updateShowStartDialog(false)
-
                 }) {
                     Text("Començar")
                 }
@@ -284,14 +286,14 @@ fun MapScreen(
         AlertDialog(
             onDismissRequest = { viewModel.updateShowEndDialog(false) },
             title = { Text("Finalitzar ruta") },
-            text = { Text("Vols finalitzar aquesta ruta i guardar-la?") },
+            text = { Text("Vols finalitzar aquesta ruta?") },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.stopRoute()
-                    viewModel.saveRoute(userSession.email)
                     viewModel.updateShowEndDialog(false)
+                    viewModel.updateShowSaveDialog(true)
                 }) {
-                    Text("Guardar")
+                    Text("Finalitzar")
                 }
             },
             dismissButton = {
@@ -299,6 +301,45 @@ fun MapScreen(
                     viewModel.updateShowEndDialog(false)
                 }) {
                     Text("Cancel·lar")
+                }
+            }
+        )
+    }
+
+    if (showSaveDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.updateShowEndDialog(false) },
+            text = { Text("Guardar Ruta?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.saveRoute(userSession.email)
+                    viewModel.updateShowSaveDialog(false)
+                }) {
+                    Text("Si, guardar.")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    viewModel.updateShowSaveDialog(false)
+                }) {
+                    Text("No")
+                }
+            }
+        )
+    }
+
+    if (showStopTimeDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.updateShowEndDialog(false) },
+            title = { Text("Estas aturat!") },
+            text = { Text("Has passat massa temps aturat, la ruta ha estat finalitzada y guardada automàticament!") },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = {
+                    viewModel.saveRoute(userSession.email)
+                    viewModel.updateShowStopTimeDialog(false)
+                }) {
+                    Text("D'acord")
                 }
             }
         )
