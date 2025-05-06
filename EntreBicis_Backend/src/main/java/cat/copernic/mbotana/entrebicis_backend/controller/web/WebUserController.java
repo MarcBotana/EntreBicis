@@ -88,7 +88,7 @@ public class WebUserController {
             if (imageFile != null && !imageFile.isEmpty()) {
                 String imageType = imageFile.getContentType();
 
-                if (imageType != null && !imageType.equals("image/jpeg")) {
+                if (imageType != null && !imageType.equals("image/jpeg") && !imageType.equals("image/png")) {
                     result.rejectValue("image", "error.user", ErrorMessage.IMAGE_TYPE);
                 }
                 newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));
@@ -236,7 +236,7 @@ public class WebUserController {
             if (imageFile != null && !imageFile.isEmpty()) {
                 String imageType = imageFile.getContentType();
 
-                if (imageType != null && !imageType.equals("image/jpeg")) {
+                if (imageType != null && !imageType.equals("image/jpeg") && !imageType.equals("image/png")) {
                     result.rejectValue("image", "error.user", ErrorMessage.IMAGE_TYPE);
                     redirectAttributes.addFlashAttribute("imageFormatError", ErrorMessage.IMAGE_TYPE);
                 }
