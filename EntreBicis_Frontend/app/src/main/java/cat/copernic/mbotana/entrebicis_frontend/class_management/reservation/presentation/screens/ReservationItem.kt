@@ -214,13 +214,13 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
 
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        if (reservation.returnTime != null) {
-                            val returnTime = LocalDateTime.parse(reservation.returnTime)
+                        if (reservation.returnDate != null) {
+                            val returnDate = LocalDateTime.parse(reservation.returnDate)
 
-                            expired.value = returnTime.isBefore(LocalDateTime.now())
+                            expired.value = returnDate.isBefore(LocalDateTime.now())
 
                             Text(
-                                text = if (expired.value) "Caducat: ${parseReservationTime(returnTime)}" else "Caduca: ${parseReservationTime(returnTime)}",
+                                text = if (expired.value) "Caducat: ${parseReservationTime(returnDate)}" else "Caduca: ${parseReservationTime(returnDate)}",
                                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
@@ -263,39 +263,4 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
 fun parseReservationTime(parsedDate: LocalDateTime): String {
     val formatterOutput = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     return parsedDate.format(formatterOutput)
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview
-@Composable
-fun PreviewReservationItem() {
-
-    val reward = Reward(
-        1,
-        "Name",
-        "Description",
-        "Observation",
-        "",
-        20.0,
-        RewardState.AVAILABLE,
-        null.toString(),
-        null.toString(),
-        null.toString(),
-        null.toString(),
-        null,
-        null
-    )
-
-    val reservation = Reservation(
-        id = 1,
-        reservationCode = "84754G",
-        reservationState = ReservationState.ASSIGNED,
-        reservationTime = "2025-04-20T14:28:00",
-        returnTime = "2025-04-20T14:28:00",
-        user = null,
-        reward = reward
-    )
-
-    val navController = rememberNavController()
-    ReservationItem(reservation, navController)
 }

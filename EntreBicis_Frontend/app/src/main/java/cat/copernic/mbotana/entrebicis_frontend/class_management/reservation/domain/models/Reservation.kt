@@ -9,8 +9,10 @@ data class Reservation(
     var id: Long? = null,
     var reservationCode: String,
     var reservationState: ReservationState,
-    var reservationTime: String,
     var returnTime: String,
+    var reservationDate: String,
+    var assignationDate: String,
+    var returnDate: String,
     var user: User?,
     var reward: Reward
 )
