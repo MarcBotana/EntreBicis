@@ -214,25 +214,35 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
 
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        val returnTime = LocalDateTime.parse(reservation.returnTime)
+                        if (reservation.returnTime != null) {
+                            val returnTime = LocalDateTime.parse(reservation.returnTime)
 
-                        expired.value = returnTime.isBefore(LocalDateTime.now())
+                            expired.value = returnTime.isBefore(LocalDateTime.now())
 
-                        Text(
-                            text = if (expired.value) "Caducat: ${parseReservationTime(returnTime)}" else "Caduca: ${
-                                parseReservationTime(
-                                    returnTime
-                                )
-                            }",
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(if (expired.value) Color.Red.copy(alpha = 0.5f) else Color.White)
-                                .padding(8.dp)
-                                .weight(1f),
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
-                        )
+                            Text(
+                                text = if (expired.value) "Caducat: ${parseReservationTime(returnTime)}" else "Caduca: ${parseReservationTime(returnTime)}",
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(if (expired.value) Color.Red.copy(alpha = 0.5f) else Color.White)
+                                    .padding(8.dp)
+                                    .weight(1f),
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        } else {
+                            Text(
+                                text = "Caduca: ---",
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(if (expired.value) Color.Red.copy(alpha = 0.5f) else Color.White)
+                                    .padding(8.dp)
+                                    .weight(1f),
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
                 }
 

@@ -17,13 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cat.copernic.mbotana.entrebicis_backend.entity.Reservation;
 import cat.copernic.mbotana.entrebicis_backend.entity.Reward;
-import cat.copernic.mbotana.entrebicis_backend.entity.SystemParams;
 import cat.copernic.mbotana.entrebicis_backend.entity.User;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.ReservationState;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.RewardState;
 import cat.copernic.mbotana.entrebicis_backend.logic.ReservationLogic;
 import cat.copernic.mbotana.entrebicis_backend.logic.RewardLogic;
-import cat.copernic.mbotana.entrebicis_backend.logic.SystemParamsLogic;
 import cat.copernic.mbotana.entrebicis_backend.logic.UserLogic;
 
 @RestController
@@ -32,9 +30,6 @@ public class ApiReservationController {
 
     @Autowired
     private ReservationLogic apiReservationLogic;
-
-    @Autowired
-    private SystemParamsLogic apiSystemParamsLogic;
 
     @Autowired
     private RewardLogic apiRewardLogic;
@@ -56,9 +51,6 @@ public class ApiReservationController {
             if (!apiUserLogic.existUserByEmail(email) && !apiRewardLogic.existRewardById(rewardId)) {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else { 
-                SystemParams systemParams = apiSystemParamsLogic.getSystemParamsById(1L);
-                int systemCollectionHours = systemParams.getCollectionMaxTime();
-
                 User user = apiUserLogic.getUserByEmail(email);
                 Reward reward = apiRewardLogic.getRewardById(rewardId);
 
@@ -69,7 +61,7 @@ public class ApiReservationController {
                     null, 
                     reservationCode,
                     ReservationState.RESERVED, 
-                    LocalDateTime.now().plusHours(systemCollectionHours).withHour(23).withMinute(59).withSecond(0).withNano(0), 
+                    null, 
                     LocalDateTime.now().withSecond(0).withNano(0),
                     null,
                     null,

@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
 import java.util.Locale
 
 class MapViewModel : ViewModel() {
@@ -60,9 +61,7 @@ class MapViewModel : ViewModel() {
     private val _routePoints = MutableStateFlow<List<LatLng>>(emptyList())
     val routePoints: StateFlow<List<LatLng>> = _routePoints
 
-    private val _routeSpeed = MutableStateFlow<List<Float>>(emptyList())
     private val _routeTime = MutableStateFlow<List<LocalTime>>(emptyList())
-
 
     private val _showStartDialog = MutableStateFlow(false)
     val showStartDialog: StateFlow<Boolean> = _showStartDialog
@@ -117,6 +116,7 @@ class MapViewModel : ViewModel() {
         if (_isTrackingRoute.value) {
             _routePoints.value += latLng
 
+            _startRoutePoint.value = _routePoints.value.first()
 
             if (!hasBeenStopped()) {
                 val gpsPoint = GpsPoint(
@@ -135,7 +135,6 @@ class MapViewModel : ViewModel() {
                 _routeTime.value = emptyList()
             }
         } else if (_routePoints.value.size > 1) {
-            _startRoutePoint.value = _routePoints.value.first()
             _endRoutePoint.value = _routePoints.value.last()
         }
     }
@@ -185,7 +184,7 @@ class MapViewModel : ViewModel() {
             cameraPositionState.animate(
                 update = CameraUpdateFactory.newLatLngBounds(
                     bounds,
-                    100
+                    200
                 )
             )
 
@@ -286,7 +285,7 @@ class MapViewModel : ViewModel() {
         _route.value = Route(
             id = null,
             routeState = RouteState.NOT_VALIDATED,
-            routeDate = LocalDateTime.now().toString(),
+            routeDate = LocalDateTime.now(ZoneId.of("UTC+2")).toString(),
             totalRoutePoints = null,
             totalRouteDistance = calculateRouteDistance(),
             totalRouteTime = calculateRouteTime(),

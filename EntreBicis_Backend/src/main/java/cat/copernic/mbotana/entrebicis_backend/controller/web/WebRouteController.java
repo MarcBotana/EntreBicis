@@ -1,14 +1,17 @@
 package cat.copernic.mbotana.entrebicis_backend.controller.web;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
 import cat.copernic.mbotana.entrebicis_backend.entity.Route;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.RouteState;
 import cat.copernic.mbotana.entrebicis_backend.logic.RouteLogic;
@@ -37,8 +40,8 @@ public class WebRouteController {
                     case "routeDate":
                         allRoutes.sort(Comparator.comparing(route -> route.getRouteDate()));
                         break;
-                    case "routeUser":
-                        allRoutes.sort(Comparator.comparing(route -> route.getUser().getName()));
+                    case "userEmail":
+                        allRoutes.sort(Comparator.comparing(route -> route.getUser().getEmail()));
                         break;
                     case "VALIDATED":
                         allRoutes = allRoutes.stream()
@@ -61,13 +64,25 @@ public class WebRouteController {
                     default:
                         break;
                 }
-
             }
+
+            if (search != null && !search.isEmpty()) {
+                allRoutes = allRoutes.stream().filter(
+                    route -> route.getUser().getName().toLowerCase().contains(search.toLowerCase()))
+                    .toList();
+            }
+
+        } catch (DataAccessException e) {
+            model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
+        } catch (SQLException e) {
+            model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
         } catch (Exception e) {
-            // TODO: handle exception
+            model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
-        return new String();
+        model.addAttribute("allRoutes", allRoutes);
+
+        return "route_list";
     }
 
 }

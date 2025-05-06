@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddLocation
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.AlertDialog
@@ -51,6 +52,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.model.RoundCap
+import com.google.maps.android.compose.CameraMoveStartedReason
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
@@ -132,6 +134,7 @@ fun MapScreen(
                     tiltGesturesEnabled = true
                 )
             ) {
+
                 if (isTrackingRoute && routePoints.size > 1) {
                     Polyline(
                         points = routePoints,
@@ -153,16 +156,14 @@ fun MapScreen(
                 if (startRoutePoint != null) {
                     Marker(
                         state = MarkerState(position = startRoutePoint!!),
-                        title = "Start",
-                        snippet = "Route Start"
+                        title = "Inici Ruta"
                     )
                 }
 
                 if (endRoutePoint != null) {
                     Marker(
                         state = MarkerState(position = endRoutePoint!!),
-                        title = "End",
-                        snippet = "Route End"
+                        title = "Final Ruta"
                     )
                 }
             }
@@ -249,7 +250,8 @@ fun MapScreen(
                             contentDescription = if (isTrackingRoute) "Stop Route" else "Start Route"
                         )
                         Spacer(modifier = Modifier.width(2.dp))
-                        Text( modifier = Modifier.padding(top = 2.dp),
+                        Text(
+                            modifier = Modifier.padding(top = 2.dp),
                             text = if (isTrackingRoute) "Finalitzar Ruta" else "Començar Ruta"
                         )
                     }

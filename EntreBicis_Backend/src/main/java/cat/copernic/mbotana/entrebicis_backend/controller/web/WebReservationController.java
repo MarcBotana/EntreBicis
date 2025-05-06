@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
 import cat.copernic.mbotana.entrebicis_backend.entity.Reservation;
 import cat.copernic.mbotana.entrebicis_backend.entity.Reward;
+import cat.copernic.mbotana.entrebicis_backend.entity.SystemParams;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.ReservationState;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.RewardState;
 import cat.copernic.mbotana.entrebicis_backend.logic.ReservationLogic;
 import cat.copernic.mbotana.entrebicis_backend.logic.RewardLogic;
+import cat.copernic.mbotana.entrebicis_backend.logic.SystemParamsLogic;
 import cat.copernic.mbotana.entrebicis_backend.logic.UserLogic;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +35,9 @@ public class WebReservationController {
 
     @Autowired
     ReservationLogic webReservationLogic;
+
+    @Autowired
+    SystemParamsLogic webSystemParamsLogic;
 
     @Autowired
     UserLogic webUserLogic;
@@ -52,8 +57,8 @@ public class WebReservationController {
 
             if (sort != null && !sort.isEmpty()) {
                 switch (sort) {
-                    case "userName":
-                        allReservations.sort(Comparator.comparing(reservation -> reservation.getUser().getName()));
+                    case "userEmail":
+                        allReservations.sort(Comparator.comparing(reservation -> reservation.getUser().getEmail()));
                         break;
                     case "rewardName":
                         allReservations.sort(Comparator.comparing(reservation -> reservation.getReward().getName()));
@@ -144,7 +149,12 @@ public class WebReservationController {
                 reservation = webReservationLogic.getReservationById(id);
                 reward = reservation.getReward();
 
+                SystemParams systemParams = webSystemParamsLogic.getSystemParamsById(1L);
+
+                int systemCollectionHours = systemParams.getCollectionMaxTime();
+
                 reservation.setReservationState(ReservationState.ASSIGNED);    
+                reservation.setReturnDate(LocalDateTime.now().plusHours(systemCollectionHours).withHour(23).withMinute(59).withSecond(0).withNano(0));
                 reservation.setAssignationDate(LocalDateTime.now().withSecond(0).withNano(0));
 
                 reward.setRewardState(RewardState.ASSIGNED);      

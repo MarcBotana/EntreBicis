@@ -45,7 +45,7 @@
                         <div th:text="${user.email}"></div>
                         <div th:text="${user.mobile}"></div>
                         <div th:text="${user.town}"></div>
-                        <div th:text="${user.observation}"></div>
+                        <div th:text="${user.observation != null} ? ${user.observation} : '-'"></div>
                     
                     </div>
                 </div>

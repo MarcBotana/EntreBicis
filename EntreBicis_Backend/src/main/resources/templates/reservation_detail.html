@@ -33,15 +33,17 @@
                         <div>Estat Recompensa: </div>
                         <div> - </div>
                         <div>Data Reserva: </div>
-                        <div>Data Max Recollida: </div>
+                        <div>Data Assignació: </div>
+                        <div>Data Recollida: </div>
                     </div>
                     <div class="data-text">
                         <div th:text="${reservation.user.name} + ' ' + ${reservation.user.surname}"></div>
                         <div th:text="${reservation.reward.name}"></div>
                         <div th:text="${reservation.reward.rewardState.display}"></div>
                         <div> - </div>
-                        <div th:text="${reservation.reservationTime}"></div>
-                        <div th:text="${reservation.returnTime}"></div>
+                        <div th:text="${reservation.reservationDate != null} ? ${#temporals.format(reservation.reservationDate, 'dd/MM/yy - HH:mm')} : '-'"></div>
+                        <div th:text="${reservation.assignationDate != null} ? ${#temporals.format(reservation.assignationDate, 'dd/MM/yy - HH:mm')} : '-'"></div>
+                        <div th:text="${reservation.returnDate != null} ? ${#temporals.format(reservation.returnDate, 'dd/MM/yy - HH:mm')} : '-'"></div>
                     </div>
                 </div>
 
