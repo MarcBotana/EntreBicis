@@ -7,6 +7,7 @@ import cat.copernic.mbotana.entrebicis_frontend.core.enums.RouteState
 data class Route(
     var id: Long? = null,
     var routeState: RouteState,
+    var routeDate: String,
     var totalRoutePoints: Double?,
     var totalRouteDistance: Double,
     var totalRouteTime: String?,

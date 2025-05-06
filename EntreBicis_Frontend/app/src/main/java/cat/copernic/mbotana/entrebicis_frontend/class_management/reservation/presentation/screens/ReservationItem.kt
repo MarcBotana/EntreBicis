@@ -63,17 +63,17 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
     val expired = remember { mutableStateOf(false) }
 
     val colorState = when (reservation.reservationState) {
-        ReservationState.PENDING -> Color(0xFFFFC107)
-        ReservationState.ACTIVE -> Color(0xFF2196F3)
+        ReservationState.RESERVED -> Color(0xFFFFC107)
+        ReservationState.ASSIGNED -> Color(0xFF2196F3)
         ReservationState.CANCELED -> Color(0xFFF44336)
-        ReservationState.COMPLETED -> Color(0xFF4CAF50)
+        ReservationState.RETURNED -> Color(0xFF4CAF50)
     }
 
     val iconState = when (reservation.reservationState) {
-        ReservationState.PENDING -> Icons.Default.AccessTime
-        ReservationState.ACTIVE -> Icons.Default.Beenhere
+        ReservationState.RESERVED -> Icons.Default.AccessTime
+        ReservationState.ASSIGNED -> Icons.Default.Beenhere
         ReservationState.CANCELED -> Icons.Default.Cancel
-        ReservationState.COMPLETED -> Icons.Default.CheckCircle
+        ReservationState.RETURNED -> Icons.Default.CheckCircle
     }
 
     Card(
@@ -268,6 +268,10 @@ fun PreviewReservationItem() {
         "",
         20.0,
         RewardState.AVAILABLE,
+        null.toString(),
+        null.toString(),
+        null.toString(),
+        null.toString(),
         null,
         null
     )
@@ -275,7 +279,7 @@ fun PreviewReservationItem() {
     val reservation = Reservation(
         id = 1,
         reservationCode = "84754G",
-        reservationState = ReservationState.ACTIVE,
+        reservationState = ReservationState.ASSIGNED,
         reservationTime = "2025-04-20T14:28:00",
         returnTime = "2025-04-20T14:28:00",
         user = null,

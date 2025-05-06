@@ -1,9 +1,9 @@
 package cat.copernic.mbotana.entrebicis_backend.entity.enums;
 
 public enum ReservationState {
-    PENDING("PENDENT"),
-    ACTIVE("ACTIVA"), 
-    COMPLETED("COMPLETADA"),
+    RESERVED("RESERVAT"), 
+    ASSIGNED("ASSIGNAT"), 
+    RETURNED("RETORNAT"),
     CANCELED("CANCEL·LADA");
 
     private final String display;

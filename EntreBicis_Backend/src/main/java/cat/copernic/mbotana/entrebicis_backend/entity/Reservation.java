@@ -37,10 +37,16 @@ public class Reservation {
     private ReservationState reservationState;
 
     @Column
-    private LocalDateTime reservationTime;
+    private LocalDateTime returnTime;
 
     @Column
-    private LocalDateTime returnTime;
+    private LocalDateTime reservationDate;
+
+    @Column
+    private LocalDateTime assignationDate;
+
+    @Column
+    private LocalDateTime returnDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id", unique = true)

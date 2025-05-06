@@ -24,6 +24,8 @@
 
             <form th:action="@{/reward/create/new}" method="post" th:object="${reward}" enctype="multipart/form-data">
 
+                <!-- Hidden Attributes -->
+                <input type="hidden" name="rewardDate" th:field="*{rewardDate}">
 
                 <!-- Image -->
                 <div th:if="${reward.image != null}">

@@ -3,7 +3,7 @@ package cat.copernic.mbotana.entrebicis_backend.entity.enums;
 public enum RouteState {
     VALIDATED("VALIDADA"), 
     NOT_VALIDATED("NO VALIDADA"),
-    CANCELED("CANCEL·LADA");
+    INVALIDATED("INVALIDADA");
 
     private final String display;
 

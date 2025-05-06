@@ -12,6 +12,10 @@ data class Reward(
     var image: String,
     var valuePoints: Double,
     var rewardState: RewardState,
+    var rewardDate: String,
+    var reservationDate: String,
+    var assignationDate: String,
+    var returnDate: String,
     var exchangePoint: ExchangePoint?,
     var reservation: Reservation?,
 )

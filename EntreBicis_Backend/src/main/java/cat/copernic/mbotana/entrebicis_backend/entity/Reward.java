@@ -1,5 +1,7 @@
 package cat.copernic.mbotana.entrebicis_backend.entity;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
@@ -58,6 +60,9 @@ public class Reward {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RewardState rewardState;
+
+    @Column(nullable = false)
+    private LocalDateTime rewardDate;
 
     @ManyToOne
     @NotNull(message = ErrorMessage.NOT_BLANK)

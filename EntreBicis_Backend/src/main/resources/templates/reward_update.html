@@ -30,6 +30,8 @@
                 <!-- Hidden Attributes -->
                 <input type="hidden" name="id" th:field="*{id}">
                 <input type="hidden" name="image" th:field="*{image}" >
+                <input type="hidden" name="rewardDate" th:field="*{rewardDate}">
+
 
                 <!-- Image -->
                 <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">

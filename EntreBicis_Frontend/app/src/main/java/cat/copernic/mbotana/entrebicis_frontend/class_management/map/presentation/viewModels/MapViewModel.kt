@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.Duration
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.Locale
 
@@ -285,6 +286,7 @@ class MapViewModel : ViewModel() {
         _route.value = Route(
             id = null,
             routeState = RouteState.NOT_VALIDATED,
+            routeDate = LocalDateTime.now().toString(),
             totalRoutePoints = null,
             totalRouteDistance = calculateRouteDistance(),
             totalRouteTime = calculateRouteTime(),

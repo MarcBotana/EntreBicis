@@ -65,6 +65,7 @@ public class ApiRouteController {
                 newRoute = new Route(
                         null,
                         route.getRouteState(),
+                        route.getRouteDate(),
                         systemPointsConversion * route.getTotalRouteDistance(),
                         route.getTotalRouteDistance(),
                         route.getTotalRouteTime(),
@@ -77,19 +78,13 @@ public class ApiRouteController {
 
                 for (GpsPoint gpsPoint : route.getGpsPoints()) {
                     gpsPoint.setRoute(savedRoute);
-                    if (gpsPoint.getSpeed() >= systemMaxVelocity || gpsPoint.getSpeed() <= 0.5) {
+                    if (gpsPoint.getSpeed() >= systemMaxVelocity) {
                         gpsPoint.setIsValid(false);
                     }
                     newGpsPoints.add(apiGpsPointLogic.saveGpsPoint(gpsPoint));
                 }
 
                 savedRoute.setGpsPoints(newGpsPoints);
-
-                Double totalPoints = user.getTotalPoints() + newRoute.getTotalRutePoints();
-
-                user.setTotalPoints(totalPoints);
-
-                apiUserLogic.updateUser(user);
 
                 apiRouteLogic.updateRoute(savedRoute);
 

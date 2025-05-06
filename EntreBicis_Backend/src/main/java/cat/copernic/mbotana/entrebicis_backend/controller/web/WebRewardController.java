@@ -3,6 +3,7 @@ package cat.copernic.mbotana.entrebicis_backend.controller.web;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Comparator;
@@ -85,6 +86,8 @@ public class WebRewardController {
             } else {
                 result.rejectValue("image", "error.reward", ErrorMessage.NOT_BLANK);
             }
+
+            newReward.setRewardDate(LocalDateTime.now());
 
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("reward", newReward);
@@ -243,6 +246,8 @@ public class WebRewardController {
                 }
                 newReward.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));
             }
+
+            newReward.setRewardDate(LocalDateTime.now());
 
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("reward", newReward);

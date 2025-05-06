@@ -1,6 +1,7 @@
 package cat.copernic.mbotana.entrebicis_backend.controller.web;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -57,22 +58,22 @@ public class WebReservationController {
                     case "rewardName":
                         allReservations.sort(Comparator.comparing(reservation -> reservation.getReward().getName()));
                         break;
-                    case "PENDING":
+                    case "RESERVED":
                         allReservations = allReservations.stream()
                                 .filter(reservation -> reservation.getReservationState()
-                                        .equals(ReservationState.PENDING))
+                                        .equals(ReservationState.RESERVED))
                                 .toList();
                         break;
-                    case "ACTIVE":
+                    case "ASSIGNED":
                         allReservations = allReservations.stream()
                                 .filter(reservation -> reservation.getReservationState()
-                                        .equals(ReservationState.ACTIVE))
+                                        .equals(ReservationState.ASSIGNED))
                                 .toList();
                         break;
-                    case "COMPLETED":
+                    case "RETURNED":
                         allReservations = allReservations.stream()
                                 .filter(reservation -> reservation.getReservationState()
-                                        .equals(ReservationState.COMPLETED))
+                                        .equals(ReservationState.RETURNED))
                                 .toList();
                         break;
                     case "CANCELED":
@@ -143,7 +144,9 @@ public class WebReservationController {
                 reservation = webReservationLogic.getReservationById(id);
                 reward = reservation.getReward();
 
-                reservation.setReservationState(ReservationState.ACTIVE);    
+                reservation.setReservationState(ReservationState.ASSIGNED);    
+                reservation.setAssignationDate(LocalDateTime.now().withSecond(0).withNano(0));
+
                 reward.setRewardState(RewardState.ASSIGNED);      
                 
                 webReservationLogic.updateReservation(reservation);

@@ -1,5 +1,6 @@
 package cat.copernic.mbotana.entrebicis_backend.entity;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -35,6 +36,9 @@ public class Route {
     @Column
     @Enumerated(EnumType.STRING)
     private RouteState routeState;
+
+    @Column
+    private LocalDateTime routeDate;
 
     @Column
     private Double totalRutePoints;
