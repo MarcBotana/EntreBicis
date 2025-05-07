@@ -48,6 +48,8 @@
                             <th class="web-info-img">Imatge</th>
                             <th class="web-info">Nom</th>
                             <th class="web-info">Estat</th>
+                            <th class="web-info">Usuari assignat</th>
+                            <th class="web-info">Data creació</th>
                             <th class="web-info">Punts Valor</th>
                             <th class="web-info">Bescanvi</th>
                         </tr>
@@ -59,6 +61,8 @@
                             </td>
                             <td class="web-info" th:text="${reward.name}"></td>
                             <td class="web-info" th:text="${reward.rewardState.display}"></td>
+                            <td class="web-info" th:text="${reward.reservation != null} ? ${reward.reservation.user.email} : '-'"></td>
+                            <td class="web-info" th:text="${#temporals.format(reward.rewardDate, 'dd/MM/yy - HH:mm')}"></td>
                             <td class="web-info" th:text="${reward.valuePoints}"></td>
                             <td class="web-info" th:text="${reward.exchangePoint.name}"></td>
                         </tr>

@@ -106,6 +106,8 @@ fun MainScreen(
     val navBackStackEntry = navHostController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
 
+    val isTrackingRoute by mapViewModel.isTrackingRoute.collectAsState()
+
     val startDestination = when (bottomNavIndex) {
         "Res" -> BottomNavItem.Res.route
         "Rec" -> BottomNavItem.Rec.route
@@ -129,7 +131,10 @@ fun MainScreen(
         topBar =
         { CustomTopBar(screenTitle, userSession, true) },
         bottomBar = {
-            BottomNavigationBar(navController = navHostController)
+            BottomNavigationBar(
+                navController = navHostController,
+                isTrackingRoute = isTrackingRoute
+            )
         }
     ) { paddingValues ->
         NavHost(

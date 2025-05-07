@@ -35,6 +35,8 @@
                         <div>Data Reserva: </div>
                         <div>Data Assignació: </div>
                         <div>Data Recollida: </div>
+                        <div> - </div>
+                        <div>Caducitat: </div>
                     </div>
                     <div class="data-text">
                         <div th:text="${reservation.user.name} + ' ' + ${reservation.user.surname}"></div>
@@ -44,6 +46,8 @@
                         <div th:text="${reservation.reservationDate != null} ? ${#temporals.format(reservation.reservationDate, 'dd/MM/yy - HH:mm')} : '-'"></div>
                         <div th:text="${reservation.assignationDate != null} ? ${#temporals.format(reservation.assignationDate, 'dd/MM/yy - HH:mm')} : '-'"></div>
                         <div th:text="${reservation.returnDate != null} ? ${#temporals.format(reservation.returnDate, 'dd/MM/yy - HH:mm')} : '-'"></div>
+                        <div> - </div>
+                        <div th:text="${reservation.returnTime != null} ? ${#temporals.format(reservation.returnTime, 'dd/MM/yy - HH:mm')} : '-'"></div>
                     </div>
                 </div>
 

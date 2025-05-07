@@ -11,12 +11,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +38,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import cat.copernic.mbotana.entrebicis_frontend.R
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
+fun BottomNavigationBar(navController: NavController, isTrackingRoute: Boolean) {
     val items = listOf(
         BottomNavItem.Res,
         BottomNavItem.Rec,
@@ -44,6 +49,21 @@ fun BottomNavigationBar(navController: NavController) {
 
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
+
+    var showBlockedDialog by remember { mutableStateOf(false) }
+
+    if (showBlockedDialog) {
+        AlertDialog(
+            onDismissRequest = { showBlockedDialog = false },
+            title = { Text("Ruta en curs!") },
+            text = { Text("Finalitza la ruta si vols cambiar de pantalla.") },
+            confirmButton = {
+                TextButton(onClick = { showBlockedDialog = false }) {
+                    Text("D'acord")
+                }
+            }
+        )
+    }
 
     Row(
         modifier = Modifier
@@ -70,6 +90,10 @@ fun BottomNavigationBar(navController: NavController) {
 
             val weight = if (item == BottomNavItem.Map) 1.8f else 1f
 
+            val isMapItem = item == BottomNavItem.Map
+
+            val iconAlpha = if (isTrackingRoute && !isMapItem) 0.4f else 1f
+
             Box(
                 modifier = Modifier
                     .weight(weight)
@@ -78,10 +102,14 @@ fun BottomNavigationBar(navController: NavController) {
                     .background(backgroundColor)
                     .clickable {
                         if (currentRoute != item.route) {
-                            navController.navigate(item.route) {
-                                popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                launchSingleTop = true
-                                restoreState = true
+                            if (isTrackingRoute && !isMapItem) {
+                                showBlockedDialog = true
+                            } else {
+                                navController.navigate(item.route) {
+                                    popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
                         }
                     }
@@ -92,12 +120,12 @@ fun BottomNavigationBar(navController: NavController) {
                     Icon(
                         imageVector = item.icon,
                         contentDescription = item.label,
-                        tint = contentColor,
+                        tint = contentColor.copy(iconAlpha),
                         modifier = Modifier.size(22.dp)
                     )
                     Text(
                         text = item.label,
-                        color = contentColor,
+                        color = contentColor.copy(iconAlpha),
                         fontSize = 10.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis

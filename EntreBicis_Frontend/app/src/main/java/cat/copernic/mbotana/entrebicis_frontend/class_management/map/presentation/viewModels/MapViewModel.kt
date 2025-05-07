@@ -97,9 +97,10 @@ class MapViewModel : ViewModel() {
         RouteApiRest::class.java
     )
 
-    private val systemParamsApi: SystemParamsApiRest = SystemParamsRetrofitInstance.retrofitInstance.create(
-        SystemParamsApiRest::class.java
-    )
+    private val systemParamsApi: SystemParamsApiRest =
+        SystemParamsRetrofitInstance.retrofitInstance.create(
+            SystemParamsApiRest::class.java
+        )
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateLocation(location: Location) {
@@ -108,10 +109,8 @@ class MapViewModel : ViewModel() {
         _currentSpeed.value = location.speed * 3.6f
         _bearing.value = location.bearing
 
-
         Log.d("LocationDebug", "New Location: ${_currentLocation.value}")
         Log.d("LocationDebug", "New Speed: ${_currentSpeed.value}")
-
 
         if (_isTrackingRoute.value) {
             _routePoints.value += latLng
@@ -133,6 +132,7 @@ class MapViewModel : ViewModel() {
                 stopRoute()
                 _showStopTimeDialog.value = true
                 _routeTime.value = emptyList()
+                _gpsPoint.value = emptyList()
             }
         } else if (_routePoints.value.size > 1) {
             _endRoutePoint.value = _routePoints.value.last()
@@ -230,9 +230,9 @@ class MapViewModel : ViewModel() {
                 fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
                 val locationRequest = LocationRequest.Builder(
-                    Priority.PRIORITY_HIGH_ACCURACY, 500
+                    Priority.PRIORITY_HIGH_ACCURACY, 250
                 ).apply {
-                    setMinUpdateIntervalMillis(1000)
+                    setMinUpdateIntervalMillis(250)
                 }.build()
 
                 locationCallback = object : LocationCallback() {
@@ -347,7 +347,7 @@ class MapViewModel : ViewModel() {
             val firstTime = _routeTime.value.first()
             val lastTime = _routeTime.value.last()
 
-            if (Duration.between(firstTime, lastTime).seconds >= stopTime!!) {
+            if (Duration.between(firstTime, lastTime).toMinutes() >= stopTime!!) {
                 isStopped = true
             }
         } else {
@@ -368,6 +368,7 @@ class MapViewModel : ViewModel() {
 
     fun clearRoute() {
         _routePoints.value = emptyList()
+        _gpsPoint.value = emptyList()
         _startRoutePoint.value = null
         _endRoutePoint.value = null
     }
@@ -377,5 +378,6 @@ class MapViewModel : ViewModel() {
             fusedLocationClient?.removeLocationUpdates(it)
             _isTrackingPosition.value = false
         }
+
     }
 }

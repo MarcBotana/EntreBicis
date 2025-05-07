@@ -45,8 +45,9 @@
                         <tr>
                             <th class="web-info-id">Id</th>
                             <th class="web-info">Estat</th>
-                            <th class="web-info">Temps Ruta</th>
-                            <th class="web-info">Data Creació</th>
+                            <th class="web-info">Data creació</th>
+                            <th class="web-info">Distància</th>
+                            <th class="web-info">Temps</th>
                             <th class="web-info">Vel. Mitjana</th>
                             <th class="web-info">Vel. Màxima</th>
                             <th class="web-info">Pts. Generats</th>
@@ -57,11 +58,12 @@
                         <tr th:onclick="|location.href='/route/detail/${route.id}'|">
                             <td class="web-info-id" th:text="${route.id}"></td>
                             <td class="web-info" th:text="${route.routeState.display}"></td>
-                            <td class="web-info" th:text="${route.totalRouteTime}"></td>
                             <td class="web-info" th:text="${#temporals.format(route.routeDate, 'dd/MM/yy - HH:mm')}"></td>
-                            <td class="web-info" th:text="${#numbers.formatDecimal(route.avgRouteVelocity, 1, 1)} + ' Km/h'"></td>
+                            <td class="web-info" th:text="${#numbers.formatDecimal(route.totalRouteDistance, 1, 3)} + ' m'"></td>
+                            <td class="web-info" th:text="${route.totalRouteTime}"></td>
+                            <td class="web-info" th:text="'~ ' + ${#numbers.formatDecimal(route.avgRouteVelocity, 1, 1)} + ' Km/h'"></td>
                             <td class="web-info" th:text="${#numbers.formatDecimal(route.maxRouteVelocity, 1, 1)} + ' Km/h'"></td>
-                            <td class="web-info" th:text="${#numbers.formatDecimal(route.totalRutePoints, 1, 3)} + ' pts.'"></td>
+                            <td class="web-info" th:text="${#numbers.formatDecimal(route.totalRutePoints, 1, 2)} + ' pts.'"></td>
                             <td class="web-info" th:text="${route.user.email}"></td>
                         </tr>
                     </tbody>

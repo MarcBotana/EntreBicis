@@ -154,7 +154,7 @@ public class WebReservationController {
                 int systemCollectionHours = systemParams.getCollectionMaxTime();
 
                 reservation.setReservationState(ReservationState.ASSIGNED);    
-                reservation.setReturnDate(LocalDateTime.now().plusHours(systemCollectionHours).withHour(23).withMinute(59).withSecond(0).withNano(0));
+                reservation.setReturnTime(LocalDateTime.now().plusHours(systemCollectionHours).withHour(23).withMinute(59).withSecond(0).withNano(0));
                 reservation.setAssignationDate(LocalDateTime.now().withSecond(0).withNano(0));
 
                 reward.setRewardState(RewardState.ASSIGNED);      
