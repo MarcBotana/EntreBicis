@@ -214,8 +214,8 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
 
                         Spacer(modifier = Modifier.width(12.dp))
 
-                        if (reservation.returnDate != null) {
-                            val returnDate = LocalDateTime.parse(reservation.returnDate)
+                        if (reservation.returnTime != null) {
+                            val returnDate = LocalDateTime.parse(reservation.returnTime)
 
                             expired.value = returnDate.isBefore(LocalDateTime.now())
 

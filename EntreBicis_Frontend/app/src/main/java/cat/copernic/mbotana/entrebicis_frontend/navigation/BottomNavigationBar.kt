@@ -18,6 +18,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,9 +38,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import cat.copernic.mbotana.entrebicis_frontend.R
+import cat.copernic.mbotana.entrebicis_frontend.core.common.toastMessage
+import kotlinx.coroutines.delay
 
 @Composable
 fun BottomNavigationBar(navController: NavController, isTrackingRoute: Boolean) {
+    val context = LocalContext.current
+
     val items = listOf(
         BottomNavItem.Res,
         BottomNavItem.Rec,
@@ -53,16 +59,11 @@ fun BottomNavigationBar(navController: NavController, isTrackingRoute: Boolean) 
     var showBlockedDialog by remember { mutableStateOf(false) }
 
     if (showBlockedDialog) {
-        AlertDialog(
-            onDismissRequest = { showBlockedDialog = false },
-            title = { Text("Ruta en curs!") },
-            text = { Text("Finalitza la ruta si vols cambiar de pantalla.") },
-            confirmButton = {
-                TextButton(onClick = { showBlockedDialog = false }) {
-                    Text("D'acord")
-                }
-            }
-        )
+        LaunchedEffect(true) {
+            toastMessage(context, "Tens ua ruta activa!")
+            delay(3500)
+            showBlockedDialog = false
+        }
     }
 
     Row(

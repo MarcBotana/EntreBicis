@@ -5,6 +5,6 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-fun ToastMessage(context: Context, message: String) {
+fun toastMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
 }
