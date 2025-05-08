@@ -26,6 +26,7 @@ import cat.copernic.mbotana.entrebicis_backend.logic.UserLogic;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -118,8 +119,12 @@ public class WebReservationController {
         Reservation reservation = new Reservation();
 
         try {
-            reservation = webReservationLogic.getReservationById(id);
-            model.addAttribute("reservation", reservation);
+            if (webReservationLogic.existReservationById(id)) {
+                reservation = webReservationLogic.getReservationById(id);
+                model.addAttribute("reservation", reservation);
+            } else {
+                return "redirect:/reservation/list";
+            }
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
@@ -135,7 +140,7 @@ public class WebReservationController {
         return "reservation_detail";
     }
 
-    @GetMapping("/assign/{id}/{email}")
+    @PutMapping("/assign/{id}/{email}")
     public String reservationAssign(@PathVariable Long id, @PathVariable String email, Model model,
             RedirectAttributes redirectAttributes) {
 
@@ -161,6 +166,8 @@ public class WebReservationController {
                 
                 webReservationLogic.updateReservation(reservation);
                 webRewardLogic.updateReward(reward);
+            } else {
+                return "redirect:/reservation/list";
             }
 
         } catch (DataAccessException e) {
@@ -176,5 +183,4 @@ public class WebReservationController {
 
         return "redirect:/reservation/detail/" + id;
     }
-
 }

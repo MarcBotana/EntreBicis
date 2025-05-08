@@ -124,7 +124,6 @@ class MapViewModel : ViewModel() {
                     longitude = latLng.longitude,
                     time = LocalTime.now().toString(),
                     speed = _currentSpeed.value,
-                    isValid = true,
                     route = null
                 )
                 _gpsPoint.value += gpsPoint
@@ -284,7 +283,7 @@ class MapViewModel : ViewModel() {
     private fun updateRouteData() {
         _route.value = Route(
             id = null,
-            routeState = RouteState.NOT_VALIDATED,
+            routeState = RouteState.PENDING,
             routeDate = LocalDateTime.now(ZoneId.of("UTC+2")).toString(),
             totalRoutePoints = null,
             totalRouteDistance = calculateRouteDistance(),

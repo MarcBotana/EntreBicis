@@ -39,9 +39,6 @@ public class GpsPoint {
     @Column
     private Double speed;
 
-    @Column
-    private Boolean isValid;
-
     @ManyToOne
     @JoinColumn(name = "route_id")
     @JsonIgnoreProperties({"gpsPoints", "user"})

@@ -190,6 +190,14 @@ hr {
     height: auto;
 }
 
+.web-item-button {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    gap: 12px;  
+}
+
 .web-avatar {
     width: 40px;
     height: 40px;

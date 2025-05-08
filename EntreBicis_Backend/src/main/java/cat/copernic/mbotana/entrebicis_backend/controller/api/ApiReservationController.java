@@ -34,7 +34,7 @@ public class ApiReservationController {
     @Autowired
     private RewardLogic apiRewardLogic;
 
-    @Autowired 
+    @Autowired
     private UserLogic apiUserLogic;
 
     @PostMapping("/create/{email}/{rewardId}")
@@ -50,34 +50,37 @@ public class ApiReservationController {
         try {
             if (!apiUserLogic.existUserByEmail(email) && !apiRewardLogic.existRewardById(rewardId)) {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            } else { 
+            } else {
                 User user = apiUserLogic.getUserByEmail(email);
                 Reward reward = apiRewardLogic.getRewardById(rewardId);
 
                 String reservationCode = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
 
                 if (!user.getIsReservationActive()) {
-                    newReservation = new Reservation(
-                    null, 
-                    reservationCode,
-                    ReservationState.RESERVED, 
-                    null, 
-                    LocalDateTime.now().withSecond(0).withNano(0),
-                    null,
-                    null,
-                    user, 
-                    reward
-                );
+                    if (user.getTotalPoints() >= reward.getValuePoints()) {
+                        newReservation = new Reservation(
+                                null,
+                                reservationCode,
+                                ReservationState.RESERVED,
+                                null,
+                                LocalDateTime.now().withSecond(0).withNano(0),
+                                null,
+                                null,
+                                user,
+                                reward);
 
-                apiReservationLogic.saveReservation(newReservation);
+                        apiReservationLogic.saveReservation(newReservation);
 
-                reward.setRewardState(RewardState.RESERVED);
-                apiRewardLogic.updateReward(reward);
+                        reward.setRewardState(RewardState.RESERVED);
+                        apiRewardLogic.updateReward(reward);
 
-                user.setIsReservationActive(true);
-                apiUserLogic.updateUser(user);
+                        user.setIsReservationActive(true);
+                        apiUserLogic.updateUser(user);
 
-                response = new ResponseEntity<>(headers, HttpStatus.OK);
+                        response = new ResponseEntity<>(headers, HttpStatus.OK);
+                    } else {
+                        response = new ResponseEntity<>(HttpStatus.PAYMENT_REQUIRED);
+                    }
                 } else {
                     response = new ResponseEntity<>(HttpStatus.CONFLICT);
                 }
@@ -102,7 +105,7 @@ public class ApiReservationController {
         try {
             if (!apiUserLogic.existUserByEmail(email)) {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            } else {  
+            } else {
                 User user = apiUserLogic.getUserByEmail(email);
 
                 allUserReservations = apiReservationLogic.getAllUserReservations(user);

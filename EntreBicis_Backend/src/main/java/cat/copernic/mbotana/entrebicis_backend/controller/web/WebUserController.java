@@ -195,22 +195,21 @@ public class WebUserController {
         model.addAttribute("roleList", Role.values());
         model.addAttribute("userState", UserState.values());
 
-        User user = new User();
 
         try {
-            user = webUserLogic.getUserByEmail(email);
+
+            if (!model.containsAttribute("user")) {
+                User user = webUserLogic.getUserByEmail(email);
+                model.addAttribute("user", user);
+            }
+
+
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
             model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
         } catch (Exception e) {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-        }
-
-        if (user != null) {
-            model.addAttribute("user", user);
-        } else {
-            return "redirect:/user/list";
         }
 
         if (exceptionError != null && !exceptionError.isEmpty()) {
@@ -249,7 +248,6 @@ public class WebUserController {
                 redirectAttributes.addFlashAttribute("user", newUser);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", result);
                 return "redirect:/user/update/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
-
             } else {
                 webUserLogic.updateUser(newUser);
             }

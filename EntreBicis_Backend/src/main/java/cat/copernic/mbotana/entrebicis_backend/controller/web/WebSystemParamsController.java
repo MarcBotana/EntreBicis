@@ -81,7 +81,6 @@ public class WebSystemParamsController {
     @GetMapping("/update/{id}")
     public String updateSystemParamsPage(@PathVariable Long id ,Model model, @ModelAttribute("exceptionError") String exceptionError) {
 
-        SystemParams systemParams = new SystemParams();
 
         //Stop Time from 1 Min to 15 Min
         List<Integer> stopTimeList = IntStream.rangeClosed(1, 15).boxed().toList();
@@ -93,7 +92,11 @@ public class WebSystemParamsController {
         model.addAttribute("collTimeList", collTimeList);
 
         try {
-            systemParams = webSystemParamsLogic.getSystemParamsById(id);
+            if (!model.containsAttribute("systemParams")) {
+                SystemParams systemParams = webSystemParamsLogic.getSystemParamsById(id);
+                model.addAttribute("systemParams", systemParams);
+            }
+
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
@@ -102,12 +105,7 @@ public class WebSystemParamsController {
             model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
         }
 
-        if (systemParams != null) {
-            model.addAttribute("systemParams", systemParams);
-        } else {
-            return "redirect:/system/details?id=1";
-        }
-
+       
         if (exceptionError != null && !exceptionError.isEmpty()) {
             model.addAttribute("exceptionError", exceptionError);
         }
@@ -124,21 +122,20 @@ public class WebSystemParamsController {
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute("systemParams", newSystemParams);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.systemParams", result);
-                return "redirect:/system/update?id=" + URLEncoder.encode(newSystemParams.getId().toString(), StandardCharsets.UTF_8);
-
+                return "redirect:/system/update/" + URLEncoder.encode(newSystemParams.getId().toString(), StandardCharsets.UTF_8);
             } else {
                 webSystemParamsLogic.updateSystemParams(newSystemParams);
             }        
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/user/create";
+            return "redirect:/system/list";
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user/create";
+            return "redirect:/system/list";
         }  catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user/create";
+            return "redirect:/system/list";
         }
 
         return "redirect:/system/list";

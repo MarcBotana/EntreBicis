@@ -57,7 +57,6 @@ public class ApiRouteController {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
                 SystemParams systemParams = apiSystemParamsLogic.getSystemParamsById(1L);
-                int systemMaxVelocity = systemParams.getMaxVelocity();
                 Double systemPointsConversion = systemParams.getPointsConversion();
 
                 User user = apiUserLogic.getUserByEmail(email);
@@ -78,9 +77,6 @@ public class ApiRouteController {
 
                 for (GpsPoint gpsPoint : route.getGpsPoints()) {
                     gpsPoint.setRoute(savedRoute);
-                    if (gpsPoint.getSpeed() >= systemMaxVelocity) {
-                        gpsPoint.setIsValid(false);
-                    }
                     newGpsPoints.add(apiGpsPointLogic.saveGpsPoint(gpsPoint));
                 }
 
