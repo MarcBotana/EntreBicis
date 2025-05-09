@@ -50,7 +50,7 @@ fun RewardDetail(
 
     val navHostController = rememberNavController()
 
-    val userSession by sessionViewModel.userSession.collectAsState()
+    val userData by sessionViewModel.userData.collectAsState()
     val rewardDetail by viewModel.rewardDetail.collectAsState()
 
     val rewardNotFoundError by viewModel.rewardNotFoundError.collectAsState()
@@ -72,7 +72,7 @@ fun RewardDetail(
 
     Scaffold(
         topBar =
-        { CustomTopBar("Recompensa", userSession, true) },
+        { userData?.let { CustomTopBar("Recompensa", it, true) } },
     ) { paddingValues ->
 
         Surface(
@@ -129,7 +129,7 @@ fun RewardDetail(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         onClick = {
-                            viewModel.makeReservation(userSession.email, id)
+                            userData?.let { it1 -> viewModel.makeReservation(it1.email, id) }
                         }) {
                         Text("Reservar")
                     }

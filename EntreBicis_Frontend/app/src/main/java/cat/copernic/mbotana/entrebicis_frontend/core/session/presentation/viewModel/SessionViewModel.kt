@@ -9,6 +9,7 @@ import cat.copernic.mbotana.entrebicis_frontend.core.enums.Role
 import cat.copernic.mbotana.entrebicis_frontend.core.session.model.SessionUser
 import cat.copernic.mbotana.entrebicis_frontend.core.session.repository.SessionRepository
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.domain.models.User
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -16,11 +17,11 @@ import kotlinx.coroutines.launch
 
 class SessionViewModel(private val sessionRepository: SessionRepository) : ViewModel() {
 
-    private val _userSession = MutableStateFlow(SessionUser("", "", Role.BIKER,0.0, false))
+    private val _userSession = MutableStateFlow(SessionUser("", "", Role.BIKER, false))
     val userSession: StateFlow<SessionUser> get() = _userSession
 
     private val _userData = MutableStateFlow<User?>(null)
-    private val userData: StateFlow<User?> get() = _userData
+    val userData: StateFlow<User?> get() = _userData
 
     private val userApi: UserApiRest = UserRetrofitInstance.retrofitInstance.create(
         UserApiRest::class.java
@@ -30,18 +31,18 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
         loadSession()
     }
 
-    private fun loadSession() {
+    fun loadSession() {
         viewModelScope.launch {
             sessionRepository.getSession().collect { session ->
                 _userSession.value = session
                 Log.i("SessionINFO", _userSession.value.email)
                 Log.i("SessionINFO", _userSession.value.role.toString())
-                Log.i("SessionINFO", _userSession.value.totalPoints.toString())
                 Log.i("SessionINFO", _userSession.value.isConnected.toString())
                 if (userSession.value.email.isNotBlank()) {
                     val response = userApi.getUserByEmail(userSession.value.email)
                     updateUserData(response.body())
                     userData.value?.let { Log.i("SessionINFO", it.email) }
+                    userData.value?.let { Log.i("SessionINFO", it.totalPoints.toString()) }
                 } else {
                     Log.w("SessionINFO", "No email in userSession!")
                 }
@@ -50,14 +51,16 @@ class SessionViewModel(private val sessionRepository: SessionRepository) : ViewM
     }
 
     private fun updateUserData(user: User?) {
-        _userData.value = user
+        if (user != userData.value) {
+            _userData.value = user
+        }
     }
 
     fun logout() {
-        _userSession.value = SessionUser("", "", Role.BIKER, 0.0,false)
+        _userSession.value = SessionUser("", "", Role.BIKER, false)
         _userData.value = null
         viewModelScope.launch {
-            sessionRepository.saveSession(SessionUser("", "", Role.BIKER, 0.0,false))
+            sessionRepository.saveSession(SessionUser("", "", Role.BIKER, false))
         }
     }
 

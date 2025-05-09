@@ -72,7 +72,7 @@ fun LoginScreen(
 
     LaunchedEffect(isUserLogged) {
         if (isUserLogged && user != null) {
-            sessionViewModel.updateSession(SessionUser(user!!.email, user!!.image, user!!.role, user!!.totalPoints, true))
+            sessionViewModel.updateSession(SessionUser(user!!.email, user!!.image, user!!.role, true))
             viewModel.resetUserLogged()
             val bottomNavIndex = "Map"
             navController.navigate("main/$bottomNavIndex") {

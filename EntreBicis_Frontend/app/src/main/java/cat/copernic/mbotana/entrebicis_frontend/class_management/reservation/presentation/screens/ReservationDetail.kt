@@ -51,7 +51,7 @@ fun ReservationDetail(
 
     val navHostController = rememberNavController()
 
-    val userSession by sessionViewModel.userSession.collectAsState()
+    val userData by sessionViewModel.userData.collectAsState()
     val reservationDetail by viewModel.reservationDetail.collectAsState()
 
     val reservationNotFoundError by viewModel.reservationNotFoundError.collectAsState()
@@ -73,7 +73,7 @@ fun ReservationDetail(
 
     Scaffold(
         topBar =
-        { CustomTopBar("Reserva", userSession, true) },
+        { userData?.let { CustomTopBar("Reserva", it, true) } },
     ) { paddingValues ->
 
         Surface(
@@ -134,7 +134,7 @@ fun ReservationDetail(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         onClick = {
-                            viewModel.returnReservation(userSession.email, id)
+                            userData?.let { it1 -> viewModel.returnReservation(it1.email, id) }
                         }) {
                         Text("Recollir")
                     }
