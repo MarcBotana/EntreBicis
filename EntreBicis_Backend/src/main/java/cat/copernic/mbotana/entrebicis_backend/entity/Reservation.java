@@ -49,7 +49,7 @@ public class Reservation {
     private LocalDateTime returnDate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", unique = true)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToOne

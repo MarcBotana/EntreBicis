@@ -134,7 +134,7 @@ fun ReservationDetail(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         onClick = {
-
+                            viewModel.returnReservation(userSession.email, id)
                         }) {
                         Text("Recollir")
                     }

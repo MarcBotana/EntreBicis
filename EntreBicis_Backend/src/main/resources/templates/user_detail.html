@@ -51,12 +51,12 @@
                 </div>
 
                 <div class="detail-options">
-                    <div class="data-value" th:text="${user.totalPoints}"></div>
+                    <div class="data-value" th:text="${#numbers.formatDecimal(user.totalPoints, 1, 1)} + ' pts.'"></div>
                     <div class="options-button">
-                        <button th:onclick="|location.href='/user/list'|">Rutes</button>
+                        <button th:onclick="|location.href='/route/list/' + '@{${user.email}}'|">Rutes</button>
                     </div>
                     <div class="options-button">
-                        <button th:onclick="|location.href='/user/list'|">Recompenses</button>
+                        <button th:onclick="|location.href='/reservation/list/' + '@{${user.email}}'|">Reserves</button>
                     </div>
                     <div class="options-button">
                         <button th:onclick="|location.href='/user/update/password/' + '@{${user.email}}'|">Canvi Contrasenya</button>

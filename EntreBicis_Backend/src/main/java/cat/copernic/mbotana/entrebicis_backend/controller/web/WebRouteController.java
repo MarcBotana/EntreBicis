@@ -41,7 +41,7 @@ public class WebRouteController {
     SystemParamsLogic webSystemParamsLogic;
 
     @GetMapping("/list")
-    public String listRoutePage(@RequestParam(required = false) String sort,
+    public String listRoutesPage(@RequestParam(required = false) String sort,
             @RequestParam(required = false) String search, Model model) {
 
         List<Route> allRoutes = new ArrayList<>();
@@ -100,6 +100,72 @@ public class WebRouteController {
         return "route_list";
     }
 
+    @GetMapping("/list/{email}")
+    public String listUserRoutesPage(@PathVariable String email, @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String search, Model model) {
+
+        List<Route> allUserRoutes = new ArrayList<>();
+
+        try {
+
+            if (webUserLogic.existUserByEmail(email)) {
+
+                User user = webUserLogic.getUserByEmail(email);
+
+                allUserRoutes = webRouteLogic.getAllUserRoutes(user);
+
+                if (sort != null && !sort.isEmpty()) {
+                    switch (sort) {
+                        case "routeDate":
+                            allUserRoutes.sort(Comparator.comparing(route -> route.getRouteDate()));
+                            break;
+                        case "userEmail":
+                            allUserRoutes.sort(Comparator.comparing(route -> route.getUser().getEmail()));
+                            break;
+                        case "VALIDATED":
+                            allUserRoutes = allUserRoutes.stream()
+                                    .filter(route -> route.getRouteState()
+                                            .equals(RouteState.VALIDATED))
+                                    .toList();
+                            break;
+                        case "NOT_VALIDATED":
+                            allUserRoutes = allUserRoutes.stream()
+                                    .filter(route -> route.getRouteState()
+                                            .equals(RouteState.NOT_VALIDATED))
+                                    .toList();
+                            break;
+                        case "PENDING":
+                            allUserRoutes = allUserRoutes.stream()
+                                    .filter(route -> route.getRouteState()
+                                            .equals(RouteState.PENDING))
+                                    .toList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (search != null && !search.isEmpty()) {
+                    allUserRoutes = allUserRoutes.stream().filter(
+                            route -> route.getUser().getName().toLowerCase().contains(search.toLowerCase()))
+                            .toList();
+                }
+
+            }
+
+        } catch (DataAccessException e) {
+            model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
+        } catch (SQLException e) {
+            model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
+        }
+
+        model.addAttribute("allRoutes", allUserRoutes);
+
+        return "route_list";
+    }
+
     @GetMapping("/detail/{id}")
     public String routeDetailPage(@PathVariable Long id, Model model,
             @ModelAttribute("exceptionError") String exceptionError) {
@@ -144,7 +210,7 @@ public class WebRouteController {
         try {
 
             if (webUserLogic.existUserByEmail(email) && webRouteLogic.existRouteById(id)) {
-                
+
                 route = webRouteLogic.getRouteById(id);
                 user = webUserLogic.getUserByEmail(email);
 
@@ -155,18 +221,18 @@ public class WebRouteController {
 
                 webUserLogic.updateUser(user);
             } else {
-                return "redirect:/reservation/list";
+                return "redirect:/route/list";
             }
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/reservation/detail/" + id;
+            return "redirect:/route/detail/" + id;
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/reservation/detail/" + id;
+            return "redirect:/route/detail/" + id;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/reservation/detail/" + id;
+            return "redirect:/route/detail/" + id;
         }
 
         return "redirect:/route/detail/" + id;
@@ -183,7 +249,7 @@ public class WebRouteController {
         try {
 
             if (webUserLogic.existUserByEmail(email) && webRouteLogic.existRouteById(id)) {
-                
+
                 route = webRouteLogic.getRouteById(id);
                 user = webUserLogic.getUserByEmail(email);
 
@@ -197,18 +263,18 @@ public class WebRouteController {
                 webRouteLogic.updateRoute(route);
 
             } else {
-                return "redirect:/reservation/list";
+                return "redirect:/route/list";
             }
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/reservation/detail/" + id;
+            return "redirect:/route/detail/" + id;
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/reservation/detail/" + id;
+            return "redirect:/route/detail/" + id;
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/reservation/detail/" + id;
+            return "redirect:/route/detail/" + id;
         }
 
         return "redirect:/route/detail/" + id;

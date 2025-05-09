@@ -23,6 +23,8 @@ import cat.copernic.mbotana.entrebicis_backend.entity.enums.RewardState;
 import cat.copernic.mbotana.entrebicis_backend.logic.ReservationLogic;
 import cat.copernic.mbotana.entrebicis_backend.logic.RewardLogic;
 import cat.copernic.mbotana.entrebicis_backend.logic.UserLogic;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/api/reservation")
@@ -75,6 +77,7 @@ public class ApiReservationController {
                         apiRewardLogic.updateReward(reward);
 
                         user.setIsReservationActive(true);
+                        user.setTotalPoints(user.getTotalPoints() - reward.getValuePoints());
                         apiUserLogic.updateUser(user);
 
                         response = new ResponseEntity<>(headers, HttpStatus.OK);
@@ -140,6 +143,66 @@ public class ApiReservationController {
         }
 
         return response;
+    }
+
+    @PutMapping("/collect/{id}/{email}")
+    public ResponseEntity<Void> collectReservation(@PathVariable Long id, @PathVariable String email) {
+
+        ResponseEntity<Void> response = null;
+
+        Reservation reservation = new Reservation();
+        Reward reward = new Reward();
+        User user = new User();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-store");
+        
+        try {
+            if (!apiReservationLogic.existReservationById(id)) {
+                response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                reservation = apiReservationLogic.getReservationById(id);
+                reward = reservation.getReward();
+
+                user = apiUserLogic.getUserByEmail(email);
+
+                if (user.getEmail() == reservation.getUser().getEmail()) {
+                    if (reservation.getReservationState() == ReservationState.ASSIGNED) {
+
+                        if (!checkReservationCaducity(reservation)) {
+
+                            reservation.setReturnDate(LocalDateTime.now());
+                            reservation.setReservationState(ReservationState.RETURNED);
+                            reward.setRewardState(RewardState.RETURNED);
+                            user.setIsReservationActive(false);
+
+                            apiReservationLogic.updateReservation(reservation);
+                            apiRewardLogic.updateReward(reward);
+                            apiUserLogic.updateUser(user);
+                            response = new ResponseEntity<>(headers, HttpStatus.OK);
+                        } else {
+                            response = new ResponseEntity<>(HttpStatus.GONE);
+                        }
+                    } else {
+                        response = new ResponseEntity<>(HttpStatus.CONFLICT);
+                    }
+                } else {
+                    response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+            }
+        } catch (Exception e) {
+            response = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return response;
+    }
+
+    private Boolean checkReservationCaducity(Reservation reservation) {
+        LocalDateTime todayTime = LocalDateTime.now();
+
+        LocalDateTime reservationExpireTime = reservation.getReturnTime();
+
+        return todayTime.isAfter(reservationExpireTime);
     }
 
 }

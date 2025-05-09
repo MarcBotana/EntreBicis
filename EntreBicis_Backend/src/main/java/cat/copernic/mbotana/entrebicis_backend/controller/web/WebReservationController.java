@@ -16,6 +16,7 @@ import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
 import cat.copernic.mbotana.entrebicis_backend.entity.Reservation;
 import cat.copernic.mbotana.entrebicis_backend.entity.Reward;
 import cat.copernic.mbotana.entrebicis_backend.entity.SystemParams;
+import cat.copernic.mbotana.entrebicis_backend.entity.User;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.ReservationState;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.RewardState;
 import cat.copernic.mbotana.entrebicis_backend.logic.ReservationLogic;
@@ -47,7 +48,7 @@ public class WebReservationController {
     RewardLogic webRewardLogic;
 
     @GetMapping("/list")
-    public String listReservationPage(@RequestParam(required = false) String sort,
+    public String listReservationsPage(@RequestParam(required = false) String sort,
             @RequestParam(required = false) String search, Model model) {
 
         List<Reservation> allReservations = new ArrayList<>();
@@ -113,8 +114,83 @@ public class WebReservationController {
         return "reservation_list";
     }
 
+    @GetMapping("/list/{email}")
+    public String listUserReservationsPage(@PathVariable String email, @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String search, Model model) {
+
+        List<Reservation> allUserReservations = new ArrayList<>();
+
+        try {
+
+            if (webUserLogic.existUserByEmail(email)) {
+
+                User user = webUserLogic.getUserByEmail(email);
+
+                allUserReservations = webReservationLogic.getAllUserReservations(user);
+
+                if (sort != null && !sort.isEmpty()) {
+                    switch (sort) {
+                        case "userEmail":
+                            allUserReservations
+                                    .sort(Comparator.comparing(reservation -> reservation.getUser().getEmail()));
+                            break;
+                        case "rewardName":
+                            allUserReservations
+                                    .sort(Comparator.comparing(reservation -> reservation.getReward().getName()));
+                            break;
+                        case "RESERVED":
+                            allUserReservations = allUserReservations.stream()
+                                    .filter(reservation -> reservation.getReservationState()
+                                            .equals(ReservationState.RESERVED))
+                                    .toList();
+                            break;
+                        case "ASSIGNED":
+                            allUserReservations = allUserReservations.stream()
+                                    .filter(reservation -> reservation.getReservationState()
+                                            .equals(ReservationState.ASSIGNED))
+                                    .toList();
+                            break;
+                        case "RETURNED":
+                            allUserReservations = allUserReservations.stream()
+                                    .filter(reservation -> reservation.getReservationState()
+                                            .equals(ReservationState.RETURNED))
+                                    .toList();
+                            break;
+                        case "CANCELED":
+                            allUserReservations = allUserReservations.stream()
+                                    .filter(reservation -> reservation.getReservationState()
+                                            .equals(ReservationState.CANCELED))
+                                    .toList();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (search != null && !search.isEmpty()) {
+                    allUserReservations = allUserReservations.stream().filter(
+                            reservation -> reservation.getUser().getName().toLowerCase().contains(search.toLowerCase())
+                                    || reservation.getReward().getName().toLowerCase().contains(search.toLowerCase()))
+                            .toList();
+                }
+            }
+
+        } catch (DataAccessException e) {
+            model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
+        } catch (SQLException e) {
+            model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
+        } catch (Exception e) {
+            model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
+        }
+
+        model.addAttribute("allReservations", allUserReservations);
+
+        return "reservation_list";
+    }
+
     @GetMapping("/detail/{id}")
-    public String reservationDetailPage(@PathVariable Long id, Model model, @ModelAttribute("exceptionError") String exceptionError) {
+    public String reservationDetailPage(@PathVariable Long id, Model model,
+            @ModelAttribute("exceptionError") String exceptionError) {
 
         Reservation reservation = new Reservation();
 
@@ -158,12 +234,13 @@ public class WebReservationController {
 
                 int systemCollectionHours = systemParams.getCollectionMaxTime();
 
-                reservation.setReservationState(ReservationState.ASSIGNED);    
-                reservation.setReturnTime(LocalDateTime.now().plusHours(systemCollectionHours).withHour(23).withMinute(59).withSecond(0).withNano(0));
+                reservation.setReservationState(ReservationState.ASSIGNED);
+                reservation.setReturnTime(LocalDateTime.now().plusHours(systemCollectionHours).withHour(23)
+                        .withMinute(59).withSecond(0).withNano(0));
                 reservation.setAssignationDate(LocalDateTime.now().withSecond(0).withNano(0));
 
-                reward.setRewardState(RewardState.ASSIGNED);      
-                
+                reward.setRewardState(RewardState.ASSIGNED);
+
                 webReservationLogic.updateReservation(reservation);
                 webRewardLogic.updateReward(reward);
             } else {
