@@ -6,7 +6,6 @@ data class SessionUser(
     val email: String,
     val image: String?,
     val role: Role,
-    val totalPoints: Double,
     val isConnected: Boolean
 )
 

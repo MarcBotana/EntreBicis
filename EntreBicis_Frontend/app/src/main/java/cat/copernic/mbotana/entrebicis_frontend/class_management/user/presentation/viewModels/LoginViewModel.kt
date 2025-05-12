@@ -98,10 +98,7 @@ class LoginViewModel : ViewModel() {
                     } else if (response.code() == 409) {
                         Log.e("LoginViewModel", "NO PASSWORD CHANGED: $savedUser")
                         _passwordError.value = "Has de fer el canvi de contrasenya inicial!"
-                    } else if (response.code() == 404) {
-                        Log.e("LoginViewModel", "EMAIL_NOT_FOUND!")
-                        _emailNotFoundError.value = "Correu no registrat!"
-                    } else if (response.code() == 401) {
+                    } else if (response.code() == 401 || response.code() == 404) {
                         Log.e("LoginViewModel", "EMAIL OR PASSWORD ERROR! (UNAUTHORIZED)")
                         _emailNotFoundError.value = "Correu o contrasenya incorrectes!"
                     } else if (response.code() == 500) {

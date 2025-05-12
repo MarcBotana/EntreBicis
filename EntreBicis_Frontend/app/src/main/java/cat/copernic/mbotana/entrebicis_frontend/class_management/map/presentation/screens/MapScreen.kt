@@ -1,17 +1,18 @@
 package cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.screens
 
 import android.Manifest
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -43,7 +44,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewModels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
@@ -67,12 +67,10 @@ fun MapScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
 
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
     val cameraPositionState = rememberCameraPositionState()
     var mapLoaded by remember { mutableStateOf(false) }
-
 
     val currentLocation by viewModel.currentLocation.collectAsState()
     val routePoints by viewModel.routePoints.collectAsState()
@@ -81,13 +79,13 @@ fun MapScreen(
     val startRoutePoint by viewModel.startRoutePoint.collectAsState()
     val endRoutePoint by viewModel.endRoutePoint.collectAsState()
 
-    Log.d("UIUpdate", "Recomposing with location = $currentLocation and speed = $currentSpeed")
-
-
     val userSession by sessionViewModel.userSession.collectAsState()
 
     val showStartDialog by viewModel.showStartDialog.collectAsState()
     val showEndDialog by viewModel.showEndDialog.collectAsState()
+    val showSaveDialog by viewModel.showSaveDialog.collectAsState()
+    val showStopTimeDialog by viewModel.showStopTimeDialog.collectAsState()
+
     val isTrackingRoute by viewModel.isTrackingRoute.collectAsState()
 
     val isTrackingPosition by viewModel.isTrackingPosition.collectAsState()
@@ -108,6 +106,8 @@ fun MapScreen(
 
     DisposableEffect(Unit) {
         onDispose {
+            viewModel.stopRoute()
+            viewModel.clearRoute()
             viewModel.stopTracking()
         }
     }
@@ -133,6 +133,7 @@ fun MapScreen(
                     tiltGesturesEnabled = true
                 )
             ) {
+
                 if (isTrackingRoute && routePoints.size > 1) {
                     Polyline(
                         points = routePoints,
@@ -154,16 +155,14 @@ fun MapScreen(
                 if (startRoutePoint != null) {
                     Marker(
                         state = MarkerState(position = startRoutePoint!!),
-                        title = "Start",
-                        snippet = "Route Start"
+                        title = "Inici Ruta"
                     )
                 }
 
                 if (endRoutePoint != null) {
                     Marker(
                         state = MarkerState(position = endRoutePoint!!),
-                        title = "End",
-                        snippet = "Route End"
+                        title = "Final Ruta"
                     )
                 }
             }
@@ -186,7 +185,7 @@ fun MapScreen(
                             CircularProgressIndicator()
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = "Obtenint Posició...",
+                                text = "Obtenint posició...",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = Color.Black
                             )
@@ -221,18 +220,16 @@ fun MapScreen(
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
                         fontSize = 10.sp,
-
-                        )
+                    )
                 }
             }
 
-
-            Column(
+            Row(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.Start
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 FloatingActionButton(
                     onClick = {
@@ -246,10 +243,17 @@ fun MapScreen(
                     },
                     modifier = Modifier.alpha(if (isTrackingPosition) 1f else 0.5f)
                 ) {
-                    Icon(
-                        imageVector = if (isTrackingRoute) Icons.Default.Stop else Icons.Default.PlayArrow,
-                        contentDescription = if (isTrackingRoute) "Stop Route" else "Start Route"
-                    )
+                    Row(modifier = Modifier.padding(6.dp)) {
+                        Icon(
+                            imageVector = if (isTrackingRoute) Icons.Default.Stop else Icons.Default.PlayArrow,
+                            contentDescription = if (isTrackingRoute) "Stop Route" else "Start Route"
+                        )
+                        Spacer(modifier = Modifier.width(2.dp))
+                        Text(
+                            modifier = Modifier.padding(top = 2.dp),
+                            text = if (isTrackingRoute) "Finalitzar Ruta" else "Començar Ruta"
+                        )
+                    }
                 }
             }
         }
@@ -259,13 +263,13 @@ fun MapScreen(
     if (showStartDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.updateShowStartDialog(false) },
-            title = { Text("Começar ruta") },
+            title = { Text("Iniciar ruta") },
             text = { Text("Vols començar a registrar una nova ruta?") },
             confirmButton = {
                 TextButton(onClick = {
+                    viewModel.clearRoute()
                     viewModel.beginRoute()
                     viewModel.updateShowStartDialog(false)
-
                 }) {
                     Text("Començar")
                 }
@@ -284,14 +288,14 @@ fun MapScreen(
         AlertDialog(
             onDismissRequest = { viewModel.updateShowEndDialog(false) },
             title = { Text("Finalitzar ruta") },
-            text = { Text("Vols finalitzar aquesta ruta i guardar-la?") },
+            text = { Text("Vols finalitzar aquesta ruta?") },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.stopRoute()
-                    viewModel.saveRoute(userSession.email)
                     viewModel.updateShowEndDialog(false)
+                    viewModel.updateShowSaveDialog(true)
                 }) {
-                    Text("Guardar")
+                    Text("Finalitzar")
                 }
             },
             dismissButton = {
@@ -299,6 +303,45 @@ fun MapScreen(
                     viewModel.updateShowEndDialog(false)
                 }) {
                     Text("Cancel·lar")
+                }
+            }
+        )
+    }
+
+    if (showSaveDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.updateShowEndDialog(false) },
+            text = { Text("Guardar Ruta?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.saveRoute(userSession.email)
+                    viewModel.updateShowSaveDialog(false)
+                }) {
+                    Text("Si, guardar.")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    viewModel.updateShowSaveDialog(false)
+                }) {
+                    Text("No")
+                }
+            }
+        )
+    }
+
+    if (showStopTimeDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.updateShowEndDialog(false) },
+            title = { Text("Estas aturat!") },
+            text = { Text("Has passat massa temps aturat, la ruta ha estat finalitzada y guardada automàticament!") },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = {
+                    viewModel.saveRoute(userSession.email)
+                    viewModel.updateShowStopTimeDialog(false)
+                }) {
+                    Text("D'acord")
                 }
             }
         )

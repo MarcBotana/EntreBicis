@@ -92,8 +92,11 @@ class RewardsViewModel: ViewModel() {
                 val response = reservationApi.createReservation(email, rewardId)
                 if (response.isSuccessful) {
                     Log.e("RewardsViewModel", "RESERVATION_SUCCESS!")
+                } else if (response.code() == 402) {
+                    Log.e("RewardsViewModel", "USER LOW POINT VALUE! ")
+                    _backendException.value = "No tens suficients punts!"
                 } else if (response.code() == 409) {
-                    Log.e("RewardsViewModel", "USER HAS RESERVATION ACTIVE!")
+                    Log.e("RewardsViewModel", "USER HAS RESERVATION ACTIVE! ")
                     _backendException.value = "Ja tens una reserva activa!"
                 } else if (response.code() == 500) {
                     Log.e("RewardsViewModel", "BACKEND EXCEPTION: ${response.errorBody()?.string()}")

@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
-import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
+import cat.copernic.mbotana.entrebicis_frontend.core.common.toastMessage
 import cat.copernic.mbotana.entrebicis_frontend.core.session.model.SessionUser
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SplashViewModel
@@ -43,7 +43,7 @@ fun SplashScreen(viewModel: SplashViewModel, navController: NavController, sessi
     LaunchedEffect(isDataLoaded) {
         if (isDataLoaded) {
             val bottomNavIndex = "Map"
-            sessionViewModel.updateSession(SessionUser(user!!.email, user!!.image, user!!.role, user!!.totalPoints, true))
+            sessionViewModel.updateSession(SessionUser(user!!.email, user!!.image, user!!.role, true))
             navController.navigate("main/$bottomNavIndex") {
                 popUpTo(0) { inclusive = true }
             }
@@ -51,11 +51,11 @@ fun SplashScreen(viewModel: SplashViewModel, navController: NavController, sessi
     }
 
     LaunchedEffect(backendException) {
-        backendException?.let { ToastMessage(context, it) }
+        backendException?.let { toastMessage(context, it) }
     }
 
     LaunchedEffect(frontendException) {
-        frontendException?.let { ToastMessage(context, it) }
+        frontendException?.let { toastMessage(context, it) }
     }
 
     Box(

@@ -86,6 +86,29 @@ class ReservationViewModel: ViewModel() {
             }
         }
     }
+
+    fun returnReservation(email: String, reservationId: Long) {
+        viewModelScope.launch {
+            try {
+                val response = reservationApi.collectReservation(reservationId, email)
+                if (response.isSuccessful) {
+                    Log.e("RewardsViewModel", "RESERVATION_COLLECT_SUCCESS!")
+                } else if (response.code() == 409) {
+                    Log.e("RewardsViewModel", "USER RESERVATION IS NOT ASSIGNED! ")
+                    _backendException.value = "La reserva encara no està assignada!"
+                } else if (response.code() == 410) {
+                    Log.e("RewardsViewModel", "USER HAS RESERVATION EXPIRED! ")
+                    _backendException.value = "La reserva esta caducada!"
+                } else if (response.code() == 500) {
+                    Log.e("RewardsViewModel", "BACKEND EXCEPTION: ${response.errorBody()?.string()}")
+                    _backendException.value = "Error amb el servidor!"
+                }
+            } catch (e: Exception) {
+                Log.e("RewardsViewModel", "FRONTEND EXCEPTION: ${e.message}")
+                _frontendException.value = "Error amb el client!"
+            }
+        }
+    }
 }
 
 

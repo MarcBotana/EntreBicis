@@ -18,6 +18,10 @@ public class RewardLogic {
         rewardRepository.save(reward);
     }
 
+    public void deleteReward(Reward reward) throws Exception {
+        rewardRepository.delete(reward);
+    }
+
     public Reward getRewardById(Long id) throws Exception {
         return rewardRepository.findById(id).get();
     }

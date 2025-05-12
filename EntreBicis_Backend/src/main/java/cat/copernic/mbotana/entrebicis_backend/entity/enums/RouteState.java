@@ -1,12 +1,13 @@
 package cat.copernic.mbotana.entrebicis_backend.entity.enums;
 
-public enum RouteValidate {
+public enum RouteState {
     VALIDATED("VALIDADA"), 
-    NOT_VALIDATED("NO VALIDADA");
+    NOT_VALIDATED("NO VALIDADA"),
+    PENDING("PENDENT");
 
     private final String display;
 
-    RouteValidate(String display) {
+    RouteState(String display) {
         this.display = display;
     }
 

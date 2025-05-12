@@ -22,10 +22,10 @@
             <button th:onclick="|location.href='/reward/list?sort=name'|">Nom</button>
             <button th:onclick="|location.href='/reward/list?sort=exchangePoint'|">Punt Bescanvi</button>
             <hr>
-            <button th:onclick="|location.href='/reward/list?sort=AVAILABLE'|">Disponible</button>
-            <button th:onclick="|location.href='/reward/list?sort=RESERVED'|">Reservat</button>
-            <button th:onclick="|location.href='/reward/list?sort=ASSIGNED'|">Assignat</button>
-            <button th:onclick="|location.href='/reward/list?sort=RETURNED'|">Retornat</button>
+            <button th:onclick="|location.href='/reward/list?sort=AVAILABLE'|">Disponibles</button>
+            <button th:onclick="|location.href='/reward/list?sort=RESERVED'|">Reservades</button>
+            <button th:onclick="|location.href='/reward/list?sort=ASSIGNED'|">Assignades</button>
+            <button th:onclick="|location.href='/reward/list?sort=RETURNED'|">Retornades</button>
 
         </aside>
 
@@ -48,6 +48,8 @@
                             <th class="web-info-img">Imatge</th>
                             <th class="web-info">Nom</th>
                             <th class="web-info">Estat</th>
+                            <th class="web-info">Usuari assignat</th>
+                            <th class="web-info">Data creació</th>
                             <th class="web-info">Punts Valor</th>
                             <th class="web-info">Bescanvi</th>
                         </tr>
@@ -55,11 +57,16 @@
                     <tbody class="web-item" th:each="reward : ${allRewards}">
                         <tr th:onclick="|location.href='/reward/detail/${reward.id}'|">
                             <td>
-                                <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">
+                                <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image"
+                                    class="web-avatar">
                             </td>
                             <td class="web-info" th:text="${reward.name}"></td>
                             <td class="web-info" th:text="${reward.rewardState.display}"></td>
-                            <td class="web-info" th:text="${reward.valuePoints}"></td>
+                            <td class="web-info"
+                                th:text="${reward.reservation != null} ? ${reward.reservation.user.email} : '-'"></td>
+                            <td class="web-info" th:text="${#temporals.format(reward.rewardDate, 'dd/MM/yy - HH:mm')}">
+                            </td>
+                            <td class="web-info" th:text="${#numbers.formatDecimal(reward.valuePoints, 1, 1)} + ' pts.'"></td>
                             <td class="web-info" th:text="${reward.exchangePoint.name}"></td>
                         </tr>
                     </tbody>
@@ -72,9 +79,14 @@
                     </thead>
                     <tbody class="web-item" th:each="reward : ${allRewards}">
                         <tr>
-                            <td>
+                            <td class="web-item-button">
                                 <button th:onclick="|location.href='/reward/update/${reward.id}'|"
-                                th:disabled="${reward.rewardState.name() != 'AVAILABLE'}">Editar</button>
+                                    th:disabled="${reward.rewardState.name() != 'AVAILABLE'}">Editar</button>
+                                <form th:action="@{/reward/delete/{id}(id=${reward.id})}" method="post"
+                                    th:if="${reward.rewardState.name() == 'AVAILABLE'}">
+                                    <input type="hidden" name="_method" value="delete" />
+                                    <button type="submit">Eliminar</button>
+                                </form>
                             </td>
                         </tr>
                     </tbody>

@@ -8,6 +8,5 @@ data class GpsPoint(
     var longitude: Double,
     var time: String?,
     var speed: Float,
-    var isValid: Boolean,
     var route: Route?
 )

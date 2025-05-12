@@ -66,7 +66,7 @@
                             <td class="web-info" th:text="${user.surname}"></td>
                             <td class="web-info" th:text="${user.town}"></td>
                             <td class="web-info" th:text="${user.role.display}"></td>
-                            <td class="web-info" th:text="${user.totalPoints}"></td>
+                            <td class="web-info" th:text="${#numbers.formatDecimal(user.totalPoints, 1, 2)} + ' pts.'"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -78,7 +78,7 @@
                     </thead>
                     <tbody class="web-item" th:each="user : ${allUsers}">
                         <tr>
-                            <td>
+                            <td class="web-item-button">
                                 <button
                                     th:onclick="|location.href='/user/update/' + '@{${user.email}}'|">Editar</button>
                                 <button th:onclick="|location.href='/user/list'|">Contactar</button>
