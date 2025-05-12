@@ -63,7 +63,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true)
                         .failureUrl("/login?error=true"))
                 .exceptionHandling(exception -> exception
-                        .accessDeniedHandler((_, response, _) -> {
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.sendRedirect("/login?errorDenied=true");
                         }))
                 .userDetailsService(userValidator);

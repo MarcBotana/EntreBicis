@@ -62,6 +62,7 @@ class MapViewModel : ViewModel() {
     val routePoints: StateFlow<List<LatLng>> = _routePoints
 
     private val _routeTime = MutableStateFlow<List<LocalTime>>(emptyList())
+    private val _routeLocation = MutableStateFlow<List<LatLng>>(emptyList())
 
     private val _showStartDialog = MutableStateFlow(false)
     val showStartDialog: StateFlow<Boolean> = _showStartDialog
@@ -117,7 +118,7 @@ class MapViewModel : ViewModel() {
 
             _startRoutePoint.value = _routePoints.value.first()
 
-            if (!hasBeenStopped()) {
+            if (!hasBeenStopped(location)) {
                 val gpsPoint = GpsPoint(
                     null,
                     latitude = latLng.latitude,
@@ -228,11 +229,10 @@ class MapViewModel : ViewModel() {
 
                 fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-                val locationRequest = LocationRequest.Builder(
-                    Priority.PRIORITY_HIGH_ACCURACY, 250
-                ).apply {
-                    setMinUpdateIntervalMillis(250)
-                }.build()
+                val locationRequest =
+                    LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY, 250)
+                        .setMinUpdateIntervalMillis(250)
+                        .build()
 
                 locationCallback = object : LocationCallback() {
                     @RequiresApi(Build.VERSION_CODES.O)
@@ -334,28 +334,49 @@ class MapViewModel : ViewModel() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun hasBeenStopped(): Boolean {
+    private fun hasBeenStopped(location: Location): Boolean {
         val currentSpeed = _currentSpeed.value
-        val velInterval = 0.5f
+        val velInterval = 1.5f
+        val metersInterval = 5f
         val stopTime = _systemParams.value?.stopMaxTime?.toLong()
 
         var isStopped = false
 
-        if (currentSpeed < velInterval) {
+        if (currentSpeed <= velInterval) {
             _routeTime.value += LocalTime.now()
+
+            val latLng = LatLng(location.latitude, location.longitude)
+            _routeLocation.value += latLng
+
             val firstTime = _routeTime.value.first()
             val lastTime = _routeTime.value.last()
 
-            if (Duration.between(firstTime, lastTime).toMinutes() >= stopTime!!) {
-                isStopped = true
+            val firstLoc = _routeLocation.value.first()
+            val lastLoc = _routeLocation.value.last()
+
+            val results = FloatArray(1)
+            Location.distanceBetween(
+                firstLoc.latitude,
+                firstLoc.longitude,
+                lastLoc.latitude,
+                lastLoc.longitude,
+                results
+            )
+
+            val distance = results[0]
+
+            if (distance <= metersInterval) {
+                if (Duration.between(firstTime, lastTime).toMinutes() >= stopTime!!) {
+                    isStopped = true
+                }
+            } else {
+                _routeTime.value = emptyList()
+                _routeLocation.value = emptyList()
             }
-        } else {
-            _routeTime.value = emptyList()
         }
 
         return isStopped
     }
-
 
     fun beginRoute() {
         _isTrackingRoute.value = true
