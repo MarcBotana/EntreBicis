@@ -14,4 +14,7 @@ interface RouteApiRest {
 
     @GET("list/{email}")
     suspend fun getUserRoutesList(@Path("email") email: String): Response<List<Route>>
+
+    @GET("detail/{id}")
+    suspend fun getRouteDetail(@Path("id") id: Long): Response<Route>
 }

@@ -136,7 +136,13 @@ hr {
 .web-list-webBar {
     border-collapse: collapse;
     width: 80%;
-    table-layout: fixed;
+    text-align: left;
+    flex-grow: 100;
+}
+
+.web-list-webBar-noImg {
+    border-collapse: collapse;
+    width: 80%;
     text-align: left;
     flex-grow: 100;
 }
@@ -145,8 +151,20 @@ hr {
     background-color: #ddd; 
 }
 
+.web-list-webBar-noImg thead {
+    background-color: #ddd; 
+}
+
 .web-list-webBar th, .web-list-webBar td {
     padding: 12px;
+    border-bottom: 1px solid #ccc;
+}
+
+.web-list-webBar-noImg th, .web-list-webBar-noImg td {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     border-bottom: 1px solid #ccc;
 }
 
@@ -155,12 +173,29 @@ hr {
     transition: background 0.3s ease;
 }
 
+.web-list-webBar-noImg tbody tr {
+    background: #f0f0f0;
+    transition: background 0.3s ease;
+}
+
 .web-list-webBar tbody tr:hover {
+    background: #e0e0e0;
+}
+
+.web-list-webBar-noImg tbody tr:hover {
     background: #e0e0e0;
 }
 
 .web-item {
     height: auto;
+}
+
+.web-item-button {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    gap: 12px;  
 }
 
 .web-avatar {

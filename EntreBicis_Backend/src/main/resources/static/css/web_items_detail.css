@@ -83,6 +83,14 @@ body {
     text-align: left;           
 }
 
+.detail-map {
+    border-radius: 12px;       
+    width: 500px;
+    height: 500px;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+}
+
 
 .detail-data {
     display: flex;

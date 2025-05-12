@@ -37,7 +37,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.LoginViewModel
-import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
+import cat.copernic.mbotana.entrebicis_frontend.core.common.toastMessage
 import cat.copernic.mbotana.entrebicis_frontend.core.session.model.SessionUser
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 import kotlinx.coroutines.launch
@@ -72,7 +72,7 @@ fun LoginScreen(
 
     LaunchedEffect(isUserLogged) {
         if (isUserLogged && user != null) {
-            sessionViewModel.updateSession(SessionUser(user!!.email, user!!.image, user!!.role, user!!.totalPoints, true))
+            sessionViewModel.updateSession(SessionUser(user!!.email, user!!.image, user!!.role, true))
             viewModel.resetUserLogged()
             val bottomNavIndex = "Map"
             navController.navigate("main/$bottomNavIndex") {
@@ -82,11 +82,11 @@ fun LoginScreen(
     }
 
     LaunchedEffect(backendException) {
-        backendException?.let { ToastMessage(context, it) }
+        backendException?.let { toastMessage(context, it) }
     }
 
     LaunchedEffect(frontendException) {
-        frontendException?.let { ToastMessage(context, it) }
+        frontendException?.let { toastMessage(context, it) }
     }
 
     Surface(

@@ -37,13 +37,19 @@ public class Reservation {
     private ReservationState reservationState;
 
     @Column
-    private LocalDateTime reservationTime;
-
-    @Column
     private LocalDateTime returnTime;
 
+    @Column
+    private LocalDateTime reservationDate;
+
+    @Column
+    private LocalDateTime assignationDate;
+
+    @Column
+    private LocalDateTime returnDate;
+
     @ManyToOne
-    @JoinColumn(name = "user_id", unique = true)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToOne

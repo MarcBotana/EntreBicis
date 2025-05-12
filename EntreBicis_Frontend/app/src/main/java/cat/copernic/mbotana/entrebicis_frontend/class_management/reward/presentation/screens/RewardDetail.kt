@@ -3,7 +3,6 @@ package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.present
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,7 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewModels.RewardsViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
-import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
+import cat.copernic.mbotana.entrebicis_frontend.core.common.toastMessage
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
 @Composable
@@ -51,7 +50,7 @@ fun RewardDetail(
 
     val navHostController = rememberNavController()
 
-    val userSession by sessionViewModel.userSession.collectAsState()
+    val userData by sessionViewModel.userData.collectAsState()
     val rewardDetail by viewModel.rewardDetail.collectAsState()
 
     val rewardNotFoundError by viewModel.rewardNotFoundError.collectAsState()
@@ -64,16 +63,16 @@ fun RewardDetail(
     }
 
     LaunchedEffect(backendException) {
-        backendException?.let { ToastMessage(context, it) }
+        backendException?.let { toastMessage(context, it) }
     }
 
     LaunchedEffect(frontendException) {
-        frontendException?.let { ToastMessage(context, it) }
+        frontendException?.let { toastMessage(context, it) }
     }
 
     Scaffold(
         topBar =
-        { CustomTopBar("Recompensa", userSession, true) },
+        { userData?.let { CustomTopBar("Recompensa", it, true) } },
     ) { paddingValues ->
 
         Surface(
@@ -122,7 +121,7 @@ fun RewardDetail(
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = rewardDetail!!.rewardState.name
+                            text = rewardDetail!!.rewardState.display
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
@@ -130,7 +129,7 @@ fun RewardDetail(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         onClick = {
-                            viewModel.makeReservation(userSession.email, id)
+                            userData?.let { it1 -> viewModel.makeReservation(it1.email, id) }
                         }) {
                         Text("Reservar")
                     }

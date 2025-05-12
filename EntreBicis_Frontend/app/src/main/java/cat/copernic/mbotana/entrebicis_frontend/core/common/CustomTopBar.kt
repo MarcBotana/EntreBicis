@@ -28,11 +28,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cat.copernic.mbotana.entrebicis_frontend.R
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.domain.models.User
 import cat.copernic.mbotana.entrebicis_frontend.core.session.model.SessionUser
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopBar(screen: String, user: SessionUser, showPoints: Boolean) {
+fun CustomTopBar(screen: String, user: User, showPoints: Boolean) {
 
     val bitmap = remember(user.image) { ImageUtils.convertBase64ToBitmap(user.image) }
 
@@ -74,7 +75,7 @@ fun CustomTopBar(screen: String, user: SessionUser, showPoints: Boolean) {
                             .background(Color(0xFFDAD0D0), RoundedCornerShape(12.dp))
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
-                        Text("${user.totalPoints} pts")
+                        Text("${"%.2f".format(user.totalPoints)} pts")
                     }
                 }
             }

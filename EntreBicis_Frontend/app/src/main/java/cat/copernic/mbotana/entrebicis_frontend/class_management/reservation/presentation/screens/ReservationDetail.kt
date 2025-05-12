@@ -30,16 +30,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.viewModels.ReservationViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
-import cat.copernic.mbotana.entrebicis_frontend.core.common.ToastMessage
+import cat.copernic.mbotana.entrebicis_frontend.core.common.toastMessage
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
 @Composable
@@ -53,7 +51,7 @@ fun ReservationDetail(
 
     val navHostController = rememberNavController()
 
-    val userSession by sessionViewModel.userSession.collectAsState()
+    val userData by sessionViewModel.userData.collectAsState()
     val reservationDetail by viewModel.reservationDetail.collectAsState()
 
     val reservationNotFoundError by viewModel.reservationNotFoundError.collectAsState()
@@ -66,16 +64,16 @@ fun ReservationDetail(
     }
 
     LaunchedEffect(backendException) {
-        backendException?.let { ToastMessage(context, it) }
+        backendException?.let { toastMessage(context, it) }
     }
 
     LaunchedEffect(frontendException) {
-        frontendException?.let { ToastMessage(context, it) }
+        frontendException?.let { toastMessage(context, it) }
     }
 
     Scaffold(
         topBar =
-        { CustomTopBar("Reserva", userSession, true) },
+        { userData?.let { CustomTopBar("Reserva", it, true) } },
     ) { paddingValues ->
 
         Surface(
@@ -136,7 +134,7 @@ fun ReservationDetail(
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally),
                         onClick = {
-
+                            userData?.let { it1 -> viewModel.returnReservation(it1.email, id) }
                         }) {
                         Text("Recollir")
                     }

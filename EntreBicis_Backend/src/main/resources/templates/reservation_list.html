@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/web_items_list.css">
-    <title>EntreBicis - Reserva</title>
+    <title>EntreBicis - Reserves</title>
 </head>
 
 <body>
@@ -19,13 +19,13 @@
             <h3 class="sidebar-title">Ordenar</h3>
             <button th:onclick="|location.href='/reservation/list'|">Totes</button>
             <hr>
-            <button th:onclick="|location.href='/reservation/list?sort=userName'|">Nom Usuari</button>
+            <button th:onclick="|location.href='/reservation/list?sort=userEmail'|">Correu Usuari</button>
             <button th:onclick="|location.href='/reservation/list?sort=rewardName'|">Nom Recompensa</button>
             <hr>
-            <button th:onclick="|location.href='/reservation/list?sort=PENDING'|">Pendent</button>
-            <button th:onclick="|location.href='/reservation/list?sort=ACTIVE'|">Activa</button>
-            <button th:onclick="|location.href='/reservation/list?sort=COMPLETED'|">Completada</button>
-            <button th:onclick="|location.href='/reservation/list?sort=CANCELED'|">Cancel·lada</button>
+            <button th:onclick="|location.href='/reservation/list?sort=RESERVED'|">Reservades</button>
+            <button th:onclick="|location.href='/reservation/list?sort=ASSIGNED'|">Assignades</button>
+            <button th:onclick="|location.href='/reservation/list?sort=RETURNED'|">Retornades</button>
+            <button th:onclick="|location.href='/reservation/list?sort=CANCELED'|">Cancel·lades</button>
 
         </aside>
 
@@ -41,21 +41,23 @@
             </form>
 
             <div class="web-list-content">
-                <table class="web-list-webBar">
+                <table class="web-list-webBar-noImg">
                     <thead>
                         <tr>
-                            <th class="web-info">Id</th>
+                            <th class="web-info-id">Id</th>
                             <th class="web-info">Estat</th>
+                            <th class="web-info">Data Reserva</th>
                             <th class="web-info">Recompensa</th>
                             <th class="web-info">Usuari</th>
                         </tr>
                     </thead>
                     <tbody class="web-item" th:each="reservation : ${allReservations}">
                         <tr th:onclick="|location.href='/reservation/detail/${reservation.id}'|">
-                            <td class="web-info" th:text="${reservation.id}"></td>
+                            <td class="web-info-id" th:text="${reservation.id} + '-' + ${reservation.reservationCode}"></td>
                             <td class="web-info" th:text="${reservation.reservationState.display}"></td>
+                            <td class="web-info" th:text="${reservation.reservationDate != null} ? ${#temporals.format(reservation.reservationDate, 'dd/MM/yy - HH:mm')} : '-'"></td>
                             <td class="web-info" th:text="${reservation.reward.name}"></td>
-                            <td class="web-info" th:text="${reservation.user.name}"></td>
+                            <td class="web-info" th:text="${reservation.user.email}"></td>
                         </tr>
                     </tbody>
                 </table>

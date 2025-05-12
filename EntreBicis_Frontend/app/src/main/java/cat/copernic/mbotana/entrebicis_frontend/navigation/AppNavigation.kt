@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -102,9 +103,12 @@ fun MainScreen(
 ) {
 
     val navHostController = rememberNavController()
-    val userSession by sessionViewModel.userSession.collectAsState()
+    val userData by sessionViewModel.userData.collectAsState()
+
     val navBackStackEntry = navHostController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
+
+    val isTrackingRoute by mapViewModel.isTrackingRoute.collectAsState()
 
     val startDestination = when (bottomNavIndex) {
         "Res" -> BottomNavItem.Res.route
@@ -124,12 +128,19 @@ fun MainScreen(
         else -> ""
     }
 
+    LaunchedEffect(currentRoute) {
+        sessionViewModel.loadSession()
+    }
+
     Scaffold(
         contentWindowInsets = WindowInsets.systemBars,
         topBar =
-        { CustomTopBar(screenTitle, userSession, true) },
+        { userData?.let { CustomTopBar(screenTitle, it, true) } },
         bottomBar = {
-            BottomNavigationBar(navController = navHostController)
+            BottomNavigationBar(
+                navController = navHostController,
+                isTrackingRoute = isTrackingRoute
+            )
         }
     ) { paddingValues ->
         NavHost(

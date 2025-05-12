@@ -30,12 +30,14 @@
                 <!-- Hidden Attributes -->
                 <input type="hidden" name="id" th:field="*{id}">
                 <input type="hidden" name="image" th:field="*{image}" >
+                <input type="hidden" name="rewardDate" th:field="*{rewardDate}">
+
 
                 <!-- Image -->
-                <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">
+                <img th:src="${#strings.startsWith(reward.image, 'iVBOR') ? 'data:image/png;base64,' : (#strings.startsWith(reward.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${reward.image}" alt="Reward Image" class="web-avatar">
 
-                <label for="imagenFile">Selecciona una imatge (.JPEG):</label>
-                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg"/>
+                <label for="imagenFile">Selecciona una imatge:</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg,image/png"/>
                 <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
                 <div class="error" th:if="${imageFormatError != null and not #strings.isEmpty(imageFormatError)}" th:text="${imageFormatError}"></div>
 

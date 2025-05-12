@@ -29,14 +29,14 @@
 
                 <!-- Image -->
                 <div th:if="${user.image != null}">
-                    <img th:src="'data:image/jpeg;base64,' + ${user.image}" alt="User Image" class="web-avatar">
+                    <img th:src="${#strings.startsWith(user.image, 'iVBOR') ? 'data:image/png;base64,' : (#strings.startsWith(user.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${user.image}" alt="User Image" class="web-avatar">
                 </div>
                 <div th:if="${user.image == null}">
                     <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
                 </div>
 
-                <label for="imagenFile">Selecciona una imatge (.JPEG):</label>
-                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg"/>
+                <label for="imagenFile">Selecciona una imatge:</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg,image/png"/>
                 <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
 
                 <!-- Email -->

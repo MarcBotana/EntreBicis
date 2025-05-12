@@ -24,17 +24,19 @@
 
             <form th:action="@{/reward/create/new}" method="post" th:object="${reward}" enctype="multipart/form-data">
 
+                <!-- Hidden Attributes -->
+                <input type="hidden" name="rewardDate" th:field="*{rewardDate}">
 
                 <!-- Image -->
                 <div th:if="${reward.image != null}">
-                    <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">
+                    <img th:src="${#strings.startsWith(reward.image, 'iVBOR') ? 'data:image/png;base64,' : (#strings.startsWith(reward.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${reward.image}" alt="Reward Image" class="web-avatar">
                 </div>
                 <div th:if="${reward.image == null}">
                     <img th:src="@{/images/User-Avatar.png}" alt="Reward Image" class="web-avatar">
                 </div>
 
-                <label for="imagenFile">Selecciona una imatge (.JPEG):</label>
-                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg"/>
+                <label for="imagenFile">Selecciona una imatge:</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg,image/png"/>
                 <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
 
                 <!-- Name -->

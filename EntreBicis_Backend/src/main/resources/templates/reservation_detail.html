@@ -33,27 +33,48 @@
                         <div>Estat Recompensa: </div>
                         <div> - </div>
                         <div>Data Reserva: </div>
-                        <div>Data Max Recollida: </div>
+                        <div>Data Assignació: </div>
+                        <div>Data Recollida: </div>
+                        <div> - </div>
+                        <div>Caducitat: </div>
                     </div>
                     <div class="data-text">
                         <div th:text="${reservation.user.name} + ' ' + ${reservation.user.surname}"></div>
                         <div th:text="${reservation.reward.name}"></div>
                         <div th:text="${reservation.reward.rewardState.display}"></div>
                         <div> - </div>
-                        <div th:text="${reservation.reservationTime}"></div>
-                        <div th:text="${reservation.returnTime}"></div>
+                        <div
+                            th:text="${reservation.reservationDate != null} ? ${#temporals.format(reservation.reservationDate, 'dd/MM/yy - HH:mm')} : '-'">
+                        </div>
+                        <div
+                            th:text="${reservation.assignationDate != null} ? ${#temporals.format(reservation.assignationDate, 'dd/MM/yy - HH:mm')} : '-'">
+                        </div>
+                        <div
+                            th:text="${reservation.returnDate != null} ? ${#temporals.format(reservation.returnDate, 'dd/MM/yy - HH:mm')} : '-'">
+                        </div>
+                        <div> - </div>
+                        <div
+                            th:text="${reservation.returnTime != null} ? ${#temporals.format(reservation.returnTime, 'dd/MM/yy - HH:mm')} : '-'">
+                        </div>
                     </div>
                 </div>
 
                 <div class="detail-options">
                     <div class="options-button">
-                        <button th:onclick="|location.href='/user/detail/' + '@{${reservation.user.email}}'|">Usuari</button>
+                        <button
+                            th:onclick="|location.href='/user/detail/' + '@{${reservation.user.email}}'|">Usuari</button>
                     </div>
                     <div class="options-button">
-                        <button th:onclick="|location.href='/reward/detail/' + '@{${reservation.reward.id}}'|">Recompensa</button>
+                        <button
+                            th:onclick="|location.href='/reward/detail/' + '@{${reservation.reward.id}}'|">Recompensa</button>
                     </div>
                     <div class="options-button">
-                        <button th:onclick="|location.href='/reservation/assign/' + '@{${reservation.id}}' + '/@{${reservation.user.email}}'|">Assignar</button>
+                        <form
+                            th:action="@{/reservation/assign/{id}/{email}(id=${reservation.id}, email=${reservation.user.email})}"
+                            method="post">
+                            <input type="hidden" name="_method" value="put" />
+                            <button type="submit">Assignar</button>
+                        </form>
                     </div>
                 </div>
 

@@ -167,6 +167,10 @@ fun PreviewRewardItem() {
         "",
         20.0,
         RewardState.AVAILABLE,
+        null.toString(),
+        null.toString(),
+        null.toString(),
+        null.toString(),
         null,
         null
     )

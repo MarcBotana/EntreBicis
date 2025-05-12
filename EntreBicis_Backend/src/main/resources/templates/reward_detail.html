@@ -32,12 +32,18 @@
                         <div>Descripció: </div>
                         <div>Observacions: </div>
                         <div>Punt Bescanvi: </div>
+                        <div>Data creació: </div>
+                        <div th:if="${reward.reservation != null}"> - </div>
+                        <div th:if="${reward.reservation != null}" >Usuari assignat: </div>
                     </div>
                     <div class="data-text">
                         <div th:text="${reward.name}"></div>
                         <div th:text="${reward.description}"></div>
                         <div th:text="${reward.observation}"></div>
                         <div th:text="${reward.exchangePoint.name} + ' - (' + ${reward.exchangePoint.address} + ')'"></div>
+                        <div th:text="${#temporals.format(reward.rewardDate, 'dd/MM/yy - HH:mm')}"></div>
+                        <div th:if="${reward.reservation != null}"> - </div>
+                        <div th:if="${reward.reservation != null}" th:text="${reward.reservation.user.name} + ' ' + ${reward.reservation.user.surname} + ' - (' + ${reward.reservation.user.email} + ')'"></div>
                     </div>
                 </div>
 

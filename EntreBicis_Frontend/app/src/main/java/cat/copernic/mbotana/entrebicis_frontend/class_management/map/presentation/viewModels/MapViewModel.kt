@@ -15,7 +15,10 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.gpsPoint.domain
 import cat.copernic.mbotana.entrebicis_frontend.class_management.route.data.repositories.RouteRetrofitInstance
 import cat.copernic.mbotana.entrebicis_frontend.class_management.route.data.source.RouteApiRest
 import cat.copernic.mbotana.entrebicis_frontend.class_management.route.domain.models.Route
-import cat.copernic.mbotana.entrebicis_frontend.core.enums.RouteValidate
+import cat.copernic.mbotana.entrebicis_frontend.class_management.systemParams.data.repositories.SystemParamsRetrofitInstance
+import cat.copernic.mbotana.entrebicis_frontend.class_management.systemParams.data.source.SystemParamsApiRest
+import cat.copernic.mbotana.entrebicis_frontend.class_management.systemParams.domain.models.SystemParams
+import cat.copernic.mbotana.entrebicis_frontend.core.enums.RouteState
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -30,8 +33,10 @@ import com.google.maps.android.compose.CameraPositionState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.time.LocalTime
 import java.time.Duration
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
 import java.util.Locale
 
 class MapViewModel : ViewModel() {
@@ -42,6 +47,8 @@ class MapViewModel : ViewModel() {
     private val _route = MutableStateFlow<Route?>(null)
 
     private val _gpsPoint = MutableStateFlow<List<GpsPoint>>(emptyList())
+
+    private val _systemParams = MutableStateFlow<SystemParams?>(null)
 
     private val _bearing = MutableStateFlow<Float?>(null)
 
@@ -54,11 +61,20 @@ class MapViewModel : ViewModel() {
     private val _routePoints = MutableStateFlow<List<LatLng>>(emptyList())
     val routePoints: StateFlow<List<LatLng>> = _routePoints
 
+    private val _routeTime = MutableStateFlow<List<LocalTime>>(emptyList())
+    private val _routeLocation = MutableStateFlow<List<LatLng>>(emptyList())
+
     private val _showStartDialog = MutableStateFlow(false)
     val showStartDialog: StateFlow<Boolean> = _showStartDialog
 
     private val _showEndDialog = MutableStateFlow(false)
     val showEndDialog: StateFlow<Boolean> = _showEndDialog
+
+    private val _showSaveDialog = MutableStateFlow(false)
+    val showSaveDialog: StateFlow<Boolean> = _showSaveDialog
+
+    private val _showStopTimeDialog = MutableStateFlow(false)
+    val showStopTimeDialog: StateFlow<Boolean> = _showStopTimeDialog
 
     private val _isTrackingRoute = MutableStateFlow(false)
     val isTrackingRoute: StateFlow<Boolean> = _isTrackingRoute
@@ -78,6 +94,15 @@ class MapViewModel : ViewModel() {
     private val _frontendException = MutableStateFlow<String?>(null)
     val frontendException: StateFlow<String?> = _frontendException
 
+    private val routeApi: RouteApiRest = RouteRetrofitInstance.retrofitInstance.create(
+        RouteApiRest::class.java
+    )
+
+    private val systemParamsApi: SystemParamsApiRest =
+        SystemParamsRetrofitInstance.retrofitInstance.create(
+            SystemParamsApiRest::class.java
+        )
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateLocation(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
@@ -88,26 +113,29 @@ class MapViewModel : ViewModel() {
         Log.d("LocationDebug", "New Location: ${_currentLocation.value}")
         Log.d("LocationDebug", "New Speed: ${_currentSpeed.value}")
 
-
         if (_isTrackingRoute.value) {
             _routePoints.value += latLng
 
-            val gpsPoint = GpsPoint(
-                null,
-                latitude = latLng.latitude,
-                longitude = latLng.longitude,
-                time = LocalTime.now().toString(),
-                speed = _currentSpeed.value,
-                isValid = true,
-                route = null
-            )
-
-            _gpsPoint.value += gpsPoint
-
-        } else if (_routePoints.value.size > 1) {
             _startRoutePoint.value = _routePoints.value.first()
-            _endRoutePoint.value = _routePoints.value.last()
 
+            if (!hasBeenStopped(location)) {
+                val gpsPoint = GpsPoint(
+                    null,
+                    latitude = latLng.latitude,
+                    longitude = latLng.longitude,
+                    time = LocalTime.now().toString(),
+                    speed = _currentSpeed.value,
+                    route = null
+                )
+                _gpsPoint.value += gpsPoint
+            } else {
+                stopRoute()
+                _showStopTimeDialog.value = true
+                _routeTime.value = emptyList()
+                _gpsPoint.value = emptyList()
+            }
+        } else if (_routePoints.value.size > 1) {
+            _endRoutePoint.value = _routePoints.value.last()
         }
     }
 
@@ -117,6 +145,14 @@ class MapViewModel : ViewModel() {
 
     fun updateShowEndDialog(value: Boolean) {
         _showEndDialog.value = value
+    }
+
+    fun updateShowStopTimeDialog(value: Boolean) {
+        _showStopTimeDialog.value = value
+    }
+
+    fun updateShowSaveDialog(value: Boolean) {
+        _showSaveDialog.value = value
     }
 
     suspend fun centerCamera(cameraPositionState: CameraPositionState) {
@@ -148,7 +184,7 @@ class MapViewModel : ViewModel() {
             cameraPositionState.animate(
                 update = CameraUpdateFactory.newLatLngBounds(
                     bounds,
-                    100
+                    200
                 )
             )
 
@@ -166,43 +202,54 @@ class MapViewModel : ViewModel() {
 
     fun startTracking(context: Context) {
         viewModelScope.launch {
-            Log.d("LocationDebug", "startTracking called")
 
-            if (ActivityCompat.checkSelfPermission(
-                    context, Manifest.permission.ACCESS_FINE_LOCATION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                Log.w("LocationDebug", "Location permission NOT granted")
-            }
+            var systemParamsReady = false
 
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-
-            val locationRequest = LocationRequest.Builder(
-                Priority.PRIORITY_HIGH_ACCURACY, 500
-            ).apply {
-                setMinUpdateIntervalMillis(1000)
-            }.build()
-
-            locationCallback = object : LocationCallback() {
-                @RequiresApi(Build.VERSION_CODES.O)
-                override fun onLocationResult(result: LocationResult) {
-                    result.lastLocation?.let { updateLocation(it) }
-                    _isTrackingPosition.value = true
+            try {
+                val response = systemParamsApi.getSystemParamsById(1)
+                if (response.isSuccessful) {
+                    _systemParams.value = response.body()
+                    systemParamsReady = true
+                } else if (response.code() == 404) {
+                    Log.e("MapViewModel", "SYSTEM_PARAMS_NOT_FOUND!")
+                    _frontendException.value = "Error amb el client!"
                 }
+            } catch (e: Exception) {
+                Log.e("MapViewModel", "FRONTEND EXCEPTION: ${e.message}")
+                _frontendException.value = "Error amb el client!"
             }
 
-            fusedLocationClient?.requestLocationUpdates(
-                locationRequest,
-                locationCallback!!,
-                Looper.getMainLooper()
-            )
+            if (systemParamsReady) {
+                if (ActivityCompat.checkSelfPermission(
+                        context, Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    Log.w("LocationDebug", "Location permission NOT granted")
+                }
 
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+                val locationRequest =
+                    LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY, 250)
+                        .setMinUpdateIntervalMillis(250)
+                        .build()
+
+                locationCallback = object : LocationCallback() {
+                    @RequiresApi(Build.VERSION_CODES.O)
+                    override fun onLocationResult(result: LocationResult) {
+                        result.lastLocation?.let { updateLocation(it) }
+                        _isTrackingPosition.value = true
+                    }
+                }
+
+                fusedLocationClient?.requestLocationUpdates(
+                    locationRequest,
+                    locationCallback!!,
+                    Looper.getMainLooper()
+                )
+            }
         }
     }
-
-    private val routeApi: RouteApiRest = RouteRetrofitInstance.retrofitInstance.create(
-        RouteApiRest::class.java
-    )
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -236,7 +283,8 @@ class MapViewModel : ViewModel() {
     private fun updateRouteData() {
         _route.value = Route(
             id = null,
-            routeValidate = RouteValidate.NOT_VALIDATED,
+            routeState = RouteState.PENDING,
+            routeDate = LocalDateTime.now(ZoneId.of("UTC+2")).toString(),
             totalRoutePoints = null,
             totalRouteDistance = calculateRouteDistance(),
             totalRouteTime = calculateRouteTime(),
@@ -285,16 +333,64 @@ class MapViewModel : ViewModel() {
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun hasBeenStopped(location: Location): Boolean {
+        val currentSpeed = _currentSpeed.value
+        val velInterval = 1.5f
+        val metersInterval = 5f
+        val stopTime = _systemParams.value?.stopMaxTime?.toLong()
+
+        var isStopped = false
+
+        if (currentSpeed <= velInterval) {
+            _routeTime.value += LocalTime.now()
+
+            val latLng = LatLng(location.latitude, location.longitude)
+            _routeLocation.value += latLng
+
+            val firstTime = _routeTime.value.first()
+            val lastTime = _routeTime.value.last()
+
+            val firstLoc = _routeLocation.value.first()
+            val lastLoc = _routeLocation.value.last()
+
+            val results = FloatArray(1)
+            Location.distanceBetween(
+                firstLoc.latitude,
+                firstLoc.longitude,
+                lastLoc.latitude,
+                lastLoc.longitude,
+                results
+            )
+
+            val distance = results[0]
+
+            if (distance <= metersInterval) {
+                if (Duration.between(firstTime, lastTime).toMinutes() >= stopTime!!) {
+                    isStopped = true
+                }
+            } else {
+                _routeTime.value = emptyList()
+                _routeLocation.value = emptyList()
+            }
+        }
+
+        return isStopped
+    }
 
     fun beginRoute() {
         _isTrackingRoute.value = true
-        _routePoints.value = emptyList()
-        _startRoutePoint.value = null
-        _endRoutePoint.value = null
     }
 
     fun stopRoute() {
         _isTrackingRoute.value = false
+    }
+
+    fun clearRoute() {
+        _routePoints.value = emptyList()
+        _gpsPoint.value = emptyList()
+        _startRoutePoint.value = null
+        _endRoutePoint.value = null
     }
 
     fun stopTracking() {
@@ -302,5 +398,6 @@ class MapViewModel : ViewModel() {
             fusedLocationClient?.removeLocationUpdates(it)
             _isTrackingPosition.value = false
         }
+
     }
 }
