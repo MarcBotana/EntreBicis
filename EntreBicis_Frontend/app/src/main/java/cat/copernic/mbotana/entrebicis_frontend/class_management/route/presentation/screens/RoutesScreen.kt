@@ -1,4 +1,4 @@
-package cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens
+package cat.copernic.mbotana.entrebicis_frontend.class_management.route.presentation.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -25,14 +25,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.viewModels.ReservationViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.route.presentation.viewModels.RouteViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.toastMessage
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ReservationsScreen(
-    viewModel: ReservationViewModel,
+fun RoutesScreen(
+    viewModel: RouteViewModel,
     sessionViewModel: SessionViewModel,
     navController: NavController
 ) {
@@ -40,7 +40,8 @@ fun ReservationsScreen(
 
     val userSession by sessionViewModel.userSession.collectAsState()
 
-    val reservationList by viewModel.reservationList.collectAsState()
+    val routeList by viewModel.routeList.collectAsState()
+    val systemParams by viewModel.systemParams.collectAsState()
 
     val backendException by viewModel.backendException.collectAsState()
     val frontendException by viewModel.frontendException.collectAsState()
@@ -67,6 +68,7 @@ fun ReservationsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
         ) {
+
             Spacer(modifier = Modifier.height(12.dp))
             Column(
                 modifier = Modifier
@@ -74,17 +76,17 @@ fun ReservationsScreen(
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color.LightGray)
             ) {
-                if (reservationList?.isEmpty() == true) {
+                if (routeList?.isEmpty() == true) {
                     Text(
                         textAlign = TextAlign.Center,
-                        text = "No tens reserves registrades."
+                        text = "No tens rutes registrades."
                     )
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(items = reservationList ?: emptyList()) { item ->
-                            ReservationItem(item, navController)
+                        items(items = routeList ?: emptyList()) { item ->
+                            systemParams?.let { RouteItem(item, it, navController) }
                         }
                     }
                 }

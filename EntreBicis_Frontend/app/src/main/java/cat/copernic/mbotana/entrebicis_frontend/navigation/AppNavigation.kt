@@ -22,11 +22,13 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentatio
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewModels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.options.presentation.screens.OptionsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens.ReservationDetail
-import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens.ReservationsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.viewModels.ReservationViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardDetail
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewModels.RewardsViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.route.presentation.screens.RouteDetail
+import cat.copernic.mbotana.entrebicis_frontend.class_management.route.presentation.screens.RoutesScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.route.presentation.viewModels.RouteViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.ChangePasswordScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.LoginScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.ChangePasswordViewModel
@@ -65,11 +67,13 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
             val bottomNavIndex = backStackEntry.arguments?.getString("bottomNavIndex")
             val reservationViewModel: ReservationViewModel = viewModel()
             val rewardsViewModel: RewardsViewModel = viewModel()
+            val routesViewModel: RouteViewModel = viewModel()
             val mapViewModel: MapViewModel = viewModel()
 
             MainScreen(
                 reservationViewModel,
                 rewardsViewModel,
+                routesViewModel,
                 mapViewModel,
                 sessionViewModel,
                 navController,
@@ -88,6 +92,12 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
             val reservationViewModel: ReservationViewModel = viewModel()
             ReservationDetail(reservationViewModel, sessionViewModel, navController, id ?: -1L)
         }
+
+        composable("routeDetail/{id}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toLong()
+            val routeViewModel: RouteViewModel = viewModel()
+            RouteDetail(routeViewModel, sessionViewModel, navController, id ?: -1L)
+        }
     }
 }
 
@@ -96,6 +106,7 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
 fun MainScreen(
     reservationViewModel: ReservationViewModel,
     rewardsViewModel: RewardsViewModel,
+    routeViewModel: RouteViewModel,
     mapViewModel: MapViewModel,
     sessionViewModel: SessionViewModel,
     navController: NavController,
@@ -160,7 +171,7 @@ fun MainScreen(
                 MapScreen(mapViewModel, sessionViewModel, navController)
             }
             composable(BottomNavItem.Rou.route) {
-                //RoutesScreen(MapViewModel(), sessionViewModel, navController)
+                RoutesScreen(routeViewModel, sessionViewModel, navController)
             }
             composable(BottomNavItem.Opt.route) {
                 OptionsScreen(sessionViewModel, navController)
@@ -168,6 +179,9 @@ fun MainScreen(
         }
     }
 }
+
+
+
 
 
 

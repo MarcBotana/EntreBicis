@@ -72,7 +72,7 @@ class ReservationViewModel: ViewModel() {
                     _reservationDetail.value = response.body()
                 } else if (response.code() == 404) {
                     Log.e("ReservationViewModel", "RESERVATION_NOT_FOUND!")
-                    _reservationNotFoundError.value = "No s'ha trobat la Reserva!"
+                    _reservationNotFoundError.value = "No s'ha trobat la reserva!"
                 } else if (response.code() == 500) {
                     Log.e(
                         "ReservationViewModel",

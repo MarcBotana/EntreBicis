@@ -41,7 +41,7 @@ public class Route {
     private LocalDateTime routeDate;
 
     @Column
-    private Double totalRutePoints;
+    private Double totalRoutePoints;
 
     @Column
     private Double totalRouteDistance;

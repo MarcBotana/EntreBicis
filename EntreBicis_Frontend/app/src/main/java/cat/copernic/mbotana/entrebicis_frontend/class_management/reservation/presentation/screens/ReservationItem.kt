@@ -215,21 +215,43 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
                         Spacer(modifier = Modifier.width(12.dp))
 
                         if (reservation.returnTime != null) {
-                            val returnDate = LocalDateTime.parse(reservation.returnTime)
+                            val returnTime = LocalDateTime.parse(reservation.returnTime)
 
-                            expired.value = returnDate.isBefore(LocalDateTime.now())
+                            expired.value = returnTime.isBefore(LocalDateTime.now())
 
-                            Text(
-                                text = if (expired.value) "Caducat: ${parseReservationTime(returnDate)}" else "Caduca: ${parseReservationTime(returnDate)}",
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(if (expired.value) Color.Red.copy(alpha = 0.5f) else Color.White)
-                                    .padding(8.dp)
-                                    .weight(1f),
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            if (reservation.reservationState != ReservationState.ASSIGNED) {
+                                expired.value = false
+                            }
+
+                            if (reservation.returnDate != null) {
+                                val returnDate = LocalDateTime.parse(reservation.returnDate)
+
+                                Text(
+                                    text = "Recollit: ${parseReservationTime(returnDate)}" ,
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(colorState.copy(alpha = 0.5f))
+                                        .padding(8.dp)
+                                        .weight(1f),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            } else {
+                                Text(
+                                    text = if (expired.value) "Caducat: ${parseReservationTime(returnTime)}" else "Caduca: ${parseReservationTime(returnTime)}",
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(if (expired.value) Color.Red.copy(alpha = 0.5f) else Color.White)
+                                        .padding(8.dp)
+                                        .weight(1f),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+
+
                         } else {
                             Text(
                                 text = "Caduca: ---",
@@ -255,12 +277,11 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
                 )
             }
         }
-
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun parseReservationTime(parsedDate: LocalDateTime): String {
-    val formatterOutput = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    val formatterOutput = DateTimeFormatter.ofPattern("dd/MM/yy")
     return parsedDate.format(formatterOutput)
 }

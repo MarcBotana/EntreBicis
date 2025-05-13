@@ -215,7 +215,7 @@ public class WebRouteController {
                 user = webUserLogic.getUserByEmail(email);
 
                 route.setRouteState(RouteState.VALIDATED);
-                user.setTotalPoints(user.getTotalPoints() + route.getTotalRutePoints());
+                user.setTotalPoints(user.getTotalPoints() + route.getTotalRoutePoints());
 
                 webRouteLogic.updateRoute(route);
 
@@ -255,8 +255,8 @@ public class WebRouteController {
 
                 route.setRouteState(RouteState.NOT_VALIDATED);
 
-                if (user.getTotalPoints() > route.getTotalRutePoints()) {
-                    user.setTotalPoints(user.getTotalPoints() - route.getTotalRutePoints());
+                if (user.getTotalPoints() > route.getTotalRoutePoints()) {
+                    user.setTotalPoints(user.getTotalPoints() - route.getTotalRoutePoints());
                     webUserLogic.updateUser(user);
                 }
 
