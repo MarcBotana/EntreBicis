@@ -94,7 +94,7 @@ class ReservationViewModel: ViewModel() {
                 if (response.isSuccessful) {
                     Log.e("RewardsViewModel", "RESERVATION_COLLECT_SUCCESS!")
                 } else if (response.code() == 409) {
-                    Log.e("RewardsViewModel", "USER RESERVATION IS NOT ASSIGNED! ")
+                    Log.e("RewardsViewModel", "USER RESERVATION STATUS NOT ASSIGNED! ")
                     _backendException.value = "La reserva encara no està assignada!"
                 } else if (response.code() == 410) {
                     Log.e("RewardsViewModel", "USER HAS RESERVATION EXPIRED! ")

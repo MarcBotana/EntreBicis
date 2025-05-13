@@ -34,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -50,6 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.domain.models.Reservation
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.domain.models.Reward
+import cat.copernic.mbotana.entrebicis_frontend.core.common.ImageUtils
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.ReservationState
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.RewardState
 import java.time.LocalDateTime
@@ -59,6 +62,8 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReservationItem(reservation: Reservation, navController: NavController) {
+
+    val bitmap = remember(reservation.reward.image) { ImageUtils.convertBase64ToBitmap(reservation.reward.image) }
 
     val expired = remember { mutableStateOf(false) }
 
@@ -114,8 +119,11 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
             ) {
 
                 Image(
-                    painter = painterResource(R.drawable.entrebicis_logo),
-                    contentDescription = "",
+                    painter = if (bitmap != null) {
+                        BitmapPainter(bitmap.asImageBitmap())
+                    } else {
+                        painterResource(id = R.drawable.entrebicis_logo)
+                    },                    contentDescription = "",
                     modifier = Modifier
                         .size(80.dp)
                         .clip(RoundedCornerShape(8.dp))

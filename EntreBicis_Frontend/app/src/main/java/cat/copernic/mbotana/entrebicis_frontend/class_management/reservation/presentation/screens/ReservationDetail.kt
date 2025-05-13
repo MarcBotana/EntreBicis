@@ -37,6 +37,7 @@ import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.viewModels.ReservationViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
 import cat.copernic.mbotana.entrebicis_frontend.core.common.toastMessage
+import cat.copernic.mbotana.entrebicis_frontend.core.enums.ReservationState
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 
 @Composable
@@ -129,13 +130,15 @@ fun ReservationDetail(
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
-                    Button(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally),
-                        onClick = {
-                            userData?.let { it1 -> viewModel.returnReservation(it1.email, id) }
-                        }) {
-                        Text("Recollir")
+                    if (reservationDetail!!.reservationState == ReservationState.ASSIGNED) {
+                        Button(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally),
+                            onClick = {
+                                userData?.let { it1 -> viewModel.returnReservation(it1.email, id) }
+                            }) {
+                            Text("Recollir")
+                        }
                     }
                 }
             }

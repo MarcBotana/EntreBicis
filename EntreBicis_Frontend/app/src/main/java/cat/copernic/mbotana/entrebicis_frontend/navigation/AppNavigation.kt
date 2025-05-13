@@ -22,6 +22,7 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentatio
 import cat.copernic.mbotana.entrebicis_frontend.class_management.map.presentation.viewModels.MapViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.options.presentation.screens.OptionsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens.ReservationDetail
+import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.screens.ReservationsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.presentation.viewModels.ReservationViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardDetail
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardsScreen
@@ -179,6 +180,8 @@ fun MainScreen(
         }
     }
 }
+
+
 
 
 

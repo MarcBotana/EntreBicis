@@ -121,6 +121,7 @@ fun RewardsScreen(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         items(items = rewardsList ?: emptyList()) { item ->
+
                             RewardItem(item, navController)
                         }
                     }
