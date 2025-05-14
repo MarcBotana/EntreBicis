@@ -26,7 +26,7 @@ services:
     ports:
       - 8443:8443
     environment:
-      SPRING_APPLICATION_JSON: '{"spring.datasource.url"  : "jdbc:mysql://localhost:3306/mysql_entrebicis?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&createDatabaseIfNotExist=true"}'
+      SPRING_APPLICATION_JSON: '{"spring.datasource.url"  : "jdbc:mysql://mysqldb:3306/mysql_entrebicis?createDatabaseIfNotExist=true"}'
 
 volumes:
   db:
