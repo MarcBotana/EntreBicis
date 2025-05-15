@@ -9,12 +9,13 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.route.domain.mo
 import cat.copernic.mbotana.entrebicis_frontend.class_management.systemParams.data.repositories.SystemParamsRetrofitInstance
 import cat.copernic.mbotana.entrebicis_frontend.class_management.systemParams.data.source.SystemParamsApiRest
 import cat.copernic.mbotana.entrebicis_frontend.class_management.systemParams.domain.models.SystemParams
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import retrofit2.create
 
-class RouteViewModel: ViewModel() {
+class RouteViewModel : ViewModel() {
 
     //Variable Preparation
     private val _routeList = MutableStateFlow<List<Route>?>(emptyList())
@@ -25,6 +26,18 @@ class RouteViewModel: ViewModel() {
 
     private val _systemParams = MutableStateFlow<SystemParams?>(null)
     val systemParams: StateFlow<SystemParams?> = _systemParams
+
+    private val _pointsLatLng = MutableStateFlow<List<LatLng>>(emptyList())
+    val pointsLatLng: StateFlow<List<LatLng>> = _pointsLatLng
+
+    private val _bounds = MutableStateFlow<LatLngBounds?>(null)
+    val bounds: StateFlow<LatLngBounds?> = _bounds
+
+    private val _startRoutePoint = MutableStateFlow<LatLng?>(null)
+    val startRoutePoint: StateFlow<LatLng?> = _startRoutePoint
+
+    private val _endRoutePoint = MutableStateFlow<LatLng?>(null)
+    val endRoutePoint: StateFlow<LatLng?> = _endRoutePoint
 
     //Error Messages
     private val _routeNotFoundError = MutableStateFlow<String?>(null)
@@ -81,17 +94,42 @@ class RouteViewModel: ViewModel() {
     fun loadRouteDetail(id: Long) {
         viewModelScope.launch {
             try {
-                val response = routeApi.getRouteDetail(id)
-                if (response.isSuccessful) {
+                val response1 = routeApi.getRouteDetail(id)
+                val response2 = systemParamsApi.getSystemParamsById(1L)
+                if (response1.isSuccessful) {
                     Log.d("RouteViewModel", "ROUTE ACQUIRED SUCCESS")
-                    _routeDetail.value = response.body()
-                } else if (response.code() == 404) {
+                    _routeDetail.value = response1.body()
+
+                    val latLngPoints =
+                        _routeDetail.value?.gpsPoints?.map { LatLng(it.latitude, it.longitude) }
+                    if (latLngPoints != null) {
+                        _pointsLatLng.value = latLngPoints
+
+                        _startRoutePoint.value = latLngPoints.first()
+                        _endRoutePoint.value = latLngPoints.last()
+
+                        _bounds.value =
+                            LatLngBounds.builder().apply {
+                                latLngPoints.forEach { include(it) }
+                            }.build()
+                    }
+                } else if (response1.code() == 404) {
                     Log.e("RouteViewModel", "ROUTE_NOT_FOUND!")
                     _routeNotFoundError.value = "No s'ha trobat la ruta!"
-                } else if (response.code() == 500) {
+                } else if (response1.code() == 500) {
                     Log.e(
                         "RouteViewModel",
-                        "BACKEND EXCEPTION: ${response.errorBody()?.string()}"
+                        "BACKEND EXCEPTION: ${response1.errorBody()?.string()}"
+                    )
+                    _backendException.value = "Error amb el servidor!"
+                }
+                if (response2.isSuccessful) {
+                    Log.d("RouteViewModel", "SYSTEM PARAMS ACQUIRED SUCCESS")
+                    _systemParams.value = response2.body()
+                } else if (response2.code() == 500) {
+                    Log.e(
+                        "RouteViewModel",
+                        "BACKEND EXCEPTION: ${response1.errorBody()?.string()}"
                     )
                     _backendException.value = "Error amb el servidor!"
                 }

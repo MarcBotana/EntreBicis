@@ -45,6 +45,7 @@ import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.route.domain.models.Route
 import cat.copernic.mbotana.entrebicis_frontend.class_management.systemParams.domain.models.SystemParams
+import cat.copernic.mbotana.entrebicis_frontend.core.common.RouteDateUtils
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.RouteState
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -150,7 +151,7 @@ fun RouteItem(route: Route, systemParams: SystemParams, navController: NavContro
                         val routeDate = LocalDateTime.parse(route.routeDate)
 
                         Text(
-                            text = parseRouteDate(routeDate),
+                            text = RouteDateUtils.parseRouteDate(routeDate),
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                             modifier = Modifier
                                 .weight(2f),
@@ -332,8 +333,4 @@ fun RouteItem(route: Route, systemParams: SystemParams, navController: NavContro
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-fun parseRouteDate(parsedDate: LocalDateTime): String {
-    val formatterOutput = DateTimeFormatter.ofPattern("dd/MM/yy")
-    return parsedDate.format(formatterOutput)
-}
+

@@ -1,6 +1,11 @@
 package cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.data.repositories.UserRetrofitInstance
@@ -30,6 +35,17 @@ class SplashViewModel : ViewModel() {
     private val userApi: UserApiRest = UserRetrofitInstance.retrofitInstance.create(
         UserApiRest::class.java
     )
+
+    fun hasBackgroundLocationPermission(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            true 
+        } else {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+    }
 
     suspend fun loadUserData(email: String) {
         return withContext(Dispatchers.IO) {
