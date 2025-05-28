@@ -61,7 +61,7 @@ public class User{
     private String password;
 
     @Column(nullable = true)
-    @Size(max = DataFormat.MAX_USR_SURNAME_LENGTH, message = ErrorMessage.USR_SURNAME_LENGTH)
+    @Size(max = DataFormat.MAX_OBSERVATION_LENGTH, message = ErrorMessage.USR_OBSERVATION_LENGTH)
     private String observation;
 
     @Column(nullable = false)

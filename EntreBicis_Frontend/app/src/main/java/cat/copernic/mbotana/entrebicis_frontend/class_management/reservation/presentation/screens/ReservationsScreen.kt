@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -75,10 +76,16 @@ fun ReservationsScreen(
                     .background(Color.LightGray)
             ) {
                 if (reservationList?.isEmpty() == true) {
-                    Text(
-                        textAlign = TextAlign.Center,
-                        text = "No tens reserves registrades."
-                    )
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            textAlign = TextAlign.Center,
+                            text = "No tens reserves registrades."
+                        )
+                    }
                 } else {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize()

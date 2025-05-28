@@ -1,7 +1,6 @@
 package cat.copernic.mbotana.entrebicis_frontend.class_management.reward.domain.models
 
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.RewardState
-import cat.copernic.mbotana.entrebicis_frontend.class_management.exchangePoint.domain.models.ExchangePoint
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.domain.models.Reservation
 
 data class Reward(
@@ -16,6 +15,6 @@ data class Reward(
     var reservationDate: String,
     var assignationDate: String,
     var returnDate: String,
-    var exchangePoint: ExchangePoint?,
+    var exchangePoint: String,
     var reservation: Reservation?,
 )

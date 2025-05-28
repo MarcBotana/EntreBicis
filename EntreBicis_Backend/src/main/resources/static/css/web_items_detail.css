@@ -86,16 +86,38 @@ button:disabled {
 }
 
 .detail-image {
-    flex: 1;                       
+    flex: 2;                       
     text-align: left;           
 }
 
 .detail-map {
-    border-radius: 12px;       
+    margin-top: 20px; 
+    margin-bottom: 10px; 
+    border-radius: 12px;
     width: 500px;
     height: 500px;
     border: 1px solid #ccc;
-    margin-top: 20px;
+}
+
+.detail-map-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    margin-right: 20px; 
+}
+
+.detail-map-container > button {
+    font-weight: bold;
+    background: #3587ea;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.detail-map-container > button:hover {
+    background: #105ebd;
 }
 
 
@@ -120,8 +142,8 @@ button:disabled {
 }
 
 .web-avatar {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 200px;
     border-radius: 10%;
 }
 

@@ -9,6 +9,12 @@
     <title>EntreBicis - Recompenses</title>
 </head>
 
+<script>
+    function confirmElimination() {
+        return confirm("Segur que vols esborrar?");
+    }
+</script>
+
 <body>
     <!-- NavBar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -37,7 +43,7 @@
 
             <!-- Search Bar -->
             <form action="/reward/list" method="get" class="search-bar">
-                <input type="text" name="search" placeholder="Cercar..." th:value="${param.search}">
+                <input type="text" name="search" placeholder="Nom..." th:value="${param.search}">
                 <button type="submit">🔍</button>
             </form>
 
@@ -67,7 +73,7 @@
                             <td class="web-info" th:text="${#temporals.format(reward.rewardDate, 'dd/MM/yy - HH:mm')}">
                             </td>
                             <td class="web-info" th:text="${#numbers.formatDecimal(reward.valuePoints, 1, 1)} + ' pts.'"></td>
-                            <td class="web-info" th:text="${reward.exchangePoint.name}"></td>
+                            <td class="web-info" th:text="${reward.exchangePoint}"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -82,8 +88,10 @@
                             <td class="web-item-button">
                                 <button th:onclick="|location.href='/reward/update/${reward.id}'|"
                                     th:disabled="${reward.rewardState.name() != 'AVAILABLE'}">Editar</button>
+
                                 <form th:action="@{/reward/delete/{id}(id=${reward.id})}" method="post"
-                                    th:if="${reward.rewardState.name() == 'AVAILABLE'}">
+                                    th:if="${reward.rewardState.name() == 'AVAILABLE'}"
+                                    onsubmit="return confirmElimination()">
                                     <input type="hidden" name="_method" value="delete" />
                                     <button type="submit">Eliminar</button>
                                 </form>
@@ -92,16 +100,6 @@
                     </tbody>
                 </table>
             </div>
-
-
-
-
-
-
-
-
-
-
         </section>
     </div>
 

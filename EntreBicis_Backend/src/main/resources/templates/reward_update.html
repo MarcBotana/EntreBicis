@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/reward_create.css">
+    <script src="/js/preview_image.js"></script>
     <title>EntreBicis - Modificar Recompensa</title>
 </head>
 
@@ -29,17 +30,24 @@
 
                 <!-- Hidden Attributes -->
                 <input type="hidden" name="id" th:field="*{id}">
-                <input type="hidden" name="image" th:field="*{image}" >
+                <input type="hidden" name="image" th:field="*{image}">
                 <input type="hidden" name="rewardDate" th:field="*{rewardDate}">
 
 
                 <!-- Image -->
-                <img th:src="${#strings.startsWith(reward.image, 'iVBOR') ? 'data:image/png;base64,' : (#strings.startsWith(reward.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${reward.image}" alt="Reward Image" class="web-avatar">
+                <div>
+                    <img id="previewImage" th:src="${#strings.startsWith(reward.image, 'iVBOR') ? 'data:image/png;base64,' : 
+                 (#strings.startsWith(reward.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${reward.image}"
+                        th:attr="data-default-src=${#strings.startsWith(reward.image, 'iVBOR') ? 'data:image/png;base64,' : 
+                 (#strings.startsWith(reward.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${reward.image}"
+                        alt="Reward Image" class="web-avatar" />
+                </div>
 
-                <label for="imagenFile">Selecciona una imatge:</label>
-                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg,image/png"/>
+                <label for="imageFile">Selecciona una imatge:</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg,image/png" />
                 <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
-                <div class="error" th:if="${imageFormatError != null and not #strings.isEmpty(imageFormatError)}" th:text="${imageFormatError}"></div>
+                <div class="error" th:if="${imageFormatError != null and not #strings.isEmpty(imageFormatError)}"
+                    th:text="${imageFormatError}"></div>
 
                 <!-- Name -->
                 <label for="name">Nom:</label>
@@ -64,26 +72,14 @@
                 <!-- State -->
                 <label for="rewardState">Estat:</label>
                 <select id="rewardState" name="rewardState" th:field="*{rewardState}">
-                    <option th:each="rewardState : ${rewardState}" 
-                        th:value="${rewardState}"
+                    <option th:each="rewardState : ${rewardState}" th:value="${rewardState}"
                         th:text="${rewardState.display}"></option>
                 </select>
 
                 <!-- Exchange Point -->
                 <label for="exchangePoint">Punt de Bescanvi:</label>
-                <select id="exchangePoint" name="exchangePoint" th:field="*{exchangePoint}">
-                    <option value="">Selecciona un Punt...</option>
-                    <option th:each="exchangePoint : ${exchangePoints}" 
-                        th:value="${exchangePoint.id}"
-                        th:text="${exchangePoint.name}" 
-                        th:selected="${reward.exchangePoint != null and exchangePoint.id == reward.exchangePoint.id}"></option>
-                </select>
+                <input type="text" id="exchangePoint" name="exchangePoint" th:field="*{exchangePoint}">
                 <div class="error" th:if="${#fields.hasErrors('exchangePoint')}" th:errors="*{exchangePoint}"></div>
-
-                <div class="create-exchange-point">
-                    <a href="/exchangePoint/create" class="create-link">Crear un Punt de Bescanvi</a>
-                </div>
-
 
                 <button type="submit">Modificar Recompensa</button>
             </form>

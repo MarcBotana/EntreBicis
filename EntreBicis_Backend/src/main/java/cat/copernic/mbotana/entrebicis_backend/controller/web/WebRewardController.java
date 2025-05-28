@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import cat.copernic.mbotana.entrebicis_backend.config.ErrorMessage;
 import cat.copernic.mbotana.entrebicis_backend.entity.Reward;
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.RewardState;
-import cat.copernic.mbotana.entrebicis_backend.logic.ExchangePointLogic;
 import cat.copernic.mbotana.entrebicis_backend.logic.RewardLogic;
 import jakarta.validation.Valid;
 
@@ -40,23 +39,12 @@ public class WebRewardController {
     @Autowired
     RewardLogic webRewardLogic;
 
-    @Autowired
-    ExchangePointLogic webExchangePointLogic;
+    
 
     @GetMapping("/create")
     public String createRewardPage(Model model, @ModelAttribute("exceptionError") String exceptionError) {
 
         model.addAttribute("rewardState", RewardState.values());
-
-        try {
-            model.addAttribute("exchangePoints", webExchangePointLogic.getAllExchangePoints());
-        } catch (DataAccessException e) {
-            model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-        } catch (SQLException e) {
-            model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-        } catch (Exception e) {
-            model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-        }
 
         if (!model.containsAttribute("reward")) {
             Reward reward = new Reward();
@@ -131,7 +119,7 @@ public class WebRewardController {
                         allRewards.sort(Comparator.comparing(Reward::getName));
                         break;
                     case "exchangePoint":
-                        allRewards.sort(Comparator.comparing(reward -> reward.getExchangePoint().getName()));
+                        allRewards.sort(Comparator.comparing(Reward::getExchangePoint));
                         break;
                     case "AVAILABLE":
                         allRewards = allRewards.stream()
@@ -208,7 +196,6 @@ public class WebRewardController {
                 Reward reward = webRewardLogic.getRewardById(id);
                 model.addAttribute("reward", reward);
             }
-            model.addAttribute("exchangePoints", webExchangePointLogic.getAllExchangePoints());
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {

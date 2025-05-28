@@ -29,7 +29,6 @@
                         <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
                     </div>
                     <div class="detail-role" th:text="${user.role.display}"></div>
-                    <div class="detail-state" th:text="${user.userState.display}"></div>
                 </div>
 
                 <div class="detail-data">
@@ -39,6 +38,7 @@
                         <div>Telèfon: </div>
                         <div>Població: </div>
                         <div>Observacions: </div>
+                        <div>Punts Obtinguts: </div>
                     </div>
                     <div class="data-text">
                         <div th:text="${user.name} + ' ' + ${user.surname}"></div>
@@ -46,17 +46,18 @@
                         <div th:text="${user.mobile}"></div>
                         <div th:text="${user.town}"></div>
                         <div th:text="${user.observation != null} ? ${user.observation} : '-'"></div>
-                    
+                        <div th:text="${#numbers.formatDecimal(user.totalPoints, 1, 1)} + ' pts.'"></div>
                     </div>
                 </div>
 
                 <div class="detail-options">
-                    <div class="data-value" th:text="${#numbers.formatDecimal(user.totalPoints, 1, 1)} + ' pts.'"></div>
                     <div class="options-button">
-                        <button th:onclick="|location.href='/route/list/' + '@{${user.email}}'|">Rutes</button>
+                        <button th:onclick="|location.href='/route/list/' + '@{${user.email}}'|"
+                        th:disabled="${user.routes.size == 0}">Rutes</button>
                     </div>
                     <div class="options-button">
-                        <button th:onclick="|location.href='/reservation/list/' + '@{${user.email}}'|">Reserves</button>
+                        <button th:onclick="|location.href='/reservation/list/' + '@{${user.email}}'|"
+                        th:disabled="${user.reservations.size == 0}">Reserves</button>
                     </div>
                     <div class="options-button">
                         <button th:onclick="|location.href='/user/update/password/' + '@{${user.email}}'|">Canvi Contrasenya</button>

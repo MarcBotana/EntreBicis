@@ -22,7 +22,12 @@
             <div class="web-detail-content">
 
                 <div class="detail-image">
-                    <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
+                    <div th:if="${reservation.reward.image != null}">
+                        <img th:src="'data:image/jpeg;base64,' + ${reservation.reward.image}" alt="User Image" class="web-avatar">
+                    </div>
+                    <div th:if="${reservation.reward.image == null}">
+                        <img th:src="@{/images/User-Avatar.png}" alt="Reward Image" class="web-avatar">
+                    </div>
                     <div class="detail-state" th:text="${reservation.reservationState.display}"></div>
                 </div>
 
@@ -68,7 +73,7 @@
                         <button
                             th:onclick="|location.href='/reward/detail/' + '@{${reservation.reward.id}}'|">Recompensa</button>
                     </div>
-                    <div class="options-button">
+                    <div class="options-button" th:if="${reservation.reservationState.name() == 'RESERVED'}">
                         <form
                             th:action="@{/reservation/assign/{id}/{email}(id=${reservation.id}, email=${reservation.user.email})}"
                             method="post">

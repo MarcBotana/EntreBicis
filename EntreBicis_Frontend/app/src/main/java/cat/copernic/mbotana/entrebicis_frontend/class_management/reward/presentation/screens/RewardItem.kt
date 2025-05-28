@@ -182,7 +182,7 @@ fun PreviewRewardItem() {
         null.toString(),
         null.toString(),
         null.toString(),
-        null,
+        null.toString(),
         null
     )
 

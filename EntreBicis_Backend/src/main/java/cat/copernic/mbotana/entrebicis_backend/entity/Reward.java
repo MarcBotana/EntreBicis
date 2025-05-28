@@ -16,7 +16,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -64,9 +63,9 @@ public class Reward {
     @Column(nullable = false)
     private LocalDateTime rewardDate;
 
-    @ManyToOne
-    @NotNull(message = ErrorMessage.NOT_BLANK)
-    private ExchangePoint exchangePoint;
+    @Column(nullable = false)
+    @NotBlank(message = ErrorMessage.NOT_BLANK)
+    private String exchangePoint;
 
     @OneToOne(mappedBy = "reward")
     @JsonIgnoreProperties({"user", "reward"})
