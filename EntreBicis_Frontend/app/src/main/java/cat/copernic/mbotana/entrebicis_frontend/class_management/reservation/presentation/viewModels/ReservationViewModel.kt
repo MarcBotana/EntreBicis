@@ -27,6 +27,9 @@ class ReservationViewModel: ViewModel() {
     private val _reservationDetail = MutableStateFlow<Reservation?>(null)
     val reservationDetail: StateFlow<Reservation?> = _reservationDetail
 
+    private val _collectSuccess = MutableStateFlow<Boolean>(false)
+    val collectSuccess: StateFlow<Boolean> = _collectSuccess
+
     //Error Messages
     private val _reservationNotFoundError = MutableStateFlow<String?>(null)
     val reservationNotFoundError: StateFlow<String?> = _reservationNotFoundError
@@ -72,7 +75,7 @@ class ReservationViewModel: ViewModel() {
                     _reservationDetail.value = response.body()
                 } else if (response.code() == 404) {
                     Log.e("ReservationViewModel", "RESERVATION_NOT_FOUND!")
-                    _reservationNotFoundError.value = "No s'ha trobat la Reserva!"
+                    _reservationNotFoundError.value = "No s'ha trobat la reserva!"
                 } else if (response.code() == 500) {
                     Log.e(
                         "ReservationViewModel",
@@ -93,8 +96,9 @@ class ReservationViewModel: ViewModel() {
                 val response = reservationApi.collectReservation(reservationId, email)
                 if (response.isSuccessful) {
                     Log.e("RewardsViewModel", "RESERVATION_COLLECT_SUCCESS!")
+                    _collectSuccess.value = true
                 } else if (response.code() == 409) {
-                    Log.e("RewardsViewModel", "USER RESERVATION IS NOT ASSIGNED! ")
+                    Log.e("RewardsViewModel", "USER RESERVATION STATUS NOT ASSIGNED! ")
                     _backendException.value = "La reserva encara no està assignada!"
                 } else if (response.code() == 410) {
                     Log.e("RewardsViewModel", "USER HAS RESERVATION EXPIRED! ")

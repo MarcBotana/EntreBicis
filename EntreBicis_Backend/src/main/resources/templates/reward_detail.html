@@ -17,51 +17,66 @@
     <div class="content">
         <section class="web-detail">
             <div class="web-detail-header">
-                <h2 th:text="'Recompensa - ' + ${reward.name} + ' ('+ ${reward.exchangePoint.name} + ')'"></h2>
+                <h2 th:text="'Recompensa - ' + ${reward.name} + ' ('+ ${reward.exchangePoint} + ')'"></h2>
             </div>
             <div class="web-detail-content">
 
                 <div class="detail-image">
                     <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image" class="web-avatar">
-                    <div class="detail-state" th:text="${reward.rewardState.display}"></div>
                 </div>
 
                 <div class="detail-data">
-                    <div class="data-title">
-                        <div>Nom: </div>
-                        <div>Descripció: </div>
-                        <div>Observacions: </div>
-                        <div>Punt Bescanvi: </div>
-                        <div>Data creació: </div>
-                        <div th:if="${reward.reservation != null}"> - </div>
-                        <div th:if="${reward.reservation != null}" >Usuari assignat: </div>
+                    <div class="data-row">
+                        <div class="data-title">Estat:</div>
+                        <div class="data-text" th:text="${reward.rewardState.display}"></div>
                     </div>
-                    <div class="data-text">
-                        <div th:text="${reward.name}"></div>
-                        <div th:text="${reward.description}"></div>
-                        <div th:text="${reward.observation}"></div>
-                        <div th:text="${reward.exchangePoint.name} + ' - (' + ${reward.exchangePoint.address} + ')'"></div>
-                        <div th:text="${#temporals.format(reward.rewardDate, 'dd/MM/yy - HH:mm')}"></div>
-                        <div th:if="${reward.reservation != null}"> - </div>
-                        <div th:if="${reward.reservation != null}" th:text="${reward.reservation.user.name} + ' ' + ${reward.reservation.user.surname} + ' - (' + ${reward.reservation.user.email} + ')'"></div>
+                    <hr>
+                    <div class="data-row">
+                        <div class="data-title">Nom:</div>
+                        <div class="data-text" th:text="${reward.name}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Descripció:</div>
+                        <div class="data-text" th:text="${reward.description}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Observacions:</div>
+                        <div class="data-text" th:text="${reward.observation}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Punt Bescanvi:</div>
+                        <div class="data-text" th:text="${reward.exchangePoint}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Punts Valor:</div>
+                        <div class="data-text" th:text="${reward.valuePoints} + ' pts'"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Data creació:</div>
+                        <div class="data-text" th:text="${#temporals.format(reward.rewardDate, 'dd/MM/yy - HH:mm')}">
+                        </div>
+                    </div>
+                    <div class="data-row" th:if="${reward.reservation != null}">
+                        <div class="data-title">Usuari assignat:</div>
+                        <div class="data-text"
+                            th:text="${reward.reservation.user.name} + ' ' + ${reward.reservation.user.surname} + ' - (' + ${reward.reservation.user.email} + ')'">
+                        </div>
+                    </div>
+                    <div class="data-row" th:if="${reward.reservation == null}">
+                        <div class="data-title">Usuari assignat:</div>
+                        <div class="data-text">-</div>
                     </div>
                 </div>
 
                 <div class="detail-options">
-                    <div class="data-value" th:text="${reward.valuePoints}"></div>
                     <div class="options-button">
-                        <button th:onclick="|location.href='/reward/list'|">Punt Bescanvi</button>
-                    </div>
-                    <div class="options-button">
-                        <button th:onclick="|location.href='/reward/list'|">Reserva</button>
+                        <button th:onclick="|location.href='/reservation/detail/' + '@{${reward.reservation.id}}'|"
+                            th:disabled="${reward.reservation == null}">Veure Reserva</button>
                     </div>
                 </div>
-
             </div>
-
         </section>
     </div>
-
 </body>
 
 </html>

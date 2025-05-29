@@ -27,10 +27,16 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.pre
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardDetail
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.screens.RewardsScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewModels.RewardsViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.route.presentation.screens.RouteDetail
+import cat.copernic.mbotana.entrebicis_frontend.class_management.route.presentation.screens.RoutesScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.route.presentation.viewModels.RouteViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.ChangePasswordScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.LoginScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.UpdateUserProfileScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.UserProfileScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.ChangePasswordViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.LoginViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.UserProfileViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen.SplashScreen
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
@@ -65,11 +71,13 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
             val bottomNavIndex = backStackEntry.arguments?.getString("bottomNavIndex")
             val reservationViewModel: ReservationViewModel = viewModel()
             val rewardsViewModel: RewardsViewModel = viewModel()
+            val routesViewModel: RouteViewModel = viewModel()
             val mapViewModel: MapViewModel = viewModel()
 
             MainScreen(
                 reservationViewModel,
                 rewardsViewModel,
+                routesViewModel,
                 mapViewModel,
                 sessionViewModel,
                 navController,
@@ -88,6 +96,24 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
             val reservationViewModel: ReservationViewModel = viewModel()
             ReservationDetail(reservationViewModel, sessionViewModel, navController, id ?: -1L)
         }
+
+        composable("routeDetail/{id}") { backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")?.toLong()
+            val routeViewModel: RouteViewModel = viewModel()
+            RouteDetail(routeViewModel, sessionViewModel, navController, id ?: -1L)
+        }
+
+        composable("userProfile/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            val userProfileViewModel: UserProfileViewModel = viewModel()
+            UserProfileScreen(userProfileViewModel, sessionViewModel, navController, email ?: "")
+        }
+
+        composable("updateUserProfile/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            val userProfileViewModel: UserProfileViewModel = viewModel()
+            UpdateUserProfileScreen(userProfileViewModel, sessionViewModel, navController, email ?: "")
+        }
     }
 }
 
@@ -96,6 +122,7 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
 fun MainScreen(
     reservationViewModel: ReservationViewModel,
     rewardsViewModel: RewardsViewModel,
+    routeViewModel: RouteViewModel,
     mapViewModel: MapViewModel,
     sessionViewModel: SessionViewModel,
     navController: NavController,
@@ -160,7 +187,7 @@ fun MainScreen(
                 MapScreen(mapViewModel, sessionViewModel, navController)
             }
             composable(BottomNavItem.Rou.route) {
-                //RoutesScreen(MapViewModel(), sessionViewModel, navController)
+                RoutesScreen(routeViewModel, sessionViewModel, navController)
             }
             composable(BottomNavItem.Opt.route) {
                 OptionsScreen(sessionViewModel, navController)
@@ -168,6 +195,11 @@ fun MainScreen(
         }
     }
 }
+
+
+
+
+
 
 
 

@@ -60,7 +60,7 @@ fun CustomTopBar(screen: String, user: User, showPoints: Boolean) {
                         painter = if (bitmap != null) {
                             BitmapPainter(bitmap.asImageBitmap())
                         } else {
-                            painterResource(id = R.drawable.entrebicis_logo)
+                            painterResource(id = R.drawable.user_avatar)
                         },
                         contentDescription = "User Image",
                         modifier = Modifier.size(36.dp)

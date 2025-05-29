@@ -32,8 +32,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -50,6 +53,7 @@ import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reservation.domain.models.Reservation
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.domain.models.Reward
+import cat.copernic.mbotana.entrebicis_frontend.core.common.ImageUtils
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.ReservationState
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.RewardState
 import java.time.LocalDateTime
@@ -60,10 +64,12 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ReservationItem(reservation: Reservation, navController: NavController) {
 
+    val bitmap = remember(reservation.reward.image) { ImageUtils.convertBase64ToBitmap(reservation.reward.image) }
+
     val expired = remember { mutableStateOf(false) }
 
     val colorState = when (reservation.reservationState) {
-        ReservationState.RESERVED -> Color(0xFFFFC107)
+        ReservationState.RESERVED -> Color(0xFFD4A017)
         ReservationState.ASSIGNED -> Color(0xFF2196F3)
         ReservationState.CANCELED -> Color(0xFFF44336)
         ReservationState.RETURNED -> Color(0xFF4CAF50)
@@ -96,7 +102,7 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "${reservation.id}-${reservation.reservationCode}",
+                    text = "Codi: ${reservation.reservationCode}",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 )
                 Spacer(
@@ -114,8 +120,11 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
             ) {
 
                 Image(
-                    painter = painterResource(R.drawable.entrebicis_logo),
-                    contentDescription = "",
+                    painter = if (bitmap != null) {
+                        BitmapPainter(bitmap.asImageBitmap())
+                    } else {
+                        painterResource(id = R.drawable.entrebicis_logo)
+                    },                    contentDescription = "",
                     modifier = Modifier
                         .size(80.dp)
                         .clip(RoundedCornerShape(8.dp))
@@ -195,7 +204,9 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
                     ) {
                         Row(
                             modifier = Modifier
-                                .padding(vertical = 8.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(Color(0xFFF5F5F5))
+                                .padding(vertical = 8.dp, horizontal = 2.dp)
                                 .weight(1f)
                         ) {
                             Icon(
@@ -215,33 +226,41 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
                         Spacer(modifier = Modifier.width(12.dp))
 
                         if (reservation.returnTime != null) {
-                            val returnDate = LocalDateTime.parse(reservation.returnTime)
+                            val returnTime = LocalDateTime.parse(reservation.returnTime)
 
-                            expired.value = returnDate.isBefore(LocalDateTime.now())
+                            expired.value = returnTime.isBefore(LocalDateTime.now())
 
-                            Text(
-                                text = if (expired.value) "Caducat: ${parseReservationTime(returnDate)}" else "Caduca: ${parseReservationTime(returnDate)}",
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(if (expired.value) Color.Red.copy(alpha = 0.5f) else Color.White)
-                                    .padding(8.dp)
-                                    .weight(1f),
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        } else {
-                            Text(
-                                text = "Caduca: ---",
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(if (expired.value) Color.Red.copy(alpha = 0.5f) else Color.White)
-                                    .padding(8.dp)
-                                    .weight(1f),
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            if (reservation.reservationState != ReservationState.ASSIGNED) {
+                                expired.value = false
+                            }
+
+                            if (reservation.returnDate != null) {
+                                val returnDate = LocalDateTime.parse(reservation.returnDate)
+
+                                Text(
+                                    text = "Recollit: ${parseReservationTime(returnDate)}" ,
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(colorState.copy(alpha = 0.5f))
+                                        .padding(8.dp)
+                                        .weight(1f),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            } else {
+                                Text(
+                                    text = if (expired.value) "Caducat: ${parseReservationTime(returnTime)}" else "Caduca: ${parseReservationTime(returnTime)}",
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(if (expired.value) Color.Red.copy(alpha = 0.5f) else Color.White)
+                                        .padding(8.dp)
+                                        .weight(1f),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         }
                     }
                 }
@@ -255,12 +274,11 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
                 )
             }
         }
-
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun parseReservationTime(parsedDate: LocalDateTime): String {
-    val formatterOutput = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    val formatterOutput = DateTimeFormatter.ofPattern("dd/MM/yy")
     return parsedDate.format(formatterOutput)
 }

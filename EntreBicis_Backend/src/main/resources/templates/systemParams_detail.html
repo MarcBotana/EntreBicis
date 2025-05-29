@@ -26,17 +26,21 @@
                 </div>
 
                 <div class="detail-data">
-                    <div class="data-title">
-                        <div>Velocitat Màxima: </div>
-                        <div>Conversió (Km -> Punts): </div>
-                        <div>Temps Màxim Aturada: </div>
-                        <div>Temps Màxim Recollida (Recompensa): </div>
+                    <div class="data-row">
+                        <div class="data-title">Velocitat Màxima:</div>
+                        <div class="data-text" th:text="${systemParams.maxVelocity} + ' Km/h'"></div>
                     </div>
-                    <div class="data-text">
-                        <div th:text="${systemParams.maxVelocity} + ' Km/h'"></div>
-                        <div th:text="'1Km = ' + ${systemParams.pointsConversion} + ' pts'"></div>
-                        <div th:text="${systemParams.stopMaxTime} + ' minuts'"></div>
-                        <div th:text="${systemParams.collectionMaxTime} + ' hores'"></div>
+                    <div class="data-row">
+                        <div class="data-title">Conversió (Km -> Punts):</div>
+                        <div class="data-text" th:text="'1Km = ' + ${systemParams.pointsConversion} + ' pts'"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Temps Màxim Aturada:</div>
+                        <div class="data-text" th:text="${systemParams.stopMaxTime} + ' minuts'"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Temps Màxim Recollida (Recompensa):</div>
+                        <div class="data-text" th:text="${systemParams.collectionMaxTime} + ' hores'"></div>
                     </div>
                 </div>
 

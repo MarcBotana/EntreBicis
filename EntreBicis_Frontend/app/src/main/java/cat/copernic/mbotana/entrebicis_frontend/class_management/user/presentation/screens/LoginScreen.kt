@@ -134,10 +134,11 @@ fun LoginScreen(
                             onValueChange = { viewModel.updateEmail(it) },
                             isError = emptyEmailError != null || emailNotFoundError != null || unauthorizedError != null || emailError != null,
                             shape = RoundedCornerShape(50.dp),
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.bodySmall,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(end = 10.dp)
-                                .height(46.dp)
                                 .clip(RoundedCornerShape(50.dp))
                                 .background(Color.White),
                             colors = TextFieldDefaults.colors(
@@ -199,11 +200,12 @@ fun LoginScreen(
                             isError = emptyPasswordError != null || unauthorizedError != null || passwordError != null,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(46.dp)
                                 .clip(RoundedCornerShape(50.dp))
                                 .background(Color.White),
                             shape = RoundedCornerShape(50.dp),
                             visualTransformation = PasswordVisualTransformation(),
+                            singleLine = true,
+                            textStyle = MaterialTheme.typography.bodySmall,
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = Color.White,
                                 unfocusedContainerColor = Color.White,

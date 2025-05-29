@@ -13,7 +13,34 @@
     <!-- NavBar -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <h1>Index</h1>
+    <h1 class="index-title">Inici</h1>
+
+    <div class="icon-grid">
+        <a href="/user/list" class="icon-box">
+            <img src="/images/User-Avatar.png" alt="Users" />
+            <div>Usuaris</div>
+        </a>
+
+        <a href="/reward/list" class="icon-box">
+            <img src="/images/Rewards_Bag.png" alt="Rewards" />
+            <div>Recompenses</div>
+        </a>
+
+        <a href="/reservation/list" class="icon-box">
+            <img src="/images/Reservations.png" alt="Reservations" />
+            <div>Reserves</div>
+        </a>
+
+        <a href="/route/list" class="icon-box">
+            <img src="/images/Routes.png" alt="Routes" />
+            <div>Rutes</div>
+        </a>
+
+        <a href="/system/detail/1" class="icon-box">
+            <img src="/images/Gear_Web.png" alt="System Params" />
+            <div>Paràmetres</div>
+        </a>
+    </div>
 
 </body>
 

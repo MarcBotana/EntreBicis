@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/navbar.css">
     <link rel="stylesheet" href="/css/user_create.css">
+    <script src="/js/preview_image.js"></script>
+
     <title>EntreBicis - Modificar Usuari</title>
 </head>
 
@@ -38,12 +40,18 @@
                 <input type="hidden" name="deleteImage" id="deleteImage" value="false">
 
                 <!-- Image -->
-                <div th:if="${user.image != null}">
-                    <img th:src="${#strings.startsWith(user.image, 'iVBOR') ? 'data:image/png;base64,' : (#strings.startsWith(user.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${user.image}" alt="User Image" class="web-avatar">
-                    <button type="button" id="deleteImageButton" onclick="deleteImage()">Eliminar Imatge</button>
+                <div>
+                    <img id="previewImage" th:src="${user.image != null} ? 
+             (${#strings.startsWith(user.image, 'iVBOR') ? 'data:image/png;base64,' : 
+               (#strings.startsWith(user.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${user.image}) : 
+             @{/images/User-Avatar.png}" th:attr="data-default-src=${user.image != null} ? 
+             (${#strings.startsWith(user.image, 'iVBOR') ? 'data:image/png;base64,' : 
+               (#strings.startsWith(user.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${user.image}) : 
+             @{/images/User-Avatar.png}" alt="User Image" class="web-avatar" />
                 </div>
-                <div th:if="${user.image == null}">
-                    <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
+
+                <div th:if="${user.image != null}">
+                    <button type="button" id="deleteImageButton" onclick="deleteImage()">Eliminar Imatge</button>
                 </div>
 
                 <label for="imagenFile">Selecciona una imatge:</label>
@@ -51,7 +59,6 @@
                 <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
                 <div class="error" th:if="${imageFormatError != null and not #strings.isEmpty(imageFormatError)}"
                     th:text="${imageFormatError}"></div>
-
                 <!-- Name -->
                 <label for="name">Nom:</label>
                 <input type="text" id="name" name="name" th:field="*{name}">
@@ -61,6 +68,11 @@
                 <label for="surname">Cognom:</label>
                 <input type="text" id="surname" name="surname" th:field="*{surname}">
                 <div class="error" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
+
+                <!-- Observation -->
+                <label for="observation">Observacions (Altres dades):</label>
+                <input type="text" id="observation" name="observation" th:field="*{observation}">
+                <div class="error" th:if="${#fields.hasErrors('observation')}" th:errors="*{observation}"></div>
 
                 <!-- Town -->
                 <label for="town">Localització:</label>
@@ -95,7 +107,7 @@
                 document.getElementById('deleteImage').value = 'true';
                 const imageInput = document.querySelector('input[name="image"]');
                 if (imageInput) {
-                    imageInput.value = ''; 
+                    imageInput.value = '';
                 }
 
                 const imageElement = document.querySelector('.web-avatar');

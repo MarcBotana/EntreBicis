@@ -1,5 +1,6 @@
 package cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen
 
+import android.Manifest
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -15,11 +16,23 @@ import cat.copernic.mbotana.entrebicis_frontend.core.common.toastMessage
 import cat.copernic.mbotana.entrebicis_frontend.core.session.model.SessionUser
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SplashViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SplashScreen(viewModel: SplashViewModel, navController: NavController, sessionViewModel: SessionViewModel) {
     val context = LocalContext.current
+
+    val locationPermissionState = rememberPermissionState(
+        Manifest.permission.ACCESS_FINE_LOCATION,)
+    val hasLocationPermission = locationPermissionState.status.isGranted
+
+    LaunchedEffect(Unit) {
+        locationPermissionState.launchPermissionRequest()
+    }
 
     val userSession by sessionViewModel.userSession.collectAsState()
 
@@ -29,19 +42,21 @@ fun SplashScreen(viewModel: SplashViewModel, navController: NavController, sessi
     val backendException by viewModel.backendException.collectAsState()
     val frontendException by viewModel.frontendException.collectAsState()
 
-    LaunchedEffect(userSession) {
-        delay(750)
-        if (userSession.isConnected) {
-            viewModel.loadUserData(userSession.email)
-        } else {
-            navController.navigate("login") {
-                popUpTo(0) { inclusive = true }
+    LaunchedEffect(userSession, hasLocationPermission) {
+        if (hasLocationPermission) {
+            delay(750)
+            if (userSession.isConnected) {
+                viewModel.loadUserData(userSession.email)
+            } else {
+                navController.navigate("login") {
+                    popUpTo(0) { inclusive = true }
+                }
             }
         }
     }
 
-    LaunchedEffect(isDataLoaded) {
-        if (isDataLoaded) {
+    LaunchedEffect(isDataLoaded, hasLocationPermission) {
+        if (isDataLoaded && hasLocationPermission) {
             val bottomNavIndex = "Map"
             sessionViewModel.updateSession(SessionUser(user!!.email, user!!.image, user!!.role, true))
             navController.navigate("main/$bottomNavIndex") {

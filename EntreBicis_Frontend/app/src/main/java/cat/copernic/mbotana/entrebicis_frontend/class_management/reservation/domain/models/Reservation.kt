@@ -12,7 +12,7 @@ data class Reservation(
     var returnTime: String?,
     var reservationDate: String,
     var assignationDate: String,
-    var returnDate: String,
+    var returnDate: String?,
     var user: User?,
     var reward: Reward
 )

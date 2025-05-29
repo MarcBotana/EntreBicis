@@ -175,7 +175,7 @@ public class WebUserController {
             } else {
                 return "redirect:/user/list";
             }
-            
+
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
         } catch (SQLException e) {
@@ -195,14 +195,12 @@ public class WebUserController {
         model.addAttribute("roleList", Role.values());
         model.addAttribute("userState", UserState.values());
 
-
         try {
 
             if (!model.containsAttribute("user")) {
                 User user = webUserLogic.getUserByEmail(email);
                 model.addAttribute("user", user);
             }
-
 
         } catch (DataAccessException e) {
             model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
@@ -226,13 +224,14 @@ public class WebUserController {
     @PutMapping("/update/new")
     public String updateUser(@Valid @ModelAttribute("user") User newUser, BindingResult result,
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
-            @RequestParam(value = "deleteImage", required = false) String deleteImage,
+            @RequestParam(value = "deleteImage", required = false) Boolean deleteImage,
             RedirectAttributes redirectAttributes) {
 
         try {
 
-             
-            if (imageFile != null && !imageFile.isEmpty()) {
+            if (deleteImage) {
+                newUser.setImage(null);
+            } else if (imageFile != null && !imageFile.isEmpty()) {
                 String imageType = imageFile.getContentType();
 
                 if (imageType != null && !imageType.equals("image/jpeg") && !imageType.equals("image/png")) {
@@ -241,7 +240,8 @@ public class WebUserController {
                 }
                 newUser.setImage(Base64.getEncoder().encodeToString(imageFile.getBytes()));
             } else {
-                newUser.setImage(null);  
+                User existingUser = webUserLogic.getUserByEmail(newUser.getEmail());
+                newUser.setImage(existingUser.getImage());
             }
 
             if (result.hasErrors()) {
@@ -257,10 +257,10 @@ public class WebUserController {
             return "redirect:/user/update/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);        
+            return "redirect:/user/update/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/user/update/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);        
+            return "redirect:/user/update/" + URLEncoder.encode(newUser.getEmail(), StandardCharsets.UTF_8);
         }
 
         return "redirect:/user/list";

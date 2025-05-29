@@ -11,6 +11,7 @@ data class User(
     var name: String,
     var surname: String,
     var password: String,
+    var observation: String,
     var town: String,
     var mobile: Int,
     var image: String?,

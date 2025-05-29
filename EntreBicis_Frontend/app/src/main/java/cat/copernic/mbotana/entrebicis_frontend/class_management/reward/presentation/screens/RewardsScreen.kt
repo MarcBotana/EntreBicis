@@ -27,10 +27,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.presentation.viewModels.RewardsViewModel
@@ -41,8 +43,6 @@ fun RewardsScreen(
     viewModel: RewardsViewModel,
     navController: NavController) {
     val context = LocalContext.current
-
-    val search by viewModel.search.collectAsState()
 
     val rewardsList by viewModel.rewardsList.collectAsState()
 
@@ -71,43 +71,32 @@ fun RewardsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Row {
-                OutlinedTextField(
-                    value = search,
-                    onValueChange = { viewModel.updateSearch(it) },
-                    label = { Text(text = "Cercar...") },
-                    shape = RoundedCornerShape(50.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 10.dp)
-                        .height(46.dp)
-                        .clip(RoundedCornerShape(50.dp))
-                        .background(Color.White),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.White,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        cursorColor = Color.Gray
-                    )
-                )
-            }
-
             Spacer(modifier = Modifier.height(12.dp))
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color.LightGray)
             ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    items(items = rewardsList ?: emptyList()) { item ->
-                        RewardItem(item, navController)
+                if (rewardsList?.isEmpty() == true) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "No hi ha recompenses disponibles."
+                        )
+                    }
+
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(items = rewardsList ?: emptyList()) { item ->
+
+                            RewardItem(item, navController)
+                        }
                     }
                 }
             }

@@ -3,7 +3,6 @@ package cat.copernic.mbotana.entrebicis_backend.controller.web;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -33,26 +32,6 @@ public class WebSystemParamsController {
     @Autowired
     private SystemParamsLogic webSystemParamsLogic;
 
-    @GetMapping("/list")
-    public String listSystemParamsPage(Model model) {
-        
-        List<SystemParams> allSystemParams = new ArrayList<>();
-
-        try {
-            allSystemParams = webSystemParamsLogic.getAllSystemParams();
-        } catch (DataAccessException e) {
-            model.addAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-        } catch (SQLException e) {
-            model.addAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-        }  catch (Exception e) {
-            model.addAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-        }
-        
-        model.addAttribute("allSystemParams", allSystemParams);
-
-        return "systemParams_list";
-    }
-
     @GetMapping("/detail/{id}")
     public String systemParamsDetailPage(@PathVariable Long id, Model model) {
 
@@ -63,7 +42,7 @@ public class WebSystemParamsController {
                 systemParams = webSystemParamsLogic.getSystemParamsById(id);
                 model.addAttribute("systemParams", systemParams);
             } else {
-                return "redirect:/system/list";
+                return "redirect:/system/detail/1";
             }
             
         } catch (DataAccessException e) {
@@ -129,16 +108,16 @@ public class WebSystemParamsController {
 
         } catch (DataAccessException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.DATA_ACCESS_EXCEPTION + e.getMessage());
-            return "redirect:/system/list";
+            return "redirect:/system/detail/1";
         } catch (SQLException e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.SQL_EXCEPTION + e.getMessage());
-            return "redirect:/system/list";
+            return "redirect:/system/detail/1";
         }  catch (Exception e) {
             redirectAttributes.addFlashAttribute("exceptionError", ErrorMessage.GENERAL_EXCEPTION + e.getMessage());
-            return "redirect:/system/list";
+            return "redirect:/system/detail/1";
         }
 
-        return "redirect:/system/list";
+        return "redirect:/system/detail/1";
     }
     
 }

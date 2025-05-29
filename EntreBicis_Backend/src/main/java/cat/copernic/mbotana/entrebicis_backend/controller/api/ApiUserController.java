@@ -71,6 +71,8 @@ public class ApiUserController {
             } else if (!apiUserLogic.existUserByEmail(user.getEmail())) {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
+                User userDB = apiUserLogic.getUserByEmail(user.getEmail());
+                user.setReservations(userDB.getReservations());
                 apiUserLogic.updateUser(user);
                 response = new ResponseEntity<>(headers, HttpStatus.OK);
             }
@@ -94,10 +96,11 @@ public class ApiUserController {
             } else if (!apiUserLogic.existUserByEmail(user.getEmail())) {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-                user.setIsPasswordChanged(true);
+                User userDB = apiUserLogic.getUserByEmail(user.getEmail());
+                userDB.setPassword(passwordEncoder.encode(user.getPassword()));
+                userDB.setIsPasswordChanged(true);
                 deleteToken(user);
-                apiUserLogic.updateUser(user);
+                apiUserLogic.updateUser(userDB);
                 response = new ResponseEntity<>(headers, HttpStatus.OK);
             }
         } catch (Exception e) {
