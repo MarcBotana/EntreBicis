@@ -24,10 +24,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -43,10 +46,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import cat.copernic.mbotana.entrebicis_frontend.R
 import cat.copernic.mbotana.entrebicis_frontend.class_management.reward.domain.models.Reward
+import cat.copernic.mbotana.entrebicis_frontend.core.common.ImageUtils
 import cat.copernic.mbotana.entrebicis_frontend.core.enums.RewardState
 
 @Composable
 fun RewardItem(reward: Reward, navController: NavController) {
+
+    val bitmap = remember(reward.image) { ImageUtils.convertBase64ToBitmap(reward.image) }
+
     Card(
         modifier = Modifier
             .padding(top = 12.dp, start = 12.dp, end = 12.dp)
@@ -62,7 +69,11 @@ fun RewardItem(reward: Reward, navController: NavController) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(R.drawable.entrebicis_logo),
+                painter = if (bitmap != null) {
+                    BitmapPainter(bitmap.asImageBitmap())
+                } else {
+                    painterResource(id = R.drawable.entrebicis_logo)
+                },
                 contentDescription = "",
                 modifier = Modifier
                     .size(100.dp)
@@ -171,7 +182,7 @@ fun PreviewRewardItem() {
         null.toString(),
         null.toString(),
         null.toString(),
-        null,
+        null.toString(),
         null
     )
 

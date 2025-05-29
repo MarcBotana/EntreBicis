@@ -96,7 +96,7 @@ public class WebReservationController {
 
             if (search != null && !search.isEmpty()) {
                 allReservations = allReservations.stream().filter(
-                        reservation -> reservation.getUser().getName().toLowerCase().contains(search.toLowerCase())
+                        reservation -> reservation.getUser().getEmail().toLowerCase().contains(search.toLowerCase())
                                 || reservation.getReward().getName().toLowerCase().contains(search.toLowerCase()))
                         .toList();
             }

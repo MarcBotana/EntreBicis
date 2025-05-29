@@ -285,7 +285,7 @@ class MapViewModel : ViewModel() {
             id = null,
             routeState = RouteState.PENDING,
             routeDate = LocalDateTime.now(ZoneId.of("UTC+2")).toString(),
-            totalRoutePoints = null,
+            totalRoutePoints = 0.0,
             totalRouteDistance = calculateRouteDistance(),
             totalRouteTime = calculateRouteTime(),
             maxRouteVelocity = _gpsPoint.value.maxOfOrNull { it.speed.toDouble() } ?: 0.0,

@@ -8,7 +8,7 @@ data class Route(
     var id: Long? = null,
     var routeState: RouteState,
     var routeDate: String,
-    var totalRoutePoints: Double?,
+    var totalRoutePoints: Double,
     var totalRouteDistance: Double,
     var totalRouteTime: String?,
     var maxRouteVelocity: Double,

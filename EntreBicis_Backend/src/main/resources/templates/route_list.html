@@ -63,7 +63,7 @@
                             <td class="web-info" th:text="${route.totalRouteTime}"></td>
                             <td class="web-info" th:text="'~ ' + ${#numbers.formatDecimal(route.avgRouteVelocity, 1, 1)} + ' Km/h'"></td>
                             <td class="web-info" th:text="${#numbers.formatDecimal(route.maxRouteVelocity, 1, 1)} + ' Km/h'"></td>
-                            <td class="web-info" th:text="${#numbers.formatDecimal(route.totalRutePoints, 1, 2)} + ' pts.'"></td>
+                            <td class="web-info" th:text="${#numbers.formatDecimal(route.totalRoutePoints, 1, 2)} + ' pts.'"></td>
                             <td class="web-info" th:text="${route.user.email}"></td>
                         </tr>
                     </tbody>

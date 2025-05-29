@@ -22,38 +22,58 @@
             <div class="web-detail-content">
 
                 <div class="detail-image">
-                    <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
-                    <div class="detail-state" th:text="${reservation.reservationState.display}"></div>
+                    <div th:if="${reservation.reward.image != null}">
+                        <img th:src="'data:image/jpeg;base64,' + ${reservation.reward.image}" alt="User Image"
+                            class="web-avatar">
+                    </div>
+                    <div th:if="${reservation.reward.image == null}">
+                        <img th:src="@{/images/User-Avatar.png}" alt="Reward Image" class="web-avatar">
+                    </div>
                 </div>
 
                 <div class="detail-data">
-                    <div class="data-title">
-                        <div>Usuari: </div>
-                        <div>Recompensa: </div>
-                        <div>Estat Recompensa: </div>
-                        <div> - </div>
-                        <div>Data Reserva: </div>
-                        <div>Data Assignació: </div>
-                        <div>Data Recollida: </div>
-                        <div> - </div>
-                        <div>Caducitat: </div>
+                    <div class="data-row">
+                        <div class="data-title">Usuari:</div>
+                        <div class="data-text" th:text="${reservation.user.name} + ' ' + ${reservation.user.surname}">
+                        </div>
                     </div>
-                    <div class="data-text">
-                        <div th:text="${reservation.user.name} + ' ' + ${reservation.user.surname}"></div>
-                        <div th:text="${reservation.reward.name}"></div>
-                        <div th:text="${reservation.reward.rewardState.display}"></div>
-                        <div> - </div>
-                        <div
+                    <div class="data-row">
+                        <div class="data-title">Recompensa:</div>
+                        <div class="data-text" th:text="${reservation.reward.name}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Estat Recompensa:</div>
+                        <div class="data-text" th:text="${reservation.reward.rewardState.display}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">-</div>
+                        <div class="data-text">-</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Data Reserva:</div>
+                        <div class="data-text"
                             th:text="${reservation.reservationDate != null} ? ${#temporals.format(reservation.reservationDate, 'dd/MM/yy - HH:mm')} : '-'">
                         </div>
-                        <div
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Data Assignació:</div>
+                        <div class="data-text"
                             th:text="${reservation.assignationDate != null} ? ${#temporals.format(reservation.assignationDate, 'dd/MM/yy - HH:mm')} : '-'">
                         </div>
-                        <div
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Data Recollida:</div>
+                        <div class="data-text"
                             th:text="${reservation.returnDate != null} ? ${#temporals.format(reservation.returnDate, 'dd/MM/yy - HH:mm')} : '-'">
                         </div>
-                        <div> - </div>
-                        <div
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">-</div>
+                        <div class="data-text">-</div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Caducitat:</div>
+                        <div class="data-text"
                             th:text="${reservation.returnTime != null} ? ${#temporals.format(reservation.returnTime, 'dd/MM/yy - HH:mm')} : '-'">
                         </div>
                     </div>
@@ -68,7 +88,7 @@
                         <button
                             th:onclick="|location.href='/reward/detail/' + '@{${reservation.reward.id}}'|">Recompensa</button>
                     </div>
-                    <div class="options-button">
+                    <div class="options-button" th:if="${reservation.reservationState.name() == 'RESERVED'}">
                         <form
                             th:action="@{/reservation/assign/{id}/{email}(id=${reservation.id}, email=${reservation.user.email})}"
                             method="post">

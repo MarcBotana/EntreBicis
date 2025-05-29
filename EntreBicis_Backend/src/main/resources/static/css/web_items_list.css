@@ -190,6 +190,13 @@ hr {
     height: auto;
 }
 
+button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 .web-item-button {
     margin-top: 10px;
     display: flex;

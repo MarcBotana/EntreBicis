@@ -269,10 +269,11 @@ fun ShowEmailForm(
             onValueChange = { viewModel.updateEmail(it) },
             isError = emptyEmailError != null || emailNotFoundError != null || emailError != null,
             shape = RoundedCornerShape(50.dp),
+            singleLine = true,
+            textStyle = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp)
-                .height(46.dp)
                 .clip(RoundedCornerShape(50.dp))
                 .background(Color.White),
             colors = TextFieldDefaults.colors(
@@ -358,10 +359,11 @@ fun ShowTokenForm(
             onValueChange = { viewModel.updateTokenCode(it) },
             isError = emptyTokenCodeError != null || tokenCodeNotFoundError != null || tokenCodeError != null,
             shape = RoundedCornerShape(50.dp),
+            singleLine = true,
+            textStyle = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp)
-                .height(46.dp)
                 .clip(RoundedCornerShape(50.dp))
                 .background(Color.White),
             colors = TextFieldDefaults.colors(
@@ -451,10 +453,11 @@ fun ShowPasswordForm(
             isError = newPasswordError != null || emptyNewPasswordError != null || passwordNotMatchError != null,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(46.dp)
                 .clip(RoundedCornerShape(50.dp))
                 .background(Color.White),
             shape = RoundedCornerShape(50.dp),
+            singleLine = true,
+            textStyle = MaterialTheme.typography.bodySmall,
             visualTransformation = PasswordVisualTransformation(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -517,10 +520,11 @@ fun ShowPasswordForm(
             isError = repNewPasswordError != null || emptyRepNewPasswordError != null || passwordNotMatchError != null,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(46.dp)
                 .clip(RoundedCornerShape(50.dp))
                 .background(Color.White),
             shape = RoundedCornerShape(50.dp),
+            singleLine = true,
+            textStyle = MaterialTheme.typography.bodySmall,
             visualTransformation = PasswordVisualTransformation(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
