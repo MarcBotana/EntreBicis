@@ -63,13 +63,6 @@
                 <input type="number" id="valuePoints" name="valuePoints" th:field="*{valuePoints}">
                 <div class="error" th:if="${#fields.hasErrors('valuePoints')}" th:errors="*{valuePoints}"></div>
 
-                <!-- State -->
-                <label for="rewardState">Estat:</label>
-                <select id="rewardState" name="rewardState" th:field="*{rewardState}">
-                    <option th:each="rewardState : ${rewardState}" th:value="${rewardState}"
-                        th:text="${rewardState.display}"></option>
-                </select>
-
                 <!-- Exchange Point -->
                 <label for="exchangePoint">Punt de Bescanvi:</label>
                 <input type="text" id="exchangePoint" name="exchangePoint" th:field="*{exchangePoint}">

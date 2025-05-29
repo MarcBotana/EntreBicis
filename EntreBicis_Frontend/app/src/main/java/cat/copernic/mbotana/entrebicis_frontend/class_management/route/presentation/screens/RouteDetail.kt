@@ -18,8 +18,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -151,7 +154,11 @@ fun RouteDetail(
                                 .fillMaxWidth()
                                 .aspectRatio(1f)
                                 .clip(RoundedCornerShape(16.dp))
-                                .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(16.dp))
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Black,
+                                    shape = RoundedCornerShape(16.dp)
+                                )
 
                         ) {
                             GoogleMap(
@@ -197,7 +204,8 @@ fun RouteDetail(
                                 onClick = {
                                     if (pointsLatLng.isNotEmpty()) {
                                         bounds?.let { bounds ->
-                                            val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 125)
+                                            val cameraUpdate =
+                                                CameraUpdateFactory.newLatLngBounds(bounds, 125)
                                             coroutineScope.launch {
                                                 cameraPositionState.animate(cameraUpdate)
 
@@ -218,7 +226,8 @@ fun RouteDetail(
                                 .fillMaxSize()
                                 .padding(12.dp)
                                 .clip(RoundedCornerShape(16.dp))
-                                .background(Color.White),
+                                .background(Color.LightGray)
+                                .apply { alpha(0.5f) },
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             val routeDate = LocalDateTime.parse(routeDetail!!.routeDate)
@@ -226,13 +235,18 @@ fun RouteDetail(
                             val distanceTextAppend = buildAnnotatedString {
                                 if (routeDetail!!.totalRouteDistance >= 1.0) {
                                     val routeKm =
-                                        String.format(Locale.US, "%.1f", routeDetail!!.totalRouteDistance)
+                                        String.format(
+                                            Locale.US,
+                                            "%.1f",
+                                            routeDetail!!.totalRouteDistance
+                                        )
                                     append(routeKm)
                                     withStyle(style = SpanStyle(fontSize = MaterialTheme.typography.titleSmall.fontSize)) {
                                         append(" km")
                                     }
                                 } else {
-                                    val routeM = (routeDetail!!.totalRouteDistance * 1000).toInt().toString()
+                                    val routeM =
+                                        (routeDetail!!.totalRouteDistance * 1000).toInt().toString()
                                     append(routeM)
                                     withStyle(style = SpanStyle(fontSize = MaterialTheme.typography.titleSmall.fontSize)) {
                                         append(" m")
@@ -286,52 +300,103 @@ fun RouteDetail(
                                 }
                             }
 
-                            maxVelPassed.value = routeDetail!!.maxRouteVelocity > systemParams!!.maxVelocity
+                            maxVelPassed.value =
+                                routeDetail!!.maxRouteVelocity > systemParams!!.maxVelocity
 
                             Text(
-                                text = "Data: ${RouteDateUtils.parseRouteDate(routeDate)}",
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                                modifier = Modifier.padding(top = 12.dp)
+                                text = "Informació Ruta:",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            HorizontalDivider(
+                                modifier = Modifier.fillMaxWidth(),
+                                thickness = 2.dp,
+                                color = Color.DarkGray
                             )
 
-                            Row(
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp),
+                                horizontalAlignment = Alignment.Start
                             ) {
+                                Text(
+                                    text = "Data: ${RouteDateUtils.parseRouteDate(routeDate)}",
+                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier.padding(top = 12.dp)
+                                )
+
                                 Text(
                                     text = "Distància: $distanceTextAppend",
                                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                    fontSize = 18.sp,
                                     modifier = Modifier.padding(top = 12.dp)
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
                                     text = "Temps: $timeTextAppend",
                                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                    modifier = Modifier.padding(top = 12.dp)
-                                )
-                            }
-
-                            Text(
-                                text = "Velocitats",
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                modifier = Modifier.padding(top = 12.dp)
-                            )
-
-                            Row(
-                            ) {
-                                Text(
-                                    text = avgVelTextAppend,
-                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                    fontSize = 18.sp,
                                     modifier = Modifier.padding(top = 12.dp)
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
-                                    text = maxVelTextAppend,
+                                    text = "Vel. Mitjana: $avgVelTextAppend",
                                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.padding(top = 12.dp)
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(
+                                    text = "Vel. Màxima: $maxVelTextAppend",
+                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                    fontSize = 18.sp,
                                     modifier = Modifier.padding(top = 12.dp),
                                     color = (if (maxVelPassed.value) Color(0xFFF44336) else Color.Black),
                                 )
                             }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color(0xFFE0E0E0))
+                                    .padding(24.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Punts Generats: ",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 24.sp,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                Text(
+                                    text = "+ ${"%.2f".format(routeDetail!!.totalRoutePoints)} pts",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 24.sp
+                                )
+                            }
                         }
                     }
+                }
+            }
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                FloatingActionButton(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(16.dp),
+                    containerColor = Color(0xFF2196F3)
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Tornar enrere",
+                        tint = Color.White
+                    )
                 }
             }
         }

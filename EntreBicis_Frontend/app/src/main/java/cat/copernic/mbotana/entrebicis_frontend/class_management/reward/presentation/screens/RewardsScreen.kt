@@ -44,8 +44,6 @@ fun RewardsScreen(
     navController: NavController) {
     val context = LocalContext.current
 
-    val search by viewModel.search.collectAsState()
-
     val rewardsList by viewModel.rewardsList.collectAsState()
 
     val backendException by viewModel.backendException.collectAsState()
@@ -73,32 +71,7 @@ fun RewardsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Row {
-                OutlinedTextField(
-                    value = search,
-                    onValueChange = { viewModel.updateSearch(it) },
-                    label = { Text(text = "Cercar...") },
-                    shape = RoundedCornerShape(50.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 10.dp)
-                        .height(46.dp)
-                        .clip(RoundedCornerShape(50.dp))
-                        .background(Color.White),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.White,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        cursorColor = Color.Gray
-                    )
-                )
-            }
-
             Spacer(modifier = Modifier.height(12.dp))
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()

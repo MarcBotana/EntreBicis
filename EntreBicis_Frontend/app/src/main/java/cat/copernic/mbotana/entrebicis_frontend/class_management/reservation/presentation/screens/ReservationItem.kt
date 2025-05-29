@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -68,7 +69,7 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
     val expired = remember { mutableStateOf(false) }
 
     val colorState = when (reservation.reservationState) {
-        ReservationState.RESERVED -> Color(0xFFFFC107)
+        ReservationState.RESERVED -> Color(0xFFD4A017)
         ReservationState.ASSIGNED -> Color(0xFF2196F3)
         ReservationState.CANCELED -> Color(0xFFF44336)
         ReservationState.RETURNED -> Color(0xFF4CAF50)
@@ -101,7 +102,7 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "${reservation.id}-${reservation.reservationCode}",
+                    text = "Codi: ${reservation.reservationCode}",
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                 )
                 Spacer(
@@ -203,7 +204,9 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
                     ) {
                         Row(
                             modifier = Modifier
-                                .padding(vertical = 8.dp)
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(Color(0xFFF5F5F5))
+                                .padding(vertical = 8.dp, horizontal = 2.dp)
                                 .weight(1f)
                         ) {
                             Icon(
@@ -258,20 +261,6 @@ fun ReservationItem(reservation: Reservation, navController: NavController) {
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
-
-
-                        } else {
-                            Text(
-                                text = "Caduca: ---",
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(if (expired.value) Color.Red.copy(alpha = 0.5f) else Color.White)
-                                    .padding(8.dp)
-                                    .weight(1f),
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
                         }
                     }
                 }

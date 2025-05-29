@@ -14,15 +14,15 @@ import kotlinx.coroutines.launch
 
 class RewardsViewModel: ViewModel() {
 
-    private val _search = MutableStateFlow("")
-    val search: StateFlow<String> = _search
-
     //Variable Preparation
     private val _rewardsList = MutableStateFlow<List<Reward>?>(emptyList())
     val rewardsList: StateFlow<List<Reward>?> = _rewardsList
 
     private val _rewardDetail = MutableStateFlow<Reward?>(null)
     val rewardDetail: StateFlow<Reward?> = _rewardDetail
+
+    private val _reservationSuccess = MutableStateFlow<Boolean>(false)
+    val reservationSuccess: StateFlow<Boolean> = _reservationSuccess
 
     //Error Messages
     private val _rewardNotFoundError = MutableStateFlow<String?>(null)
@@ -33,10 +33,6 @@ class RewardsViewModel: ViewModel() {
 
     private val _frontendException = MutableStateFlow<String?>(null)
     val frontendException: StateFlow<String?> = _frontendException
-
-    fun updateSearch(value: String) {
-        _search.value = value
-    }
 
     private val rewardApi: RewardApiRest = RewardRetrofitInstance.retrofitInstance.create(
         RewardApiRest::class.java
@@ -92,6 +88,7 @@ class RewardsViewModel: ViewModel() {
                 val response = reservationApi.createReservation(email, rewardId)
                 if (response.isSuccessful) {
                     Log.e("RewardsViewModel", "RESERVATION_SUCCESS!")
+                    _reservationSuccess.value = true
                 } else if (response.code() == 402) {
                     Log.e("RewardsViewModel", "USER LOW POINT VALUE! ")
                     _backendException.value = "No tens suficients punts!"

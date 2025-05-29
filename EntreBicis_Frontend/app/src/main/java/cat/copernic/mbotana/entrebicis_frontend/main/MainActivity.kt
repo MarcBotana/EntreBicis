@@ -3,9 +3,11 @@ package cat.copernic.mbotana.entrebicis_frontend.main
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -22,6 +24,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var sessionRepository: SessionRepository
     private lateinit var sessionViewModel: SessionViewModel
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

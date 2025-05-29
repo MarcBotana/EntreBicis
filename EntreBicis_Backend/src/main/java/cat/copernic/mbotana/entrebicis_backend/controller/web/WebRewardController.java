@@ -77,6 +77,7 @@ public class WebRewardController {
                 }
 
                 newReward.setRewardDate(LocalDateTime.now());
+                newReward.setRewardState(RewardState.AVAILABLE);
 
                 if (result.hasErrors()) {
                     redirectAttributes.addFlashAttribute("reward", newReward);

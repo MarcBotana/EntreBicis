@@ -32,8 +32,11 @@ import cat.copernic.mbotana.entrebicis_frontend.class_management.route.presentat
 import cat.copernic.mbotana.entrebicis_frontend.class_management.route.presentation.viewModels.RouteViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.ChangePasswordScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.LoginScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.UpdateUserProfileScreen
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.screens.UserProfileScreen
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.ChangePasswordViewModel
 import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.LoginViewModel
+import cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels.UserProfileViewModel
 import cat.copernic.mbotana.entrebicis_frontend.core.common.CustomTopBar
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.screen.SplashScreen
 import cat.copernic.mbotana.entrebicis_frontend.core.session.presentation.viewModel.SessionViewModel
@@ -98,6 +101,18 @@ fun AppNavigation(sessionViewModel: SessionViewModel) {
             val id = backStackEntry.arguments?.getString("id")?.toLong()
             val routeViewModel: RouteViewModel = viewModel()
             RouteDetail(routeViewModel, sessionViewModel, navController, id ?: -1L)
+        }
+
+        composable("userProfile/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            val userProfileViewModel: UserProfileViewModel = viewModel()
+            UserProfileScreen(userProfileViewModel, sessionViewModel, navController, email ?: "")
+        }
+
+        composable("updateUserProfile/{email}") { backStackEntry ->
+            val email = backStackEntry.arguments?.getString("email")
+            val userProfileViewModel: UserProfileViewModel = viewModel()
+            UpdateUserProfileScreen(userProfileViewModel, sessionViewModel, navController, email ?: "")
         }
     }
 }

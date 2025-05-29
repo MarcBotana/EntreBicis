@@ -86,7 +86,7 @@ button:disabled {
 }
 
 .detail-image {
-    flex: 2;                       
+    flex: 1;                       
     text-align: left;           
 }
 
@@ -123,19 +123,34 @@ button:disabled {
 
 .detail-data {
     display: flex;
-    gap: 20px;
-    flex: 2;                       
-    text-align: left;           
+    flex-direction: column;
+    gap: 12px;
+    max-width: 600px; 
+    margin: 0 auto;   
+    padding: 0 16px;  
+}
+
+.data-row {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.data-title {
+    font-weight: bold;
 }
 
 .data-title,
-.data-text{
-    display:grid;
-    gap: 10px;
+.data-text {
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
 }
 
 .detail-options {
-    flex: 2;                       
+    flex: 2;        
+    margin-left: 5%;               
     text-align: left; 
     display:grid;
     gap: 10px;           
