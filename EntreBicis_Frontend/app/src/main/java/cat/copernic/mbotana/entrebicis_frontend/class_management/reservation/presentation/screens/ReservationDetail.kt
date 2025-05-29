@@ -329,6 +329,7 @@ fun ReservationDetail(
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 20.sp
                                 )
+                                Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = it1.surname,
                                     fontWeight = FontWeight.Bold,
