@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/web_items_detail.css">
+    <title>EntreBicis - Usuari</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content -->
+    <div class="content">
+        <section class="web-detail">
+            <div class="web-detail-header">
+                <h2 th:text="'Usuari - ' + ${user.name} + ' ' + ${user.surname} + ' ('+ ${user.email} + ')'"></h2>
+            </div>
+            <div class="web-detail-content">
+
+                <div class="detail-image">
+                    <div th:if="${user.image != null}">
+                        <img th:src="'data:image/jpeg;base64,' + ${user.image}" alt="User Image" class="web-avatar">
+                    </div>
+                    <div th:if="${user.image == null}">
+                        <img th:src="@{/images/User-Avatar.png}" alt="User Image" class="web-avatar">
+                    </div>
+                    <div class="detail-role" th:text="${user.role.display}"></div>
+                </div>
+
+                <div class="detail-data">
+                    <div class="data-row">
+                        <div class="data-title">Nom:</div>
+                        <div class="data-text" th:text="${user.name} + ' ' + ${user.surname}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Correu:</div>
+                        <div class="data-text" th:text="${user.email}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Telèfon:</div>
+                        <div class="data-text" th:text="${user.mobile}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Població:</div>
+                        <div class="data-text" th:text="${user.town}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Observacions:</div>
+                        <div class="data-text" th:text="${user.observation != null} ? ${user.observation} : '-'"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Punts Obtinguts:</div>
+                        <div class="data-text" th:text="${#numbers.formatDecimal(user.totalPoints, 1, 1)} + ' pts.'">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-options">
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/route/list/' + '@{${user.email}}'|"
+                            th:disabled="${user.routes.size == 0}">Rutes</button>
+                    </div>
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/reservation/list/' + '@{${user.email}}'|"
+                            th:disabled="${user.reservations.size == 0}">Reserves</button>
+                    </div>
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/user/update/password/' + '@{${user.email}}'|">Canvi
+                            Contrasenya</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+    </div>
+
+</body>
+
+</html>

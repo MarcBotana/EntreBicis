@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/user_create.css">
+    <script src="/js/preview_image.js"></script>
+
+    <title>EntreBicis - Modificar Usuari</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="content">
+        <section class="user-create">
+            <h2 th:text="'Modificar Usuari - (' + ${user.email} + ')'"></h2>
+
+            <!-- Exception Message -->
+            <div th:if="${exceptionError != null and not #strings.isEmpty(exceptionError)}" class="error-message">
+                <p th:text="${exceptionError}"></p>
+            </div>
+
+            <form th:action="@{/user/update/new}" method="post" th:object="${user}" enctype="multipart/form-data">
+
+                <!-- Use Method PUT -->
+                <input type="hidden" name="_method" value="put">
+
+                <!-- Hidden Attributes -->
+                <input type="hidden" name="email" th:field="*{email}">
+                <input type="hidden" name="password" th:field="*{password}">
+                <input type="hidden" name="totalPoints" th:field="*{totalPoints}">
+                <input type="hidden" name="isPasswordChanged" th:field="*{isPasswordChanged}">
+                <input type="hidden" name="isReservationActive" th:field="*{isReservationActive}">
+                <input type="hidden" name="image" th:field="*{image}">
+
+                <input type="hidden" name="deleteImage" id="deleteImage" value="false">
+
+                <!-- Image -->
+                <div>
+                    <img id="previewImage" th:src="${user.image != null} ? 
+             (${#strings.startsWith(user.image, 'iVBOR') ? 'data:image/png;base64,' : 
+               (#strings.startsWith(user.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${user.image}) : 
+             @{/images/User-Avatar.png}" th:attr="data-default-src=${user.image != null} ? 
+             (${#strings.startsWith(user.image, 'iVBOR') ? 'data:image/png;base64,' : 
+               (#strings.startsWith(user.image, '/9j/') ? 'data:image/jpeg;base64,' : '')} + ${user.image}) : 
+             @{/images/User-Avatar.png}" alt="User Image" class="web-avatar" />
+                </div>
+
+                <div th:if="${user.image != null}">
+                    <button type="button" id="deleteImageButton" onclick="deleteImage()">Eliminar Imatge</button>
+                </div>
+
+                <label for="imagenFile">Selecciona una imatge:</label>
+                <input type="file" id="imageFile" name="imageFile" accept="image/jpeg,image/png" />
+                <div class="error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></div>
+                <div class="error" th:if="${imageFormatError != null and not #strings.isEmpty(imageFormatError)}"
+                    th:text="${imageFormatError}"></div>
+                <!-- Name -->
+                <label for="name">Nom:</label>
+                <input type="text" id="name" name="name" th:field="*{name}">
+                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+
+                <!-- Surname -->
+                <label for="surname">Cognom:</label>
+                <input type="text" id="surname" name="surname" th:field="*{surname}">
+                <div class="error" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
+
+                <!-- Observation -->
+                <label for="observation">Observacions (Altres dades):</label>
+                <input type="text" id="observation" name="observation" th:field="*{observation}">
+                <div class="error" th:if="${#fields.hasErrors('observation')}" th:errors="*{observation}"></div>
+
+                <!-- Town -->
+                <label for="town">Localització:</label>
+                <input type="text" id="town" name="town" th:field="*{town}">
+                <div class="error" th:if="${#fields.hasErrors('town')}" th:errors="*{town}"></div>
+
+                <!-- Mobile -->
+                <label for="mobile">Mòbil:</label>
+                <input type="number" id="mobile" name="mobile" th:field="*{mobile}">
+                <div class="error" th:if="${#fields.hasErrors('mobile')}" th:errors="*{mobile}"></div>
+
+                <!-- State -->
+                <select id="userState" name="userState" th:field="*{userState}" hidden>
+                    <option th:each="userState : ${userState}" th:value="${userState}" th:text="${userState.display}">
+                    </option>
+                </select>
+
+                <!-- Rol -->
+                <label for="role">Rol:</label>
+                <select id="role" name="role" th:field="*{role}">
+                    <option th:each="role : ${roleList}" th:value="${role}" th:text="${role.display}"></option>
+                </select>
+
+                <button type="submit">Modificar Usuari</button>
+            </form>
+        </section>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var deleteImageButton = document.getElementById('deleteImageButton');
+            deleteImageButton.addEventListener('click', function () {
+                document.getElementById('deleteImage').value = 'true';
+                const imageInput = document.querySelector('input[name="image"]');
+                if (imageInput) {
+                    imageInput.value = '';
+                }
+
+                const imageElement = document.querySelector('.web-avatar');
+                if (imageElement) {
+                    imageElement.src = '/images/User-Avatar.png';
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

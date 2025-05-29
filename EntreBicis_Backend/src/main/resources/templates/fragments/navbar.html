@@ -1,0 +1,18 @@
+<div class="navbar" th:fragment="navbar">
+    <div class="navbar-left">
+        <img class="icon" th:src="@{/images/EntreBicis_Logo.png}" alt="Logo">
+        <a th:href="@{/}">Inici</a>
+        <a th:href="@{/user/list}">Usuaris</a>
+        <a th:href="@{/reward/list}">Recompenses</a>
+        <a th:href="@{/reservation/list}">Reserves</a>
+        <a th:href="@{/route/list}">Rutes</a>
+        <a th:href="@{/system/detail/1}">Paràmetres</a>
+    </div>
+
+    <div class="user-menu">
+        <img th:src="@{/images/EntreBicis_Logo.png}" alt="User" class="user-avatar">
+        <div class="dropdown">
+            <a th:href="@{/logout}">Tancar sessió</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/web_items_list.css">
+    <title>EntreBicis - Reserves</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content -->
+    <div class="content">
+        <aside class="sidebar">
+            <h3 class="sidebar-title">Ordenar</h3>
+            <button th:onclick="|location.href='/reservation/list'|">Totes</button>
+            <hr>
+            <button th:onclick="|location.href='/reservation/list?sort=userEmail'|">Correu Usuari</button>
+            <button th:onclick="|location.href='/reservation/list?sort=rewardName'|">Nom Recompensa</button>
+            <hr>
+            <button th:onclick="|location.href='/reservation/list?sort=RESERVED'|">Reservades</button>
+            <button th:onclick="|location.href='/reservation/list?sort=ASSIGNED'|">Assignades</button>
+            <button th:onclick="|location.href='/reservation/list?sort=RETURNED'|">Retornades</button>
+            <button th:onclick="|location.href='/reservation/list?sort=CANCELED'|">Cancel·lades</button>
+
+        </aside>
+
+        <section class="web-list">
+            <div class="web-list-header">
+                <h2>Reserves</h2>
+            </div>
+
+            <!-- Search Bar -->
+            <form action="/reservation/list" method="get" class="search-bar">
+                <input type="text" name="search" placeholder="Correu usuari o nom recompensa..." th:value="${param.search}">
+                <button type="submit">🔍</button>
+            </form>
+
+            <div class="web-list-content">
+                <table class="web-list-webBar-noImg">
+                    <thead>
+                        <tr>
+                            <th class="web-info-id">Id</th>
+                            <th class="web-info">Estat</th>
+                            <th class="web-info">Data Reserva</th>
+                            <th class="web-info">Recompensa</th>
+                            <th class="web-info">Usuari</th>
+                        </tr>
+                    </thead>
+                    <tbody class="web-item" th:each="reservation : ${allReservations}">
+                        <tr th:onclick="|location.href='/reservation/detail/${reservation.id}'|">
+                            <td class="web-info-id" th:text="${reservation.id} + '-' + ${reservation.reservationCode}"></td>
+                            <td class="web-info" th:text="${reservation.reservationState.display}"></td>
+                            <td class="web-info" th:text="${reservation.reservationDate != null} ? ${#temporals.format(reservation.reservationDate, 'dd/MM/yy - HH:mm')} : '-'"></td>
+                            <td class="web-info" th:text="${reservation.reward.name}"></td>
+                            <td class="web-info" th:text="${reservation.user.email}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </div>
+
+</body>
+
+</html>

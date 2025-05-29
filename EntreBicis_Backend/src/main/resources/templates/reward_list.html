@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/web_items_list.css">
+    <title>EntreBicis - Recompenses</title>
+</head>
+
+<script>
+    function confirmElimination() {
+        return confirm("Segur que vols esborrar?");
+    }
+</script>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content -->
+    <div class="content">
+        <aside class="sidebar">
+            <h3 class="sidebar-title">Ordenar</h3>
+            <button th:onclick="|location.href='/reward/list'|">Totes</button>
+            <hr>
+            <button th:onclick="|location.href='/reward/list?sort=name'|">Nom</button>
+            <button th:onclick="|location.href='/reward/list?sort=exchangePoint'|">Punt Bescanvi</button>
+            <hr>
+            <button th:onclick="|location.href='/reward/list?sort=AVAILABLE'|">Disponibles</button>
+            <button th:onclick="|location.href='/reward/list?sort=RESERVED'|">Reservades</button>
+            <button th:onclick="|location.href='/reward/list?sort=ASSIGNED'|">Assignades</button>
+            <button th:onclick="|location.href='/reward/list?sort=RETURNED'|">Retornades</button>
+
+        </aside>
+
+        <section class="web-list">
+            <div class="web-list-header">
+                <h2>Recompenses</h2>
+                <button th:onclick="|location.href='/reward/create'|">Crear Recompensa</button>
+            </div>
+
+            <!-- Search Bar -->
+            <form action="/reward/list" method="get" class="search-bar">
+                <input type="text" name="search" placeholder="Nom..." th:value="${param.search}">
+                <button type="submit">🔍</button>
+            </form>
+
+            <div class="web-list-content">
+                <table class="web-list-webBar">
+                    <thead>
+                        <tr>
+                            <th class="web-info-img">Imatge</th>
+                            <th class="web-info">Nom</th>
+                            <th class="web-info">Estat</th>
+                            <th class="web-info">Usuari assignat</th>
+                            <th class="web-info">Data creació</th>
+                            <th class="web-info">Punts Valor</th>
+                            <th class="web-info">Bescanvi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="web-item" th:each="reward : ${allRewards}">
+                        <tr th:onclick="|location.href='/reward/detail/${reward.id}'|">
+                            <td>
+                                <img th:src="'data:image/jpeg;base64,' + ${reward.image}" alt="Reward Image"
+                                    class="web-avatar">
+                            </td>
+                            <td class="web-info" th:text="${reward.name}"></td>
+                            <td class="web-info" th:text="${reward.rewardState.display}"></td>
+                            <td class="web-info"
+                                th:text="${reward.reservation != null} ? ${reward.reservation.user.email} : '-'"></td>
+                            <td class="web-info" th:text="${#temporals.format(reward.rewardDate, 'dd/MM/yy - HH:mm')}">
+                            </td>
+                            <td class="web-info" th:text="${#numbers.formatDecimal(reward.valuePoints, 1, 1)} + ' pts.'"></td>
+                            <td class="web-info" th:text="${reward.exchangePoint}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="web-list-actionBar">
+                    <thead>
+                        <tr>
+                            <th>Accions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="web-item" th:each="reward : ${allRewards}">
+                        <tr>
+                            <td class="web-item-button">
+                                <button th:onclick="|location.href='/reward/update/${reward.id}'|"
+                                    th:disabled="${reward.rewardState.name() != 'AVAILABLE'}">Editar</button>
+
+                                <form th:action="@{/reward/delete/{id}(id=${reward.id})}" method="post"
+                                    th:if="${reward.rewardState.name() == 'AVAILABLE'}"
+                                    onsubmit="return confirmElimination()">
+                                    <input type="hidden" name="_method" value="delete" />
+                                    <button type="submit">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+</body>
+
+</html>
