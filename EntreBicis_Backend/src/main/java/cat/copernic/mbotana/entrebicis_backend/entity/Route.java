@@ -1,10 +1,12 @@
 package cat.copernic.mbotana.entrebicis_backend.entity;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import cat.copernic.mbotana.entrebicis_backend.entity.enums.RouteState;
-import cat.copernic.mbotana.entrebicis_backend.entity.enums.RouteValidate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,15 +33,15 @@ public class Route {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     @Enumerated(EnumType.STRING)
     private RouteState routeState;
 
     @Column
-    private RouteValidate isValidate;
+    private LocalDateTime routeDate;
 
     @Column
-    private Double totalRutePoints;
+    private Double totalRoutePoints;
 
     @Column
     private Double totalRouteDistance;
@@ -54,10 +56,11 @@ public class Route {
     private Double avgRouteVelocity;
 
     @OneToMany(mappedBy = "route")
-    private List<PositionGPS> positionGPSs;
+    private List<GpsPoint> gpsPoints;
 
     @ManyToOne
-    @JoinColumn(name = "user_email", unique = true)
+    @JoinColumn(name = "user_email")
+    @JsonIgnoreProperties({"role", "name", "surname", "password", "town", "mobile", "image","isPasswordChanged", "isReservationActive", "userState", "totalPoints", "routes", "reservations" })
     private User user;
 
 }

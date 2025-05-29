@@ -49,6 +49,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.tools.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -56,4 +58,28 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    //Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    //Data Store
+    implementation(libs.androidx.datastore.preferences)
+
+    //Maps
+    implementation(libs.maps.compose.v411)
+    implementation(libs.play.services.location.v2101)
+    implementation(libs.play.services.maps)
+
+
+    //Permissions
+    implementation(libs.accompanist.permissions)
+
+    //Icons
+    implementation(libs.androidx.material.icons.extended)
+
+
 }

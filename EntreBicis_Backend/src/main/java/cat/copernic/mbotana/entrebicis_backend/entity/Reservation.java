@@ -1,9 +1,12 @@
 package cat.copernic.mbotana.entrebicis_backend.entity;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
+import cat.copernic.mbotana.entrebicis_backend.entity.enums.ReservationState;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,13 +30,26 @@ public class Reservation {
     private Long id;
 
     @Column
-    private LocalTime reservationTime;
+    private String reservationCode;
 
     @Column
-    private LocalTime returnTime;
+    @Enumerated(EnumType.STRING)
+    private ReservationState reservationState;
+
+    @Column
+    private LocalDateTime returnTime;
+
+    @Column
+    private LocalDateTime reservationDate;
+
+    @Column
+    private LocalDateTime assignationDate;
+
+    @Column
+    private LocalDateTime returnDate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", unique = true)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToOne

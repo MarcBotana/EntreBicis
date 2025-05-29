@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/web_items_detail.css">
+
+    <script src="/js/route_detail.js"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        let routePoints = /*[[${route.gpsPoints}]]*/[];
+        let systemParams = /*[[${systemParams}]]*/ {};
+        /*]]>*/
+    </script>
+
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDo44qmSlWlU47Sahr_RMuuXpv0nEKijao&callback=initMap">
+        </script>
+
+    <title>EntreBicis - Ruta</title>
+</head>
+
+<body>
+    <!-- NavBar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <!-- Content -->
+    <div class="content">
+        <section class="web-detail">
+            <div class="web-detail-header">
+                <h2 th:text="'Ruta - ' + ${route.id}"></h2>
+            </div>
+            <div class="web-detail-content">
+
+                <div class="detail-map-container">
+                    <div class="detail-map" id="map"></div>
+                    <button onclick="centerRoute()">Centrar ruta</button>
+                </div>
+
+                <div class="detail-data">
+                    <div class="data-row">
+                        <div class="data-title">Estat:</div>
+                        <div class="data-text" th:text="${route.routeState.display}"></div>
+                    </div>
+                    <hr>
+                    <div class="data-row">
+                        <div class="data-title">Data:</div>
+                        <div class="data-text" th:text="${#temporals.format(route.routeDate, 'dd/MM/yy - HH:mm')}">
+                        </div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Distància:</div>
+                        <div class="data-text"
+                            th:text="${#numbers.formatDecimal(route.totalRouteDistance, 1, 3)} + ' m'"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Temps:</div>
+                        <div class="data-text" th:text="${route.totalRouteTime}"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Vel. Mitjana:</div>
+                        <div class="data-text"
+                            th:text="'~ ' + ${#numbers.formatDecimal(route.avgRouteVelocity, 1, 1)} + ' Km/h'"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Vel. Màxima:</div>
+                        <div class="data-text"
+                            th:text="'↑ ' + ${#numbers.formatDecimal(route.maxRouteVelocity, 1, 1)} + ' Km/h'"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Punts Generats:</div>
+                        <div class="data-text"
+                            th:text="${#numbers.formatDecimal(route.totalRoutePoints, 1, 2)} + ' pts.'"></div>
+                    </div>
+                    <div class="data-row">
+                        <div class="data-title">Usuari:</div>
+                        <div class="data-text" th:text="${route.user.name} + ' ' + ${route.user.surname}"></div>
+                    </div>
+                </div>
+
+                <div class="detail-options">
+                    <div class="options-button">
+                        <button th:onclick="|location.href='/user/detail/' + '@{${route.user.email}}'|">Usuari</button>
+                    </div>
+                    <div class="options-button">
+                        <form th:action="@{/route/validate/{id}/{email}(id=${route.id}, email=${route.user.email})}"
+                            method="post">
+                            <input type="hidden" name="_method" value="put" />
+                            <button type="submit"
+                                th:disabled="${route.routeState.name() != 'PENDING' && route.routeState.name() != 'NOT_VALIDATED'}">Validar
+                                Ruta</button>
+                        </form>
+                    </div>
+                    <div class="options-button">
+                        <form th:action="@{/route/invalidate/{id}/{email}(id=${route.id}, email=${route.user.email})}"
+                            method="post">
+                            <input type="hidden" name="_method" value="put" />
+                            <button type="submit" th:disabled="${route.routeState.name() != 'VALIDATED'}">Invalidar
+                                Ruta</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+    </div>
+
+</body>
+
+</html>
