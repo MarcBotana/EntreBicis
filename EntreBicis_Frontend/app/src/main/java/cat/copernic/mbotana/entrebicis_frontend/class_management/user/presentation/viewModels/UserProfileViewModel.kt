@@ -1,0 +1,4 @@
+package cat.copernic.mbotana.entrebicis_frontend.class_management.user.presentation.viewModels
+
+class UserProfileViewModel {
+}
