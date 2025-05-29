@@ -100,7 +100,7 @@ public class ApiUserController {
                 userDB.setPassword(passwordEncoder.encode(user.getPassword()));
                 userDB.setIsPasswordChanged(true);
                 deleteToken(user);
-                apiUserLogic.updateUser(user);
+                apiUserLogic.updateUser(userDB);
                 response = new ResponseEntity<>(headers, HttpStatus.OK);
             }
         } catch (Exception e) {
